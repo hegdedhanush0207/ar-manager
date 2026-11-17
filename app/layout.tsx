@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from 'next/font/google';
 import { Suspense } from 'react';
 import { Nav } from '@/components/Nav';
 import { AsOfPicker } from '@/components/AsOfPicker';
+import { DoneBanner } from '@/components/DoneBanner';
 import { SELLER } from '@/lib/seller';
 import './globals.css';
 
@@ -37,7 +38,12 @@ export default function RootLayout({ children }: LayoutProps<'/'>) {
             </Suspense>
           </div>
         </header>
-        <main className="mx-auto max-w-7xl px-4 py-6 print:max-w-none print:p-0">{children}</main>
+        <main className="mx-auto max-w-7xl px-4 py-6 print:max-w-none print:p-0">
+          <Suspense fallback={null}>
+            <DoneBanner />
+          </Suspense>
+          {children}
+        </main>
       </body>
     </html>
   );

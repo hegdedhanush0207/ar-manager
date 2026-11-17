@@ -7,6 +7,7 @@ import { creditNoteGst, totalWithGst } from '@/lib/ar/tax';
 import type { Invoice } from '@/lib/ar/types';
 import { formatMoney, parseRupees } from '@/lib/format';
 import { Field, FormMessage, SubmitButton, inputClass } from './form';
+import { ReturnTo } from './ReturnTo';
 
 /** R7. Raise a credit note, with a preview of its GST (the invoice's rate and split) and total. */
 export function CreditNoteForm({ invoice, available, defaultDate, nextNo }: { invoice: Invoice; available: number; defaultDate: string; nextNo: string }) {
@@ -18,9 +19,10 @@ export function CreditNoteForm({ invoice, available, defaultDate, nextNo }: { in
   const e = state.fieldErrors ?? {};
 
   return (
-    <form action={action} className="space-y-3 rounded border border-slate-200 bg-white p-3" key={state.ok ? state.message : 'form'}>
+    <form action={action} className="space-y-3 rounded border border-slate-200 bg-white p-3">
       <input type="hidden" name="invoiceId" value={invoice.id} />
-      <FormMessage error={state.error} message={state.message} />
+      <ReturnTo />
+      <FormMessage error={state.error} />
       <p className="text-xs text-slate-500">
         Next number {nextNo}. Up to {formatMoney(available)} can still be credited (total including GST).
       </p>
@@ -54,7 +56,8 @@ export function CancelInvoiceButton({ invoiceId, invoiceNo, blockedReason }: { i
   return (
     <form action={action} className="space-y-2">
       <input type="hidden" name="id" value={invoiceId} />
-      <FormMessage error={state.error} message={state.message} />
+      <ReturnTo />
+      <FormMessage error={state.error} />
       {!confirming ? (
         <button type="button" onClick={() => setConfirming(true)} className="rounded border border-red-300 bg-white px-3 py-1.5 text-sm font-medium text-red-700 hover:bg-red-50">
           Cancel invoice…

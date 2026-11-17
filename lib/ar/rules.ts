@@ -168,3 +168,16 @@ export function creditLimitWarning(customer: Customer, netBalanceBefore: Paise, 
   if (after <= customer.creditLimit) return null;
   return `This invoice takes ${customer.name}'s net balance to ${formatMoney(after)}, above its credit limit of ${formatMoney(customer.creditLimit)}. You can still save it.`;
 }
+
+export interface ReceiptDraftSummary {
+  settlement: Paise; // bank + TDS (R5)
+  allocated: Paise;
+  unapplied: Paise; // what will remain as unapplied credit
+}
+
+/** Running totals shown on the payment form while the user edits it. */
+export function receiptDraftSummary(bankAmount: Paise, tdsAmount: Paise, allocationAmounts: Paise[]): ReceiptDraftSummary {
+  const settlement = bankAmount + tdsAmount;
+  const allocated = allocationAmounts.reduce((s, a) => s + a, 0);
+  return { settlement, allocated, unapplied: settlement - allocated };
+}

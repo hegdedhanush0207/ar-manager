@@ -347,3 +347,10 @@ describe('dashboard summary', () => {
     expect(s.overduePct).toBeCloseTo((s.overdue / s.outstanding) * 100, 10);
   });
 });
+
+describe('payment form summary', () => {
+  it('settlement = bank + TDS; unapplied = settlement − allocations', async () => {
+    const { receiptDraftSummary } = await import('../lib/ar');
+    expect(receiptDraftSummary(rupees(90000), rupees(10000), [rupees(60000)])).toEqual({ settlement: rupees(100000), allocated: rupees(60000), unapplied: rupees(40000) });
+  });
+});

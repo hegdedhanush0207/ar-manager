@@ -3,6 +3,9 @@ import { notFound } from 'next/navigation';
 import { loadArData } from '@/lib/ar/load';
 import { cancelProblem, invoiceAvailable, invoiceRows, nextNumber, todayInIndia } from '@/lib/ar';
 import { setDisputed } from '@/lib/actions/invoices';
+import { removeAllocation } from '@/lib/actions/receipts';
+import { ConfirmButton } from '@/components/ConfirmButton';
+import { ReturnTo } from '@/components/ReturnTo';
 import type { SearchParams } from '@/lib/asof';
 import { href } from '@/lib/asof';
 import { formatDate, formatMoney } from '@/lib/format';
@@ -123,6 +126,11 @@ export default async function InvoicePage({ params, searchParams }: { params: Pr
                         </Td>
                         <Td numeric>
                           <Money paise={a.amount} />
+                          <form action={removeAllocation}>
+                            <input type="hidden" name="id" value={a.id} />
+                            <ReturnTo />
+                            <ConfirmButton message={`Remove this allocation of ${formatMoney(a.amount)} from ${r?.receiptNo}? It goes back to the receipt's unapplied credit.`}>remove</ConfirmButton>
+                          </form>
                         </Td>
                       </tr>
                     );
@@ -198,6 +206,7 @@ export default async function InvoicePage({ params, searchParams }: { params: Pr
                 <form action={setDisputed} className="flex items-center gap-2">
                   <input type="hidden" name="id" value={inv.id} />
                   <input type="hidden" name="disputed" value={inv.isDisputed ? 'false' : 'true'} />
+                  <ReturnTo />
                   <button className="rounded border border-amber-300 bg-white px-3 py-1.5 text-sm font-medium text-amber-800 hover:bg-amber-50">
                     {inv.isDisputed ? 'Clear disputed flag' : 'Mark as disputed'}
                   </button>
@@ -205,7 +214,7 @@ export default async function InvoicePage({ params, searchParams }: { params: Pr
                 <div>
                   <h3 className="mb-2 font-medium">Raise a credit note</h3>
                   {available > 0 ? (
-                    <CreditNoteForm invoice={inv} available={available} defaultDate={cnDate} nextNo={nextNumber('creditNote', data, cnDate)} />
+                    <CreditNoteForm key={nextNumber('creditNote', data, cnDate)} invoice={inv} available={available} defaultDate={cnDate} nextNo={nextNumber('creditNote', data, cnDate)} />
                   ) : (
                     <p className="text-slate-500">Nothing left to credit: the invoice is fully settled or credited.</p>
                   )}

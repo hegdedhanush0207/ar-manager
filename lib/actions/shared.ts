@@ -57,3 +57,15 @@ export function friendlyDbError(message: string | undefined): string {
 export function isDuplicateKey(message: string | undefined): boolean {
   return /duplicate key|already exists|unique/i.test(message ?? '');
 }
+
+/**
+ * Where to go after a successful action: back to the page the form was on
+ * (sent in a hidden "returnTo" field), with a confirmation message in ?done=.
+ * Only paths inside this app are accepted.
+ */
+export function doneUrl(returnTo: string | undefined, message: string, fallback = '/'): string {
+  const path = returnTo && returnTo.startsWith('/') && !returnTo.startsWith('//') ? returnTo : fallback;
+  const url = new URL(path, 'http://app.local');
+  url.searchParams.set('done', message);
+  return url.pathname + url.search;
+}

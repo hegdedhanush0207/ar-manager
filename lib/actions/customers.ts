@@ -12,7 +12,7 @@ import { loadArData } from '@/lib/ar/load';
 import { toRupees } from '@/lib/format';
 import { INDIAN_STATES } from '@/lib/states';
 import { amount, id, optionalText, requiredText } from './fields';
-import { fieldErrorsFrom, formValues, friendlyDbError, type ActionState } from './shared';
+import { doneUrl, fieldErrorsFrom, formValues, friendlyDbError, type ActionState } from './shared';
 
 const customerSchema = z.object({
   code: requiredText('Code', 20).transform((s) => s.toUpperCase()),
@@ -80,9 +80,11 @@ export async function saveCustomer(_prev: ActionState, fd: FormData): Promise<Ac
 
 /** R9: deactivate or reactivate. Inactive customers cannot be given new invoices. */
 export async function setCustomerActive(fd: FormData): Promise<void> {
-  const parsed = z.object({ id, active: z.enum(['true', 'false']) }).safeParse(formValues(fd));
+  const values = formValues(fd);
+  const parsed = z.object({ id, active: z.enum(['true', 'false']) }).safeParse(values);
   if (!parsed.success) throw new Error('Invalid request.');
   const { error } = await db.from('customers').update({ is_active: parsed.data.active === 'true' }).eq('id', parsed.data.id);
   if (error) throw new Error(friendlyDbError(error.message));
   revalidatePath('/', 'layout');
+  redirect(doneUrl(values.returnTo, parsed.data.active === 'true' ? 'Customer reactivated.' : 'Customer deactivated. No new invoices can be raised for it.'));
 }

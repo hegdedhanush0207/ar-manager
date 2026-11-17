@@ -1,8 +1,12 @@
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { loadArData } from '@/lib/ar/load';
-import { BUCKETS, SELLER_STATE, customerPosition, fyStart, invoiceRows, notesAsAt, promiseStatus, receiptPositions } from '@/lib/ar';
+import { BUCKETS, SELLER_STATE, customerPosition, fyStart, invoiceRows, notesAsAt, openInvoicesFor, promiseStatus, receiptAvailable, receiptPositions, todayInIndia } from '@/lib/ar';
 import { setCustomerActive } from '@/lib/actions/customers';
+import { deleteReceipt, removeAllocation } from '@/lib/actions/receipts';
+import { AllocateCreditForm } from '@/components/AllocateCreditForm';
+import { ConfirmButton } from '@/components/ConfirmButton';
+import { ReturnTo } from '@/components/ReturnTo';
 import type { SearchParams } from '@/lib/asof';
 import { href } from '@/lib/asof';
 import { formatBalance, formatDate, formatMoney, formatPct } from '@/lib/format';
@@ -19,6 +23,14 @@ export default async function CustomerPage({ params, searchParams }: { params: P
   const pos = customerPosition(data, id, asof);
   if (!pos) notFound();
   const c = pos.customer;
+
+  // For allocating unapplied credit: all-time amounts left on receipts and invoices (R6).
+  const creditReceipts = data.receipts
+    .filter((r) => r.customerId === id)
+    .map((r) => ({ id: r.id, receiptNo: r.receiptNo, receiptDate: r.receiptDate, available: receiptAvailable(data, r.id) }))
+    .filter((r) => r.available > 0);
+  const openInvoices = openInvoicesFor(data, id);
+  const hasAllocations = new Set(data.allocations.map((a) => a.receiptId));
 
   const invoices = invoiceRows(data, asof)
     .filter((r) => r.invoice.customerId === id)
@@ -52,6 +64,7 @@ export default async function CustomerPage({ params, searchParams }: { params: P
         <form action={setCustomerActive}>
           <input type="hidden" name="id" value={id} />
           <input type="hidden" name="active" value={c.isActive ? 'false' : 'true'} />
+          <ReturnTo />
           <button className="rounded border border-slate-300 bg-white px-3 py-1.5 text-sm font-medium hover:bg-slate-50">
             {c.isActive ? 'Deactivate' : 'Reactivate'}
           </button>
@@ -194,20 +207,42 @@ export default async function CustomerPage({ params, searchParams }: { params: P
                         <Td>
                           {allocs.length === 0 && <span className="text-slate-400">—</span>}
                           {allocs.map((a) => (
-                            <div key={a.id} className="whitespace-nowrap">
+                            <form key={a.id} action={removeAllocation} className="whitespace-nowrap">
+                              <input type="hidden" name="id" value={a.id} />
+                              <ReturnTo />
                               {invoiceById.get(a.invoiceId)?.invoiceNo} <Money paise={a.amount} />{' '}
-                              <span className="text-xs text-slate-500">on {formatDate(a.allocationDate)}</span>
-                            </div>
+                              <span className="text-xs text-slate-500">on {formatDate(a.allocationDate)}</span>{' '}
+                              <ConfirmButton message={`Remove this allocation of ${formatMoney(a.amount)}? The amount goes back to unapplied credit.`}>remove</ConfirmButton>
+                            </form>
                           ))}
                         </Td>
                         <Td numeric className={r.unapplied > 0 ? 'font-semibold text-emerald-700' : ''}>
                           <Money paise={r.unapplied} />
+                          {!hasAllocations.has(r.receipt.id) && (
+                            <form action={deleteReceipt}>
+                              <input type="hidden" name="id" value={r.receipt.id} />
+                              <ReturnTo />
+                              <ConfirmButton message={`Delete receipt ${r.receipt.receiptNo}? This cannot be undone.`}>delete receipt</ConfirmButton>
+                            </form>
+                          )}
                         </Td>
                       </tr>
                     );
                   })}
                 </tbody>
               </TableWrap>
+            )}
+          </Section>
+
+          <Section title="Allocate unapplied credit">
+            {creditReceipts.length === 0 ? (
+              <Empty>No unapplied credit to allocate.</Empty>
+            ) : openInvoices.length === 0 ? (
+              <Empty>
+                This customer has unapplied credit (see Receipts), but no open invoices to allocate it to yet.
+              </Empty>
+            ) : (
+              <AllocateCreditForm receipts={creditReceipts} invoices={openInvoices} today={todayInIndia()} />
             )}
           </Section>
         </div>

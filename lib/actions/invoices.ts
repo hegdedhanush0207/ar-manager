@@ -25,7 +25,7 @@ import {
 } from '@/lib/ar';
 import { formatDate, formatMoney, toRupees } from '@/lib/format';
 import { amount, id, isoDate, requiredText } from './fields';
-import { fieldErrorsFrom, formValues, friendlyDbError, isDuplicateKey, type ActionState } from './shared';
+import { doneUrl, fieldErrorsFrom, formValues, friendlyDbError, isDuplicateKey, type ActionState } from './shared';
 
 const invoiceSchema = z.object({
   customerId: z.coerce.number('Choose a customer.').int().positive('Choose a customer.'),
@@ -120,22 +120,25 @@ export async function createInvoice(_prev: ActionState, fd: FormData): Promise<A
 
 /** Set or clear the disputed flag (a label only; it changes no amount). */
 export async function setDisputed(fd: FormData): Promise<void> {
-  const p = z.object({ id, disputed: z.enum(['true', 'false']) }).parse(formValues(fd));
+  const values = formValues(fd);
+  const p = z.object({ id, disputed: z.enum(['true', 'false']) }).parse(values);
   const { error } = await db.from('invoices').update({ is_disputed: p.disputed === 'true' }).eq('id', p.id);
   if (error) throw new Error(friendlyDbError(error.message));
   revalidatePath('/', 'layout');
+  redirect(doneUrl(values.returnTo, p.disputed === 'true' ? 'Marked as disputed.' : 'Disputed flag cleared.'));
 }
 
 /** R8. Cancel an invoice that has nothing allocated or credited against it. */
 export async function cancelInvoice(_prev: ActionState, fd: FormData): Promise<ActionState> {
-  const p = z.object({ id }).safeParse(formValues(fd));
+  const values = formValues(fd);
+  const p = z.object({ id }).safeParse(values);
   if (!p.success) return { error: 'Invalid request.' };
   const problem = cancelProblem(await loadArData(), p.data.id);
   if (problem) return { error: problem };
   const { error } = await db.from('invoices').update({ is_cancelled: true }).eq('id', p.data.id);
   if (error) return { error: friendlyDbError(error.message) };
   revalidatePath('/', 'layout');
-  return { ok: true, message: 'Invoice cancelled. It keeps its number and is left out of every total.' };
+  redirect(doneUrl(values.returnTo, 'Invoice cancelled. It keeps its number and is left out of every total.'));
 }
 
 const creditNoteSchema = z.object({
@@ -170,8 +173,9 @@ export async function createCreditNote(_prev: ActionState, fd: FormData): Promis
         values,
       };
     }
+    const creditNoteNo = nextNumber('creditNote', data, cn.creditNoteDate);
     const { error } = await db.from('credit_notes').insert({
-      credit_note_no: nextNumber('creditNote', data, cn.creditNoteDate),
+      credit_note_no: creditNoteNo,
       invoice_id: invoice.id,
       credit_note_date: cn.creditNoteDate,
       taxable_value: toRupees(cn.taxableValue),
@@ -186,7 +190,7 @@ export async function createCreditNote(_prev: ActionState, fd: FormData): Promis
       return { error: friendlyDbError(error.message), values };
     }
     revalidatePath('/', 'layout');
-    return { ok: true, message: `Credit note for ${formatMoney(total)} saved.` };
+    redirect(doneUrl(values.returnTo, `Credit note ${creditNoteNo} for ${formatMoney(total)} saved.`));
   }
   return { error: 'Could not get a free credit note number. Please try again.', values };
 }

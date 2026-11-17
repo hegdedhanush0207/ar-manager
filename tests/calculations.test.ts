@@ -334,3 +334,16 @@ describe('R14 holds after new records are added', () => {
     expect(customerPositions(d, '2026-09-21').find((x) => x.customer.id === c004.id)!.unapplied).toBe(rupees(110000));
   });
 });
+
+describe('dashboard summary', () => {
+  it('as at 31-Aug-2026 agrees with the positions', async () => {
+    const { dashboardSummary } = await import('../lib/ar');
+    const s = dashboardSummary(data, '2026-08-31');
+    const outstanding = invoicePositions(data, '2026-08-31').reduce((a, p) => a + p.outstanding, 0);
+    expect(s.outstanding).toBe(outstanding);
+    expect(s.unapplied).toBe(rupees(100000));
+    expect(s.netReceivable).toBe(outstanding - rupees(100000));
+    expect(s.overdueCount).toBe(invoicePositions(data, '2026-08-31').filter((p) => p.status === 'Overdue').length);
+    expect(s.overduePct).toBeCloseTo((s.overdue / s.outstanding) * 100, 10);
+  });
+});

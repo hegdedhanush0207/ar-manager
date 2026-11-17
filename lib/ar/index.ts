@@ -13,3 +13,4 @@ export * from './statement';
 export * from './notes';
 export * from './dso';
 export * from './rules';
+export * from './dashboard';

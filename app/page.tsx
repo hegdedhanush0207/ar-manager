@@ -1,25 +1,24 @@
 import { loadArData } from '@/lib/ar/load';
-export const instant = false;
-export default async function Home() {
+import { customerPositions } from '@/lib/ar';
+import { parseAsOf, type SearchParams } from '@/lib/asof';
+import { formatDate } from '@/lib/format';
+import { Balance, PageHeader } from '@/components/ui';
+
+export default async function Home({ searchParams }: { searchParams: Promise<SearchParams> }) {
+  const asof = parseAsOf((await searchParams).asof);
   const data = await loadArData();
+  const rows = customerPositions(data, asof);
 
   return (
-    <main className="p-8">
-      <h1 className="text-2xl font-bold mb-6">
-        Brightwater Advisory — Customers
-      </h1>
-
-      <p className="mb-4">
-        Customers loaded: {data.customers.length}
-      </p>
-
-      <ul className="space-y-2">
-        {data.customers.map((customer) => (
-          <li key={customer.id}>
-            {customer.code} — {customer.name}
+    <>
+      <PageHeader title="Overdue at a glance" subtitle={`As at ${formatDate(asof)}`} />
+      <ul className="space-y-1">
+        {rows.map((p) => (
+          <li key={p.customer.id}>
+            {p.customer.code} — {p.customer.name}: <Balance paise={p.netBalance} />
           </li>
         ))}
       </ul>
-    </main>
+    </>
   );
 }

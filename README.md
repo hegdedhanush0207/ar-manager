@@ -104,8 +104,9 @@ Where the brief left room for interpretation, these are the decisions made:
 14. **The ageing table and CSV** list customers with an outstanding balance or unapplied credit; the totals cover all customers.
 15. **Limit used %** is the net balance divided by the credit limit ("—" when the limit is zero). **Overdue %** on the dashboard is overdue divided by total invoice outstanding (before unapplied credit).
 16. **The statement** defaults to the start of the financial year containing the as-at date, up to the as-at date. Credit-note lines are described as "Credit note against <invoice>: <reason>".
-17. **CSV files** show dates as `31-Aug-2026` (as on screen) and balances as a positive amount with a separate Dr/Cr column.
-18. **After recording a payment** dated after the current as-at date, the customer page opens as at the receipt date, so the new receipt is visible.
+17. **Statement TDS line wording.** R15 labels the TDS line "TDS deducted by you". That wording addresses the customer, but the statement is also read inside the firm by the AR analyst, to whom "you" reads as Brightwater. The line is labelled **"TDS deducted by customer"** instead, on screen, in print and in the CSV. The amount, position and ordering of the line are exactly as R15 specifies.
+18. **CSV files** show dates as `31-Aug-2026` (as on screen) and balances as a positive amount with a separate Dr/Cr column.
+19. **After recording a payment** dated after the current as-at date, the customer page opens as at the receipt date, so the new receipt is visible.
 
 ## Known gaps
 

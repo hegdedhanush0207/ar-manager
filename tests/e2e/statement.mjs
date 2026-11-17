@@ -11,7 +11,7 @@ check('opening 70,800.00 Dr', t.includes('Opening balance ₹70,800.00 Dr'));
 check('closing 2,23,000.00 Dr', /Closing balance ₹[\d,.]+ ₹[\d,.]+ ₹2,23,000\.00 Dr/.test(t));
 const lines = await page.locator('article tbody').first().locator('tr').count();
 check('7 lines plus opening row', lines === 8, String(lines));
-check('TDS line wording', t.includes('TDS deducted by you'));
+check('TDS line wording', t.includes('TDS deducted by customer'));
 check('ageing footer present', t.includes('Ageing of the closing balance as at 31-Aug-2026'));
 
 // Print layout: header/nav/buttons hidden, seller shown

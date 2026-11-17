@@ -28,7 +28,7 @@ describe('statement CSV', () => {
     const lines = rows.slice(rows.indexOf(opening) + 1, rows.indexOf(closing));
     expect(lines).toHaveLength(7);
     expect(lines[0]).toEqual(['18-Apr-2026', 'Invoice', 'BWA/26-27/0003', 'Transfer pricing documentation', '141600.00', '', '212400.00', 'Dr']);
-    expect(lines[2]).toEqual(['20-May-2026', 'TDS', 'RCT/26-27/0005', 'TDS deducted by you', '', '6000.00', '141600.00', 'Dr']);
+    expect(lines[2]).toEqual(['20-May-2026', 'TDS', 'RCT/26-27/0005', 'TDS deducted by customer', '', '6000.00', '141600.00', 'Dr']);
   });
 
   it('quotes descriptions with commas and writes plain amounts', () => {

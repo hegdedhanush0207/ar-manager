@@ -136,7 +136,7 @@ In [lib/actions/customers.ts](../lib/actions/customers.ts), change `phone: optio
 
 - **Why not store an "amount paid" on the invoice?** It could only be right for one date. With the as-at rule the same invoice can be Due on 31-Aug, Overdue on 6-Sep and Paid on 15-Sep (spot check 4). Calculating from the documents gives the right answer for every date, and the R14 check proves it.
 - **Why paise?** Integer arithmetic is exact. The conversion happens once in the loader and once when saving (`toRupees`).
-- **Why is TDS part of the settlement?** The customer has paid the TDS to the government on Brightwater's behalf; it settles the invoice just like cash (R5). On the statement it is a separate credit line, "TDS deducted by you".
+- **Why is TDS part of the settlement?** The customer has paid the TDS to the government on Brightwater's behalf; it settles the invoice just like cash (R5). On the statement it is a separate credit line, "TDS deducted by customer" (the brief suggests "TDS deducted by you"; see README, Assumptions).
 - **Why is unapplied credit not netted against the oldest bucket?** It has not been matched to any invoice yet; netting it would misstate the ageing. It is shown separately and reduces the net balance.
 - **How does the tool stop over-allocation?** Three layers: the payment form shows the running total and disables Save; the server action checks with `allocationProblems`; and the database refuses it as a last resort.
 - **Where would a bug in a figure show up?** In the tests first: the spot checks pin known answers, and the every-day R14 loop catches any disagreement between the two ways of computing a balance.

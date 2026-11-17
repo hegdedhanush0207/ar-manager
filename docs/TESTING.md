@@ -51,7 +51,7 @@ Tick each line. Expected figures come from the brief's spot checks (Part 1) and 
 - [ ] The **invoice** pages show the new received amounts and part-paid labels.
 - [ ] The **customer** balance fell by exactly ₹1,09,000.00 (bank + TDS).
 - [ ] The **dashboard** totals moved by the same amount, and the control check still agrees.
-- [ ] The **statement** for C004 shows a "Payment received" line for ₹1,00,000.00 and a separate "TDS deducted by you" line for ₹9,000.00, and its closing balance equals the customer's net balance.
+- [ ] The **statement** for C004 shows a "Payment received" line for ₹1,00,000.00 and a separate "TDS deducted by customer" line for ₹9,000.00, and its closing balance equals the customer's net balance.
 
 ## 6. Unapplied credit and corrections
 

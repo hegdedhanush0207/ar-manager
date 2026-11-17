@@ -67,7 +67,7 @@ export function statement(data: ArData, customerId: number, from: string, to: st
       credit: r.bankAmount,
     });
     if (r.tdsAmount > 0) {
-      raw.push({ date: r.receiptDate, kind: 'TDS', documentNo: r.receiptNo, description: 'TDS deducted by you', debit: 0, credit: r.tdsAmount });
+      raw.push({ date: r.receiptDate, kind: 'TDS', documentNo: r.receiptNo, description: 'TDS deducted by customer', debit: 0, credit: r.tdsAmount });
     }
   }
 

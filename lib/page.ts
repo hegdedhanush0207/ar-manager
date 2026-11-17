@@ -1,11 +1,15 @@
 /**
  * Reads a page's URL parameters: the as-at date (R10) plus filters and sorting.
  */
+import { connection } from 'next/server';
 import { parseAsOf, type SearchParams } from './asof';
 import { flatParams } from './table';
 
 export async function readPage(searchParams: Promise<SearchParams>) {
   const sp = await searchParams;
+  // The default as-at date is "today", so the page must be rendered for each
+  // request, never prerendered at build time (Next.js Cache Components).
+  await connection();
   const asof = parseAsOf(sp.asof);
   const params: Record<string, string> = { ...flatParams(sp), asof };
   return { asof, params };

@@ -4,6 +4,9 @@ import { parseAsOf, type SearchParams } from '@/lib/asof';
 import { formatDate } from '@/lib/format';
 import { Balance, PageHeader } from '@/components/ui';
 
+/** Reads live data and the as-at date on every request (see app/layout.tsx). */
+export const instant = false;
+
 export default async function Home({ searchParams }: { searchParams: Promise<SearchParams> }) {
   const asof = parseAsOf((await searchParams).asof);
   const data = await loadArData();

@@ -6,6 +6,9 @@ import { readPage } from '@/lib/page';
 import { CustomerForm } from '@/components/CustomerForm';
 import { Alert, PageHeader } from '@/components/ui';
 
+/** Reads live data and the as-at date on every request (see app/layout.tsx). */
+export const instant = false;
+
 export default async function EditCustomerPage({ params, searchParams }: { params: Promise<{ id: string }>; searchParams: Promise<SearchParams> }) {
   const { asof } = await readPage(searchParams);
   const id = Number((await params).id);

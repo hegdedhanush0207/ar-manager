@@ -9,6 +9,9 @@ import { sortRows, withParams, type Dir } from '@/lib/table';
 import { Badge, Balance, ButtonLink, Empty, Money, PageHeader, SortTh, TableWrap, Td } from '@/components/ui';
 import { inputClass } from '@/components/form';
 
+/** Reads live data and the as-at date on every request (see app/layout.tsx). */
+export const instant = false;
+
 const SORT: Record<string, (p: CustomerPosition) => string | number | null> = {
   code: (p) => p.customer.code,
   name: (p) => p.customer.name,

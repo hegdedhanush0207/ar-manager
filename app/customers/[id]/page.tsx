@@ -7,6 +7,8 @@ import { deleteReceipt, removeAllocation } from '@/lib/actions/receipts';
 import { AllocateCreditForm } from '@/components/AllocateCreditForm';
 import { ConfirmButton } from '@/components/ConfirmButton';
 import { ReturnTo } from '@/components/ReturnTo';
+import { NoteForm } from '@/components/NoteForm';
+import { markFollowUpDone } from '@/lib/actions/notes';
 import type { SearchParams } from '@/lib/asof';
 import { href } from '@/lib/asof';
 import { formatBalance, formatDate, formatMoney, formatPct } from '@/lib/format';
@@ -248,6 +250,15 @@ export default async function CustomerPage({ params, searchParams }: { params: P
         </div>
 
         <div>
+          <Section title="Add a note">
+            <NoteForm
+              customerId={id}
+              asof={asof}
+              defaultDate={todayInIndia()}
+              invoices={data.invoices.filter((i) => i.customerId === id && !i.isCancelled).map((i) => ({ id: i.id, invoiceNo: i.invoiceNo }))}
+            />
+          </Section>
+
           <Section title="Notes timeline">
             {notes.length === 0 ? (
               <Empty>No notes yet.</Empty>
@@ -276,6 +287,13 @@ export default async function CustomerPage({ params, searchParams }: { params: P
                       {n.followUpDate && (
                         <div className="mt-1 text-xs">
                           Follow up {formatDate(n.followUpDate)} {n.followUpDone ? '(done)' : n.followUpDate <= asof ? <span className="font-medium text-red-700">(due)</span> : ''}
+                          {!n.followUpDone && (
+                            <form action={markFollowUpDone} className="inline">
+                              <input type="hidden" name="id" value={n.id} />
+                              <ReturnTo />{' '}
+                              <button className="text-blue-700 underline">mark done</button>
+                            </form>
+                          )}
                         </div>
                       )}
                     </li>

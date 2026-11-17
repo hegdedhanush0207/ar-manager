@@ -5,6 +5,8 @@ import type { SearchParams } from '@/lib/asof';
 import { href } from '@/lib/asof';
 import { formatBalance, formatDate, formatMoney, formatPct } from '@/lib/format';
 import { readPage } from '@/lib/page';
+import { markFollowUpDone } from '@/lib/actions/notes';
+import { ReturnTo } from '@/components/ReturnTo';
 import { Alert, Badge, Balance, ButtonLink, Empty, Money, PageHeader, Section, Stat, StatusBadges, TableWrap, Td, Th } from '@/components/ui';
 
 /** Reads live data and the as-at date on every request (see app/layout.tsx). */
@@ -219,6 +221,11 @@ export default async function Home({ searchParams }: { searchParams: Promise<Sea
                       </Link>
                       {inv && <> · {inv.invoiceNo}</>}
                       <div className="text-slate-600">{n.body}</div>
+                      <form action={markFollowUpDone}>
+                        <input type="hidden" name="id" value={n.id} />
+                        <ReturnTo />
+                        <button className="text-xs text-blue-700 underline">Mark follow-up done</button>
+                      </form>
                     </li>
                   );
                 })}

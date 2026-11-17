@@ -6,6 +6,7 @@ import { setDisputed } from '@/lib/actions/invoices';
 import { removeAllocation } from '@/lib/actions/receipts';
 import { ConfirmButton } from '@/components/ConfirmButton';
 import { ReturnTo } from '@/components/ReturnTo';
+import { NoteForm } from '@/components/NoteForm';
 import type { SearchParams } from '@/lib/asof';
 import { href } from '@/lib/asof';
 import { formatDate, formatMoney } from '@/lib/format';
@@ -181,7 +182,7 @@ export default async function InvoicePage({ params, searchParams }: { params: Pr
             {later > 0 && <p className="mt-1 text-xs text-slate-500">Greyed rows are dated after the as-at date and do not count in the figures above (R10).</p>}
           </Section>
 
-          <Section title="Notes on this invoice">
+          <Section title="Notes on this invoice" actions={<span className="text-xs text-slate-500">Full timeline on the customer page</span>}>
             {notes.length === 0 ? (
               <Empty>No notes on this invoice.</Empty>
             ) : (
@@ -218,6 +219,10 @@ export default async function InvoicePage({ params, searchParams }: { params: Pr
                   ) : (
                     <p className="text-slate-500">Nothing left to credit: the invoice is fully settled or credited.</p>
                   )}
+                </div>
+                <div>
+                  <h3 className="mb-2 font-medium">Add a note</h3>
+                  <NoteForm customerId={customer.id} asof={asof} defaultDate={today} defaultInvoiceId={inv.id} invoices={[{ id: inv.id, invoiceNo: inv.invoiceNo }]} />
                 </div>
                 <div>
                   <h3 className="mb-2 font-medium">Cancel</h3>

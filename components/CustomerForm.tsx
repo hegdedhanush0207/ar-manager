@@ -62,7 +62,7 @@ export function CustomerForm({ initial, asof }: { initial: CustomerFormValues; a
         <Field label="Phone" error={e.phone}>
           <input name="phone" defaultValue={v('phone')} className={inputClass} />
         </Field>
-        <Field label="Credit days *" error={e.creditDays} hint="Due date = invoice date + these days">
+        <Field label="Credit days *" error={e.creditDays} hint="Due date = invoice date + credit days">
           <input name="creditDays" type="number" min={0} step={1} defaultValue={v('creditDays')} className={inputClass} required />
         </Field>
         <Field label="Credit limit (₹) *" error={e.creditLimit}>

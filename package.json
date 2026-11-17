@@ -7,7 +7,10 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "test": "vitest run"
+    "test": "vitest run",
+    "test:e2e": "node --env-file=.env.local tests/e2e/run.mjs",
+    "snapshot": "node --env-file=.env.local scripts/snapshot.ts",
+    "reset-workspace": "node --env-file=.env.local scripts/reset-workspace.mjs"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.119.0",
@@ -24,6 +27,7 @@
     "@types/react-dom": "^19",
     "eslint": "^9",
     "eslint-config-next": "16.4.6",
+    "playwright-core": "^1.48.2",
     "tailwindcss": "4.3.3",
     "typescript": "^5",
     "vitest": "^3.2.7"

@@ -71,6 +71,12 @@ npm run test:e2e     # browser tests against the running app — RESETS THE WORK
 
 **Browser tests** ([tests/e2e/](tests/e2e/)) drive Microsoft Edge (or Chrome with `E2E_BROWSER=chrome`) through the main journeys: customers, invoices and credit notes, payments and allocations, notes and promises, statements, printing and CSV exports (76 checks). Start `npm run dev` first. **They reset the workspace to the sample data before each suite and at the end**, deleting anything you have added.
 
+**Spot checks on the live site (read-only).** After resetting the workspace, this checks all ten spot checks, the control check on six dates and the dashboard totals against any running copy, without writing anything:
+
+```bash
+BASE=https://ar-manager-nine.vercel.app node tests/e2e/spot-checks-live.mjs
+```
+
 **Refreshing the fixture.** Reset the workspace, then save a new snapshot:
 
 ```bash

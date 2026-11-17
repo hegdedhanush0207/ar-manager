@@ -7,7 +7,7 @@ export function ReturnTo() {
   const pathname = usePathname();
   const params = new URLSearchParams(useSearchParams().toString());
   params.delete('done');
-  params.delete('saved');
+  params.delete('n');
   const qs = params.toString();
   return <input type="hidden" name="returnTo" value={qs ? `${pathname}?${qs}` : pathname} />;
 }

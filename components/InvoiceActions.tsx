@@ -1,17 +1,16 @@
 'use client';
 
-import { useActionState, useState } from 'react';
+import { useState } from 'react';
 import { cancelInvoice, createCreditNote } from '@/lib/actions/invoices';
-import type { ActionState } from '@/lib/actions/shared';
 import { creditNoteGst, totalWithGst } from '@/lib/ar/tax';
 import type { Invoice } from '@/lib/ar/types';
 import { formatMoney, parseRupees } from '@/lib/format';
-import { Field, FormMessage, SubmitButton, inputClass } from './form';
+import { Field, FormMessage, SubmitButton, inputClass, useActionForm } from './form';
 import { ReturnTo } from './ReturnTo';
 
 /** R7. Raise a credit note, with a preview of its GST (the invoice's rate and split) and total. */
 export function CreditNoteForm({ invoice, available, defaultDate, nextNo }: { invoice: Invoice; available: number; defaultDate: string; nextNo: string }) {
-  const [state, action] = useActionState<ActionState, FormData>(createCreditNote, {});
+  const { state, pending, onSubmit, formKey } = useActionForm(createCreditNote);
   const [taxable, setTaxable] = useState('');
   const p = parseRupees(taxable);
   const gst = p && p > 0 ? creditNoteGst(invoice, p) : null;
@@ -19,7 +18,7 @@ export function CreditNoteForm({ invoice, available, defaultDate, nextNo }: { in
   const e = state.fieldErrors ?? {};
 
   return (
-    <form action={action} className="space-y-3 rounded border border-slate-200 bg-white p-3">
+    <form key={formKey} onSubmit={onSubmit} className="space-y-3 rounded border border-slate-200 bg-white p-3">
       <input type="hidden" name="invoiceId" value={invoice.id} />
       <ReturnTo />
       <FormMessage error={state.error} />
@@ -43,18 +42,18 @@ export function CreditNoteForm({ invoice, available, defaultDate, nextNo }: { in
           {total > available && ' — more than can be credited'}
         </p>
       )}
-      <SubmitButton>Raise credit note</SubmitButton>
+      <SubmitButton pending={pending}>Raise credit note</SubmitButton>
     </form>
   );
 }
 
 /** R8. Cancel, with a confirmation step. */
 export function CancelInvoiceButton({ invoiceId, invoiceNo, blockedReason }: { invoiceId: number; invoiceNo: string; blockedReason: string | null }) {
-  const [state, action] = useActionState<ActionState, FormData>(cancelInvoice, {});
+  const { state, pending, onSubmit, formKey } = useActionForm(cancelInvoice);
   const [confirming, setConfirming] = useState(false);
   if (blockedReason) return <p className="text-xs text-slate-500">Cannot cancel: {blockedReason}</p>;
   return (
-    <form action={action} className="space-y-2">
+    <form key={formKey} onSubmit={onSubmit} className="space-y-2">
       <input type="hidden" name="id" value={invoiceId} />
       <ReturnTo />
       <FormMessage error={state.error} />
@@ -65,7 +64,7 @@ export function CancelInvoiceButton({ invoiceId, invoiceNo, blockedReason }: { i
       ) : (
         <div className="flex flex-wrap items-center gap-2">
           <span>Cancel {invoiceNo}? This cannot be undone; the number is not reused.</span>
-          <SubmitButton danger pendingText="Cancelling…">Yes, cancel it</SubmitButton>
+          <SubmitButton pending={pending} danger pendingText="Cancelling…">Yes, cancel it</SubmitButton>
           <button type="button" onClick={() => setConfirming(false)} className="text-blue-700 underline">
             No
           </button>

@@ -46,7 +46,7 @@ export async function saveCustomer(_prev: ActionState, fd: FormData): Promise<Ac
   // 2. Business rules: the code must be unique
   const data = await loadArData();
   const clash = data.customers.find((x) => x.code.toUpperCase() === c.code && x.id !== editingId);
-  if (clash) return { error: 'Please correct the highlighted fields.', fieldErrors: { code: `Code ${c.code} is already used by ${clash.name}.` }, values };
+  if (clash) return { error: 'Please correct the highlighted fields.', fieldErrors: { code: `Code ${c.code} is already used by ${clash.name.replace(/\.$/, '')}.` }, values };
 
   const row = {
     code: c.code,

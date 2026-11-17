@@ -1,9 +1,8 @@
 'use client';
 
-import { useActionState } from 'react';
+import { useState } from 'react';
 import { addNote } from '@/lib/actions/notes';
-import type { ActionState } from '@/lib/actions/shared';
-import { Field, FormMessage, SubmitButton, inputClass } from './form';
+import { Field, FormMessage, SubmitButton, inputClass, useActionForm } from './form';
 import { ReturnTo } from './ReturnTo';
 
 /** R16. Add a note: type, text, optional invoice, optional follow-up, optional promise to pay (date and amount, both or neither). */
@@ -20,11 +19,14 @@ export function NoteForm({
   defaultDate: string;
   asof: string;
 }) {
-  const [state, action] = useActionState<ActionState, FormData>(addNote, {});
+  const { state, pending, onSubmit, formKey } = useActionForm(addNote);
   const v = (k: string, d = '') => state.values?.[k] ?? d;
   const e = state.fieldErrors ?? {};
+  // Dropdowns are controlled so they keep their value when the form shows an error.
+  const [noteType, setNoteType] = useState('Call');
+  const [invoiceId, setInvoiceId] = useState(defaultInvoiceId ? String(defaultInvoiceId) : '');
   return (
-    <form action={action} className="space-y-3 rounded border border-slate-200 bg-white p-3">
+    <form key={formKey} onSubmit={onSubmit} className="space-y-3 rounded border border-slate-200 bg-white p-3">
       <input type="hidden" name="customerId" value={customerId} />
       <input type="hidden" name="asof" value={asof} />
       <ReturnTo />
@@ -34,7 +36,7 @@ export function NoteForm({
           <input type="date" name="noteDate" defaultValue={v('noteDate', defaultDate)} className={inputClass} required />
         </Field>
         <Field label="Type *" error={e.noteType}>
-          <select name="noteType" defaultValue={v('noteType', 'Call')} className={inputClass}>
+          <select name="noteType" value={noteType} onChange={(ev) => setNoteType(ev.target.value)} className={inputClass}>
             {['Call', 'Email', 'Meeting', 'Note'].map((t) => (
               <option key={t}>{t}</option>
             ))}
@@ -42,7 +44,7 @@ export function NoteForm({
         </Field>
       </div>
       <Field label="Invoice (optional)" error={e.invoiceId}>
-        <select name="invoiceId" defaultValue={v('invoiceId', defaultInvoiceId ? String(defaultInvoiceId) : '')} className={inputClass}>
+        <select name="invoiceId" value={invoiceId} onChange={(ev) => setInvoiceId(ev.target.value)} className={inputClass}>
           <option value="">— Whole account —</option>
           {invoices.map((i) => (
             <option key={i.id} value={i.id}>
@@ -68,7 +70,7 @@ export function NoteForm({
           </Field>
         </div>
       </fieldset>
-      <SubmitButton>Add note</SubmitButton>
+      <SubmitButton pending={pending}>Add note</SubmitButton>
     </form>
   );
 }

@@ -1,10 +1,9 @@
 'use client';
 
-import { useActionState, useEffect, useState, useTransition } from 'react';
+import { useEffect, useState, useTransition } from 'react';
 import { createInvoice, previewInvoice, type InvoicePreview } from '@/lib/actions/invoices';
-import type { ActionState } from '@/lib/actions/shared';
 import { formatDate, formatMoney } from '@/lib/format';
-import { Field, FormMessage, SubmitButton, inputClass } from './form';
+import { Field, FormMessage, SubmitButton, inputClass, useActionForm } from './form';
 
 interface CustomerOption {
   id: number;
@@ -15,7 +14,7 @@ interface CustomerOption {
 }
 
 export function InvoiceForm({ customers, asof, defaultCustomer, defaultDate }: { customers: CustomerOption[]; asof: string; defaultCustomer?: string; defaultDate: string }) {
-  const [state, action] = useActionState<ActionState, FormData>(createInvoice, {});
+  const { state, pending, onSubmit, formKey } = useActionForm(createInvoice);
   const [values, setValues] = useState<Record<string, string>>({
     customerId: defaultCustomer ?? '',
     invoiceDate: defaultDate,
@@ -41,7 +40,7 @@ export function InvoiceForm({ customers, asof, defaultCustomer, defaultDate }: {
   const showPreview = preview?.ok && values.customerId && values.taxableValue;
 
   return (
-    <form action={action} className="grid max-w-5xl gap-6 lg:grid-cols-2">
+    <form key={formKey} onSubmit={onSubmit} className="grid max-w-5xl gap-6 lg:grid-cols-2">
       <input type="hidden" name="asof" value={asof} />
       <div className="space-y-4">
         <FormMessage error={state.error ?? (preview && !preview.ok ? preview.error : undefined)} />
@@ -69,7 +68,7 @@ export function InvoiceForm({ customers, asof, defaultCustomer, defaultDate }: {
             <input name="gstRatePct" type="number" min={0} max={100} step="0.01" value={values.gstRatePct} onChange={set('gstRatePct')} className={inputClass} required />
           </Field>
         </div>
-        <SubmitButton disabled={!preview?.ok}>Save invoice</SubmitButton>
+        <SubmitButton pending={pending} disabled={!preview?.ok}>Save invoice</SubmitButton>
       </div>
 
       <div className="rounded border border-slate-200 bg-white p-4">

@@ -67,5 +67,6 @@ export function doneUrl(returnTo: string | undefined, message: string, fallback 
   const path = returnTo && returnTo.startsWith('/') && !returnTo.startsWith('//') ? returnTo : fallback;
   const url = new URL(path, 'http://app.local');
   url.searchParams.set('done', message);
+  url.searchParams.set('n', Date.now().toString(36)); // a fresh token so forms on the page start empty
   return url.pathname + url.search;
 }

@@ -1,11 +1,10 @@
 'use client';
 
-import { useActionState, useState } from 'react';
+import { useState } from 'react';
 import { allocateCredit } from '@/lib/actions/receipts';
-import type { ActionState } from '@/lib/actions/shared';
 import type { OpenInvoice } from '@/lib/ar';
 import { formatDate, formatMoney, rupeesPlain } from '@/lib/format';
-import { Field, FormMessage, SubmitButton, inputClass } from './form';
+import { Field, FormMessage, SubmitButton, inputClass, useActionForm } from './form';
 import { ReturnTo } from './ReturnTo';
 
 export interface CreditReceipt {
@@ -17,7 +16,7 @@ export interface CreditReceipt {
 
 /** R6. Allocate a receipt's unapplied credit to an open invoice, with its own allocation date. */
 export function AllocateCreditForm({ receipts, invoices, today }: { receipts: CreditReceipt[]; invoices: OpenInvoice[]; today: string }) {
-  const [state, action] = useActionState<ActionState, FormData>(allocateCredit, {});
+  const { state, pending, onSubmit, formKey } = useActionForm(allocateCredit);
   const [receiptId, setReceiptId] = useState(String(receipts[0]?.id ?? ''));
   const [invoiceId, setInvoiceId] = useState(String(invoices[0]?.invoice.id ?? ''));
   const r = receipts.find((x) => String(x.id) === receiptId);
@@ -30,7 +29,7 @@ export function AllocateCreditForm({ receipts, invoices, today }: { receipts: Cr
   const e = state.fieldErrors ?? {};
 
   return (
-    <form action={action} className="space-y-3 rounded border border-slate-200 bg-white p-3" key={`${receiptId}-${invoiceId}`}>
+    <form key={`${formKey}-${receiptId}-${invoiceId}`} onSubmit={onSubmit} className="space-y-3 rounded border border-slate-200 bg-white p-3">
       <ReturnTo />
       <FormMessage error={state.error} />
       <Field label="From receipt" error={e.receiptId}>
@@ -59,7 +58,7 @@ export function AllocateCreditForm({ receipts, invoices, today }: { receipts: Cr
           <input type="date" name="allocationDate" defaultValue={defaultDate} min={earliest} className={inputClass} required />
         </Field>
       </div>
-      <SubmitButton>Allocate</SubmitButton>
+      <SubmitButton pending={pending}>Allocate</SubmitButton>
     </form>
   );
 }

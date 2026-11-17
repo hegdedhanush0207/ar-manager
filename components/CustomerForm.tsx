@@ -1,10 +1,9 @@
 'use client';
 
-import { useActionState } from 'react';
+import { useState } from 'react';
 import { saveCustomer } from '@/lib/actions/customers';
-import type { ActionState } from '@/lib/actions/shared';
 import { INDIAN_STATES } from '@/lib/states';
-import { Field, FormMessage, SubmitButton, inputClass } from './form';
+import { Field, FormMessage, SubmitButton, inputClass, useActionForm } from './form';
 
 export interface CustomerFormValues {
   id?: string;
@@ -22,12 +21,14 @@ export interface CustomerFormValues {
 }
 
 export function CustomerForm({ initial, asof }: { initial: CustomerFormValues; asof: string }) {
-  const [state, action] = useActionState<ActionState, FormData>(saveCustomer, {});
+  const { state, pending, onSubmit, formKey } = useActionForm(saveCustomer);
   const v = (k: keyof CustomerFormValues) => state.values?.[k] ?? initial[k] ?? '';
   const e = state.fieldErrors ?? {};
+  // Dropdowns are controlled so they keep their value when the form shows an error.
+  const [stateName, setStateName] = useState(initial.state);
 
   return (
-    <form action={action} className="max-w-3xl space-y-4">
+    <form key={formKey} onSubmit={onSubmit} className="max-w-3xl space-y-4">
       {initial.id && <input type="hidden" name="id" value={initial.id} />}
       <input type="hidden" name="asof" value={asof} />
       <FormMessage error={state.error} />
@@ -42,7 +43,7 @@ export function CustomerForm({ initial, asof }: { initial: CustomerFormValues; a
           <input name="city" defaultValue={v('city')} className={inputClass} required />
         </Field>
         <Field label="State *" error={e.state} hint="Maharashtra → CGST + SGST; other states → IGST">
-          <select name="state" defaultValue={v('state')} className={inputClass} required>
+          <select name="state" value={stateName} onChange={(ev) => setStateName(ev.target.value)} className={inputClass} required>
             <option value="">Choose…</option>
             {INDIAN_STATES.map((s) => (
               <option key={s}>{s}</option>
@@ -71,7 +72,7 @@ export function CustomerForm({ initial, asof }: { initial: CustomerFormValues; a
           <input name="tdsRatePct" type="number" min={0} max={100} step="0.01" defaultValue={v('tdsRatePct')} className={inputClass} required />
         </Field>
       </div>
-      <SubmitButton>{initial.id ? 'Save changes' : 'Add customer'}</SubmitButton>
+      <SubmitButton pending={pending}>{initial.id ? 'Save changes' : 'Add customer'}</SubmitButton>
     </form>
   );
 }

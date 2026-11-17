@@ -1,11 +1,10 @@
 'use client';
 
-import { useActionState, useState } from 'react';
+import { useState } from 'react';
 import { recordPayment } from '@/lib/actions/receipts';
-import type { ActionState } from '@/lib/actions/shared';
 import { expectedTds, nextNumberFrom, receiptDraftSummary, suggestAllocations, type OpenInvoice } from '@/lib/ar';
 import { formatDate, formatMoney, parseRupees, rupeesPlain } from '@/lib/format';
-import { Field, FormMessage, SubmitButton, inputClass } from './form';
+import { Field, FormMessage, SubmitButton, inputClass, useActionForm } from './form';
 
 interface CustomerOption {
   id: number;
@@ -47,7 +46,7 @@ export function ReceiptForm({
   defaultCustomer?: string;
   defaultDate: string;
 }) {
-  const [state, action] = useActionState<ActionState, FormData>(recordPayment, {});
+  const { state, pending, onSubmit, formKey } = useActionForm(recordPayment);
   const [d, setD] = useState<Draft>({
     customerId: defaultCustomer ?? '',
     receiptDate: defaultDate,
@@ -88,7 +87,7 @@ export function ReceiptForm({
   const e = state.fieldErrors ?? {};
 
   return (
-    <form action={action} className="space-y-5">
+    <form key={formKey} onSubmit={onSubmit} className="space-y-5">
       <input type="hidden" name="asof" value={asof} />
       <FormMessage error={state.error} />
       <div className="grid max-w-5xl gap-4 sm:grid-cols-3">
@@ -207,7 +206,7 @@ export function ReceiptForm({
       </dl>
       {summary.unapplied < 0 && <FormMessage error="You have allocated more than the settlement value. Reduce the allocations." />}
 
-      <SubmitButton disabled={!customer || summary.settlement <= 0 || summary.unapplied < 0}>Save payment</SubmitButton>
+      <SubmitButton pending={pending} disabled={!customer || summary.settlement <= 0 || summary.unapplied < 0}>Save payment</SubmitButton>
     </form>
   );
 }

@@ -1,5 +1,5 @@
 import { loadArData } from '@/lib/ar/load';
-
+export const instant = false;
 export default async function Home() {
   const data = await loadArData();
 

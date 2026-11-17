@@ -93,7 +93,7 @@ export function Th({ children, numeric = false }: { children?: ReactNode; numeri
 }
 
 export function Td({ children, numeric = false, className = '' }: { children?: ReactNode; numeric?: boolean; className?: string }) {
-  return <td className={`px-2 py-1.5 align-top ${numeric ? 'num' : ''} ${className}`}>{children}</td>;
+  return <td className={`px-2 py-1.5 align-top ${numeric ? 'num whitespace-nowrap' : ''} ${className}`}>{children}</td>;
 }
 
 export function TableWrap({ children }: { children: ReactNode }) {

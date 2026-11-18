@@ -52,6 +52,10 @@ The session continued with reviews, corrections and Phase 2.
 | Phase 2 arithmetic recheck | 1,228,593 comparisons against an independent calculation (sample data, live data and 200 random datasets with edge cases), plus 4,236 figures on the live page: 0 differences; six planted bugs all caught. |
 | User guide | `docs/USER_GUIDE.md` for analysts and managers, covering every screen including Insights. |
 | Report for the user | A short plain-English explanation of how the tool was built and verified (given in the conversation). |
+| AI logs update | Full conversation log regenerated and the summary extended; email addresses and the workspace id masked. |
+| Chart: 1-lakh steps and "De-select all" | Customer-only views use 1-lakh steps on the amount axis (2-lakh steps kept whenever the consolidated line is shown, to avoid crowding up to ~₹22 lakh). "De-select all" in the customer picker returns to the consolidated trend only. Verified with 16 new browser checks plus the earlier 33, on the live site. |
+| Does planting bugs yourself defeat the check? | Answered: no, because the comparison is blind (it checks every figure without being told where the bug is), and two planted bugs were in fact missed at first and reported. The real limits are that the bugs tested are ones the author thought of, and the same author wrote the app and the independent calculator, so a shared misreading of a rule would not be caught; the brief's spot checks, hand-worked examples and the user's own review cover that. |
+| Is the chat log accessible to the evaluator? | Yes, in `ai-logs/` in the repository, once the evaluator has access to the private repository; the log should be refreshed as the last step before submission. |
 
 ### Problems found and fixed in this part
 

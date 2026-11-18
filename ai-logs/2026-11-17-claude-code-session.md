@@ -18856,3 +18856,853 @@ console.log('hidden-context blocks:', (s.match(/<system-reminder>[\s\S]*?<\/syst
 " "$LOCAL" && grep -c "^## User message" $F && grep -n "^## User message" $F | tail -4 | cut -c1-60
 ```
 
+<details><summary>Result</summary>
+
+```
+Wrote ai-logs/2026-11-17-claude-code-session.md: 24 user messages, 826 KB
+workspace id present: no
+any @gmail.com address: no
+account local part: no
+hidden-context blocks: 0
+25
+18127:## User message 21
+18429:## User message 22
+18753:## User message 23
+18823:## User message 24
+```
+
+</details>
+
+**Assistant:**
+
+The privacy checks pass: no workspace ID, no email addresses, no account name and no hidden context. The log now has all 24 of your messages (826 KB). I'll confirm it reaches this latest request:
+
+**Tool call — Bash**
+
+```
+# Show the last four user messages in the log
+cd "c:/Users/hegde/OneDrive/Desktop/Verve Interview/ar-manager-ca-it-main" && for n in 21 22 23 24; do awk -v n="$n" '$0 ~ "^## User message "n"$" {getline; getline; print n": "substr($0,1,90); exit}' ai-logs/2026-11-17-claude-code-session.md; done
+```
+
+<details><summary>Result</summary>
+
+```
+21: check phase 2 for arithmetic accuracy.
+22: Write a user guide (if you have already written one, re-write it). The user will be a fina
+23: write a report for me so as to understand how you made all this happen. I am a chartered a
+24: update the AI logs
+```
+
+</details>
+
+**Tool call — Bash**
+
+```
+# Update summary and index; stage AI logs
+cd "c:/Users/hegde/OneDrive/Desktop/Verve Interview/ar-manager-ca-it-main" && cat >> ai-logs/2026-11-17-session-summary.md <<'EOF'
+
+## After the build (17–18 Nov 2026)
+
+The session continued with reviews, corrections and Phase 2.
+
+| Request | Outcome |
+|---|---|
+| Investigate why RCT/26-27/0002 was allocated to BWA/25-26/0156 rather than the older 0141 | Not a breach of R6: oldest-first is only the suggested default, which the user can change. The ₹9,000 TDS is exactly 10% of 0156's taxable value, so the customer paid 0156. The app's suggestion and override were confirmed by simulation. No change made. |
+| Does the app calculate TDS? | The actual TDS is stored on each receipt; the app only pre-fills an estimate on the payment form (`expectedTds`). |
+| Statement TDS wording | Changed from the brief's "TDS deducted by you" to **"TDS deducted by customer"** at the user's request; recorded under README Assumptions. |
+| Ageing at exactly 90 days; when counting starts | Explained: 90 days is in 61–90; days are counted from the day after the due date (an invoice is still Due on its due date). |
+| Basis of the TDS pre-fill (₹9,259.26 on ₹1,00,000) | Explained the gross-up: TDS = bank × 10 ÷ 108 for 18% GST and 10% TDS. |
+| Customer form hint "these days" | Changed to "Due date = invoice date + credit days". |
+| Editable GST rate | Explained the tension between R3 (18%) and Part 2 (enter the rate); left unchanged at the user's request. |
+| Full arithmetic recheck of Phase 1 | An independent re-implementation (own calendar and rounding) agreed with the app on every figure for every day, Oct-2025 to Jun-2027, and with the live site's CSV exports (930 checks); planted bugs were all caught. |
+| **Phase 2: Insights tab** | New `/insights` page with its own module (`lib/insights`): customer metrics (outstanding AR, payment frequency, invoice frequency, average collection period, N/A rules, sortable) and the Historical AR trend chart (month/week-end balances, period filters, % change). Phase 1 untouched except one navigation entry. Documented in `docs/PHASE2.md` with the decisions taken. |
+| Chart axis correction | Time on the X axis, amount in ₹ lakh (2-lakh steps) on the Y axis. |
+| Chart improvements | Customer picker inside the chart box with instant redraw (no Apply), several customers plus consolidated as separate lines (validated colour palette, legend, up to 7 customers), labels like "Dec '25", chart box sized to the chart with headline figures kept top right. |
+| Phase 2 arithmetic recheck | 1,228,593 comparisons against an independent calculation (sample data, live data and 200 random datasets with edge cases), plus 4,236 figures on the live page: 0 differences; six planted bugs all caught. |
+| User guide | `docs/USER_GUIDE.md` for analysts and managers, covering every screen including Insights. |
+| Report for the user | A short plain-English explanation of how the tool was built and verified (given in the conversation). |
+
+### Problems found and fixed in this part
+
+- Tooltip positioning on the chart (too far from its point, then covering it, then clipped at the edge); finally kept inside the chart and beside the hovered points, tested at every month.
+- A chart box width that could leave empty space after changing the number of lines; the chart now sizes its own box.
+- Test-script slips (escaping, selectors, timing) were fixed in the tests, not by changing correct app behaviour; each was confirmed against the independent figures first.
+EOF
+node - <<'EOF'
+const fs = require('fs');
+const f = 'ai-logs/README.md';
+let s = fs.readFileSync(f, 'utf8');
+const a = "- [2026-11-17-claude-code-session.md](2026-11-17-claude-code-session.md): the **full conversation** from the Claude Code session that built steps 3–12. It holds every user message, every assistant reply and every tool call (file edits, commands) with its result. Long tool results are shortened.";
+const b = "- [2026-11-17-claude-code-sessio
+… [1175 more characters not shown]
+```
+
+<details><summary>Result</summary>
+
+```
+ok
+warning: in the working copy of 'ai-logs/2026-11-17-claude-code-session.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'ai-logs/2026-11-17-session-summary.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'ai-logs/README.md', LF will be replaced by CRLF the next time Git touches it
+M  ai-logs/2026-11-17-claude-code-session.md
+M  ai-logs/2026-11-17-session-summary.md
+M  ai-logs/README.md
+OK: nothing sensitive staged
+```
+
+</details>
+
+**Tool call — Bash**
+
+```
+# Commit and push the updated AI logs
+cd "c:/Users/hegde/OneDrive/Desktop/Verve Interview/ar-manager-ca-it-main" && git commit -q -F - <<'EOF'
+Update AI logs to cover the full session
+
+Regenerates the full conversation log (24 user messages, through Phase 2,
+the audits and the user guide) and extends the session summary with the
+requests and outcomes after step 12. Email addresses and the workspace
+id are masked; hidden context is left out.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+EOF
+git push -q origin main 2>&1 | tail -1; git log --oneline -1; echo "uncommitted: $(git status --short | wc -l)"
+```
+
+<details><summary>Result</summary>
+
+```
+5bd8983 Update AI logs to cover the full session
+uncommitted: 0
+```
+
+</details>
+
+**Assistant:**
+
+The AI logs are updated and pushed to GitHub (commit `5bd8983`). They now cover the whole session up to your request to update them.
+
+**What's in `ai-logs/` now:**
+- **`2026-11-17-claude-code-session.md` (full conversation):** all 24 of your messages, with every reply, file change and command. It runs from the original handover through Phase 2, the chart changes, both arithmetic audits, the user guide and the report.
+- **`2026-11-17-session-summary.md` (summary):** now has an extra section, "After the build", listing each later request and its outcome. That covers the R6 allocation question, the TDS explanations, the wording changes, the GST rate decision, Phase 2, the chart corrections, both audits and the user guide.
+- **`README.md` (index):** describes both files.
+
+**Privacy check, done after generating the log:**
+- **Workspace ID:** absent.
+- **Email addresses:** absent. This includes the one entered on your test customer C009, which had appeared in a data listing during the session.
+- **Account name:** absent.
+- **Hidden context Claude Code attaches automatically:** left out.
+
+**Gaps:**
+- **The log stops at your "update the AI logs" message.** It was made while I was working on that request, so my work on it and this reply aren't included. If you'd like, I can regenerate it once more at the very end, before you submit.
+- **Steps 1–2** (skeleton and connection) were done in an earlier conversation, which isn't in this project's session file. If you still have that conversation, export or copy it into `ai-logs/` as well.
+
+---
+
+## User message 25
+
+in the chart, let the y-axis (amount) show 1 lakh increment instead of 2 lakh when it displays customer wise line graph. also add "de-select all" option in the customer filter, which will deselect the customer selected and return only the consilidated trend.
+
+**Assistant:**
+
+I'll make two changes:
+
+1. **Y-axis steps:** when the chart shows **customer lines only** (consolidated unticked), the amount axis uses **1-lakh steps**. Whenever the consolidated line is shown, it keeps **2-lakh steps**. The consolidated total runs to about ₹22 lakh, and 1-lakh steps there would mean 22 labels crammed so close they'd overlap. The caption above the chart always states the step in use.
+2. **"De-select all"** in the customer picker: clears every ticked customer and returns to the consolidated trend only.
+
+First the axis calculation. I'll switch it to whole-number arithmetic, so the top of the scale is always exact:
+
+**Tool call — Bash**
+
+```
+# Show current lakh axis function
+cd "c:/Users/hegde/OneDrive/Desktop/Verve Interview/ar-manager-ca-it-main" && grep -n -A8 "export function lakhAxis" lib/insights/trend.ts
+```
+
+<details><summary>Result</summary>
+
+```
+166:export function lakhAxis(maxPaise: Paise): number[] {
+167-  const maxLakh = maxPaise / 100 / 100_000;
+168-  const top = Math.max(2, Math.ceil(maxLakh / 2) * 2);
+169-  const ticks: number[] = [];
+170-  for (let t = 0; t <= top; t += 2) ticks.push(t);
+171-  return ticks;
+172-}
+173-
+174-/** ₹ in lakhs with two decimals, rounded exactly: ₹21,18,100.00 → "21.18". */
+```
+
+</details>
+
+**Tool call — Bash**
+
+```
+# Add a step option to the lakh axis
+cd "c:/Users/hegde/OneDrive/Desktop/Verve Interview/ar-manager-ca-it-main" && node - <<'EOF'
+const fs = require('fs');
+const f = 'lib/insights/trend.ts';
+let s = fs.readFileSync(f, 'utf8');
+const old = s.slice(s.indexOf('/** The amount axis in lakhs'), s.indexOf('/** ₹ in lakhs with two decimals'));
+if (!old.includes('export function lakhAxis')) throw new Error('lakhAxis block not found');
+s = s.replace(old, `/**
+ * The amount axis in lakhs (₹1,00,000 = 1 lakh): ticks from 0 in steps of \`step\` lakh
+ * (2 by default; 1 for customer-only views), up to the first step at or above the
+ * largest balance. Worked in whole paise so the top tick is exact.
+ */
+export function lakhAxis(maxPaise: Paise, step: 1 | 2 = 2): number[] {
+  const unit = step * 10_000_000; // one step, in paise
+  const steps = Math.max(1, Math.floor((Math.max(0, maxPaise) + unit - 1) / unit)); // ceiling, at least one step
+  const ticks: number[] = [];
+  for (let k = 0; k <= steps; k++) ticks.push(k * step);
+  return ticks;
+}
+
+`);
+fs.writeFileSync(f, s);
+console.log('ok');
+EOF
+grep -n -A10 "^ \* The amount axis" lib/insights/trend.ts | head -14
+```
+
+<details><summary>Result</summary>
+
+```
+ok
+166: * The amount axis in lakhs (₹1,00,000 = 1 lakh): ticks from 0 in steps of `step` lakh
+167- * (2 by default; 1 for customer-only views), up to the first step at or above the
+168- * largest balance. Worked in whole paise so the top tick is exact.
+169- */
+170-export function lakhAxis(maxPaise: Paise, step: 1 | 2 = 2): number[] {
+171-  const unit = step * 10_000_000; // one step, in paise
+172-  const steps = Math.max(1, Math.floor((Math.max(0, maxPaise) + unit - 1) / unit)); // ceiling, at least one step
+173-  const ticks: number[] = [];
+174-  for (let k = 0; k <= steps; k++) ticks.push(k * step);
+175-  return ticks;
+176-}
+```
+
+</details>
+
+**Assistant:**
+
+The 2-lakh behaviour is unchanged (the existing tests will confirm this). Now the chart component. I'll look at the parts to change: the selection handler, the axis, the caption and the picker.
+
+**Tool call — Grep**
+
+```
+{
+  "pattern": "function toggle|const ticks|2-lakh steps|role=\"group\"|Up to \\{MAX_CUSTOMER_LINES\\}",
+  "path": "c:\\Users\\hegde\\OneDrive\\Desktop\\Verve Interview\\ar-manager-ca-it-main\\components\\insights\\TrendChart.tsx",
+  "output_mode": "content",
+  "-n": true,
+  "-A": 12
+}
+```
+
+<details><summary>Result</summary>
+
+```
+7: * in ₹ lakh with 2-lakh steps from 0. One line per selected series: the consolidated
+8- * total and/or individual customers, chosen in the picker inside the chart box. Picking
+9- * redraws instantly (every series is already calculated on the server) and the choice
+10- * is kept in the URL (?cust=) without reloading. Hovering, or the arrow keys, shows
+11- * every visible line's balance and % change for that period.
+12- * All figures arrive pre-calculated from lib/insights; this component only draws them.
+13- */
+14-import { useEffect, useLayoutEffect, useMemo, useRef, useState, type ReactNode } from 'react';
+15-import { lakhAxis } from '@/lib/insights/trend';
+16-import { assignColors, CONSOLIDATED, MAX_CUSTOMER_LINES, selectionParam } from '@/lib/insights/selection';
+17-
+18-export interface ChartPoint {
+19-  date: string;
+--
+60:  function toggle(key: string) {
+61-    const next = selected.includes(key) ? selected.filter((k) => k !== key) : [...selected, key];
+62-    if (next.length === 0) return; // at least one line is always shown
+63-    setSelected(next);
+64-    setColors((prev) => assignColors(next, prev));
+65-    const sp = new URLSearchParams(window.location.search);
+66-    const v = selectionParam(next);
+67-    if (v) sp.set('cust', v);
+68-    else sp.delete('cust');
+69-    const qs = sp.toString();
+70-    window.history.replaceState(null, '', qs ? `${window.location.pathname}?${qs}` : window.location.pathname);
+71-  }
+72-
+--
+92:  const ticks = lakhAxis(Math.max(0, ...shown.flatMap((s) => s.points.map((p) => p.closing))));
+93-  const top = ticks[ticks.length - 1];
+94-
+95-  // Geometry in SVG user units. The plot narrows to fit; a small gutter on the right holds end-of-line names.
+96-  const endLabels = shown.length >= 2 && shown.length <= 4;
+97-  const W = Math.min(1180, Math.max(640, 90 + n * 40)) + (endLabels ? 44 : 0);
+98-  const H = 360;
+99-  const pad = { l: 64, r: endLabels ? 68 : 24, t: 20, b: 70 };
+100-  const plotW = W - pad.l - pad.r;
+101-  const plotH = H - pad.t - pad.b;
+102-  const x = (i: number) => pad.l + (n === 1 ? 0.5 : i / (n - 1)) * plotW;
+103-  const y = (lakh: number) => pad.t + plotH - (lakh / top) * plotH;
+104-  const labelEvery = Math.ceil(n / Math.max(1, Math.floor(plotW / 46))); // thin the time labels only when they would collide
+--
+168:            <div className="absolute left-0 z-20 mt-1 max-h-80 w-80 overflow-y-auto rounded border border-slate-200 bg-white p-2 text-sm shadow-lg" role="group" aria-label="Lines to show"
+… [3242 more characters not shown]
+```
+
+</details>
+
+**Tool call — Bash**
+
+```
+# Add 1-lakh axis for customer views and De-select all
+cd "c:/Users/hegde/OneDrive/Desktop/Verve Interview/ar-manager-ca-it-main" && node - <<'EOF'
+const fs = require('fs');
+const f = 'components/insights/TrendChart.tsx';
+let s = fs.readFileSync(f, 'utf8');
+const rep = [
+  [` * in ₹ lakh with 2-lakh steps from 0. One line per selected series: the consolidated`,
+   ` * in ₹ lakh from 0, in 2-lakh steps (1-lakh steps when only customer lines are shown).
+ * One line per selected series: the consolidated`],
+  [`  function toggle(key: string) {
+    const next = selected.includes(key) ? selected.filter((k) => k !== key) : [...selected, key];
+    if (next.length === 0) return; // at least one line is always shown
+    setSelected(next);`,
+   `  function toggle(key: string) {
+    const next = selected.includes(key) ? selected.filter((k) => k !== key) : [...selected, key];
+    if (next.length === 0) return; // at least one line is always shown
+    applySelection(next);
+  }
+
+  /** "De-select all": clear every customer and show the consolidated trend only. */
+  function deselectAll() {
+    applySelection([CONSOLIDATED]);
+  }
+
+  function applySelection(next: string[]) {
+    setSelected(next);`],
+  [`  const ticks = lakhAxis(Math.max(0, ...shown.flatMap((s) => s.points.map((p) => p.closing))));`,
+   `  // Amount axis: 1-lakh steps when only customer lines are shown, otherwise 2-lakh steps.
+  const customerOnly = !selected.includes(CONSOLIDATED);
+  const step: 1 | 2 = customerOnly ? 1 : 2;
+  const ticks = lakhAxis(Math.max(0, ...shown.flatMap((s) => s.points.map((p) => p.closing))), step);
+  const tickLabelEvery = ticks.length > 16 ? 2 : 1; // gridline every step; thin the labels only if they would crowd`],
+  [`            <div className="absolute left-0 z-20 mt-1 max-h-80 w-80 overflow-y-auto rounded border border-slate-200 bg-white p-2 text-sm shadow-lg" role="group" aria-label="Lines to show">
+`,
+   `            <div className="absolute left-0 z-20 mt-1 max-h-80 w-80 overflow-y-auto rounded border border-slate-200 bg-white p-2 text-sm shadow-lg" role="group" aria-label="Lines to show">
+              <button
+                type="button"
+                onClick={deselectAll}
+                disabled={selected.length === 1 && selected[0] === CONSOLIDATED}
+                className="mb-1 w-full rounded px-2 py-1 text-left text-blue-700 underline hover:bg-slate-50 disabled:text-slate-400 disabled:no-underline"
+              >
+                De-select all (show the consolidated trend only)
+              </button>
+`],
+  [`X axis: {unit} · Y axis: outstanding AR in ₹ lakh (1 lakh = ₹1,00,000), 2-lakh steps</div>`,
+   `X axis: {unit} · Y axis: outstanding AR in ₹ lakh (1 lakh = ₹1,00,000), {step}-lakh steps</div>`],
+  [`            {/* Y axis: amount gridlines and labels (₹ lakh, 2-lakh steps) */}
+            {ticks.map((t) => (
+              <g key={t}>
+                <line x1={pad.l} x2={pad.l + plotW} y1={y(t)} y2={y(t)} stroke={GRID} strokeWidth={1} />
+                <text x={pad.l - 8} y={y(t) + 4} textAnchor="end" fontSize={12} fill={AXIS_TEXT}>{t}</text>
+              </g>
+            ))}`,
+   `            {/* Y axis: amount gridlines and labels (₹ lakh; 2-lakh steps, or 1-lakh for customer-only views) */}
+            {ticks.map((t, i) => (
+              <g key={t}>
+                <line x1={pad.l} x2={pad.l + plotW} y1={y(t)} y2={y(t)} stroke={GRID} strokeWidth={1} />
+                {i % tickLabelEvery === 0 && <text x={pad.l - 8} y={y(t) + 4} textAnchor="end" fontSize={12} fill={AXIS_TEXT}>{t}</text>}
+              </g>
+            ))}`],
+];
+for (const [a, b] of rep) { if (!s.includes(a)) throw new Error('missing: ' + a.slice(0, 60)); s = s.replace(a, b); }
+fs.writeFileSync(f, s);
+console.log('ok');
+EOF
+npx.cmd tsc --noEmit -p . 2>&1 | head -5; npm.cmd run lint 2>&1 | tail -4
+```
+
+<details><summary>Result</summary>
+
+```
+ok
+
+> ar-manager-ca-it-main@0.1.0 lint
+> eslint
+```
+
+</details>
+
+**Assistant:**
+
+Types and lint pass. Checking that the selection logic reads correctly after the split into `toggle`, `deselectAll` and `applySelection`:
+
+**Tool call — Grep**
+
+```
+{
+  "pattern": "function toggle",
+  "path": "c:\\Users\\hegde\\OneDrive\\Desktop\\Verve Interview\\ar-manager-ca-it-main\\components\\insights\\TrendChart.tsx",
+  "output_mode": "content",
+  "-A": 24
+}
+```
+
+<details><summary>Result</summary>
+
+```
+61:  function toggle(key: string) {
+62-    const next = selected.includes(key) ? selected.filter((k) => k !== key) : [...selected, key];
+63-    if (next.length === 0) return; // at least one line is always shown
+64-    applySelection(next);
+65-  }
+66-
+67-  /** "De-select all": clear every customer and show the consolidated trend only. */
+68-  function deselectAll() {
+69-    applySelection([CONSOLIDATED]);
+70-  }
+71-
+72-  function applySelection(next: string[]) {
+73-    setSelected(next);
+74-    setColors((prev) => assignColors(next, prev));
+75-    const sp = new URLSearchParams(window.location.search);
+76-    const v = selectionParam(next);
+77-    if (v) sp.set('cust', v);
+78-    else sp.delete('cust');
+79-    const qs = sp.toString();
+80-    window.history.replaceState(null, '', qs ? `${window.location.pathname}?${qs}` : window.location.pathname);
+81-  }
+82-
+83-  // Close the picker on an outside click or Escape.
+84-  useEffect(() => {
+85-    if (!pickerOpen) return;
+```
+
+</details>
+
+**Tool call — Bash**
+
+```
+# Add axis-step tests and run all tests
+cd "c:/Users/hegde/OneDrive/Desktop/Verve Interview/ar-manager-ca-it-main" && cat >> tests/insights.test.ts <<'EOF'
+
+describe('amount axis step', () => {
+  it('1-lakh steps for customer-only views, exact at the boundaries', async () => {
+    const { lakhAxis } = await import('../lib/insights/trend');
+    expect(lakhAxis(rupees(446600), 1)).toEqual([0, 1, 2, 3, 4, 5]); // C003 4.47 lakh
+    expect(lakhAxis(rupees(400000), 1)).toEqual([0, 1, 2, 3, 4]); // exactly 4 lakh: top tick 4
+    expect(lakhAxis(rupees(400000) + 1, 1)).toEqual([0, 1, 2, 3, 4, 5]); // one paisa more: 5
+    expect(lakhAxis(rupees(35400), 1)).toEqual([0, 1]);
+    expect(lakhAxis(0, 1)).toEqual([0, 1]);
+    expect(lakhAxis(rupees(731600), 1)).toEqual([0, 1, 2, 3, 4, 5, 6, 7, 8]);
+  });
+
+  it('2-lakh steps unchanged (default)', async () => {
+    const { lakhAxis } = await import('../lib/insights/trend');
+    expect(lakhAxis(rupees(2118100))).toEqual([0, 2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22]);
+    expect(lakhAxis(rupees(2118100), 2)).toEqual(lakhAxis(rupees(2118100)));
+    expect(lakhAxis(rupees(400000))).toEqual([0, 2, 4]);
+    expect(lakhAxis(rupees(400000) + 1)).toEqual([0, 2, 4, 6]);
+    expect(lakhAxis(0)).toEqual([0, 2]);
+  });
+});
+EOF
+npm.cmd test 2>&1 | grep -E "Tests |FAIL|AssertionError|Expected|Received" | head
+```
+
+<details><summary>Result</summary>
+
+```
+[2m      Tests [22m [1m[32m101 passed[39m[22m[90m (101)[39m
+```
+
+</details>
+
+**Tool call — Write**
+
+```
+file: C:\Users\hegde\AppData\Local\Temp\claude\19ae7b2bcb9cf67a\6bfa9a87-bae9-4522-b9e6-b162623b6f41\scratchpad\audit\ui3.mjs
+
+import fs from 'node:fs';
+import { pathToFileURL } from 'node:url';
+const A = process.env.A, PROJ = process.env.PROJ;
+const { BASE, check, go, open } = await import(pathToFileURL(`${PROJ}/tests/e2e/lib.mjs`).href);
+const O2 = await import(pathToFileURL(`${A}/oracle2.mjs`).href);
+const raw = JSON.parse(fs.readFileSync(`${A}/live.json`, 'utf8'));
+const inr = (p) => new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', minimumFractionDigits: 2 }).format(p / 100);
+const MON = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+const fmtD = (d) => { const [y, m, dd] = d.split('-'); return `${dd}-${MON[m - 1]}-${y}`; };
+const D = '2026-11-18';
+const cust = (code) => raw.customers.find((c) => c.code === code);
+const c002 = cust('C002'), c004 = cust('C004'), c007 = cust('C007');
+const w = O2.windowFor(D, '12m');
+const maxPaise = (ids) => Math.max(0, ...ids.flatMap((id) => O2.series(raw, w.from, D, 'month', id).map((p) => p.closing)));
+const expectedTicks = (maxP, step) => { const unit = step * 10_000_000; const n = Math.max(1, Math.ceil(maxP / unit)); return Array.from({ length: n + 1 }, (_, k) => String(k * step)); };
+
+const { browser, page, errors } = await open();
+await page.setViewportSize({ width: 1280, height: 900 });
+const box = page.locator('[data-chart-box]');
+const svg = page.locator('svg[aria-label^="Historical AR trend"]');
+const group = () => box.getByRole('group', { name: 'Lines to show' });
+async function openPicker() { if (!(await group().isVisible())) await box.getByRole('button', { name: /^Customers:/ }).click(); }
+async function setLine(name, on) { await openPicker(); const cb = group().getByLabel(name, { exact: false }); if ((await cb.isChecked()) !== on) await cb.click(); }
+const yTicks = () => svg.locator('text').evaluateAll((els) => els.map((e) => e.textContent).filter((t) => /^[0-9]+$/.test(t)));
+const caption = () => box.locator('text=/Y axis: outstanding AR/').innerText();
+const lineKeys = () => svg.locator('g[data-series]').evaluateAll((gs) => gs.map((g) => g.getAttribute('data-series')));
+
+await go(page, `${BASE}/insights?asof=${D}`);
+let t = await yTicks();
+check('consolidated only: 2-lakh steps', JSON.stringify(t) === JSON.stringify(expectedTicks(maxPaise([undefined]), 2)) && (await caption()).includes('2-lakh steps'), t.join(','));
+
+await setLine('C002 · Varandha', true);
+t = await yTicks();
+check('consolidated + C002: still 2-lakh steps', JSON.stringify(t) === JSON.stringify(expectedTicks(maxPaise([undefined, c002.id]), 2)) && (await caption()).includes('2-lakh steps'), t.join(','));
+
+await setLine('All customers (consolidated)', false);
+t = await yTicks();
+check('C002 only: 1-lakh steps, top just above its highest balance', JSON.stringify(t) === JSON.stringify(expectedTicks(maxPaise([c002.id]), 1)) && (await caption()).includes('1-lakh steps'), `${t.join(',')} (max ₹${(maxPaise([c002.id]) / 1e7).toFixed(2)} lakh)`);
+
+await setLine('C004 · Pawana', true);
+await setLine('C007 · Krishnaveni', true);
+t = await yTicks();
+check('C002 + C004 + C007: 1-lakh steps up to the highest of the three', JSON.stringify(t) === JSON.stringify(expectedTicks(maxPaise([c002.id, c004.id, c007.id]), 1)), `${t.join(',')} (max ₹${(maxPaise([c002.id, c004.id, c007.id]) / 1e7).toFixed(2)} lakh)`);
+
+// figures unchanged: C004 line in the table vs the independent calculation
+await box.locator('details').evaluate((d) => { d.open = true; });
+const got = await box.locator(`tbody[data-series="${c004.id}"] tr`).evaluateAll((trs) => trs.slice(1).map((tr) => [...tr.querySelectorAll('td')].map((td) => td.innerText.trim())));
+const exp = O2.series(raw, w.from, D, 'month', c004.id).map((p) => [fmtD(p.date), inr(p.closing), p.changeText ?? 'N/A']);
+check('C004 figures unchanged and correct', JSON.stringify(got.map((r) => [r[1], r[2], r[5]])) === JSON.stringify(exp));
+//
+… [2820 more characters not shown]
+```
+
+<details><summary>Result</summary>
+
+```
+File created successfully at: C:\Users\hegde\AppData\Local\Temp\claude\19ae7b2bcb9cf67a\6bfa9a87-bae9-4522-b9e6-b162623b6f41\scratchpad\audit\ui3.mjs (file state is current in your context — no need to Read it back)
+```
+
+</details>
+
+**Tool call — Bash**
+
+```
+# Fetch live data, rebuild production bundle
+cd "c:/Users/hegde/OneDrive/Desktop/Verve Interview/ar-manager-ca-it-main" && A="C:/Users/hegde/AppData/Local/Temp/claude/19ae7b2bcb9cf67a/6bfa9a87-bae9-4522-b9e6-b162623b6f41/scratchpad/audit" && node --check "$A/ui3.mjs" && node --env-file=.env.local -e "
+import('@supabase/supabase-js').then(async ({createClient})=>{
+const db=createClient(process.env.SUPABASE_URL,process.env.SUPABASE_ANON_KEY,{auth:{persistSession:false},global:{headers:{'x-workspace':process.env.AR_WORKSPACE_ID}}});
+const out={}; for (const t of ['customers','invoices','credit_notes','receipts','allocations','notes']) { const {data,error}=await db.from(t).select('*').order('id'); if(error) throw error; out[t]=data.map(r=>{delete r.workspace_id; delete r.created_at; return r}); }
+require('fs').writeFileSync('$A/live.json', JSON.stringify(out)); console.log('live rows:', Object.values(out).map(a=>a.length).join('/'));});" && powershell.exe -NoProfile -Command "\$c = Get-NetTCPConnection -LocalPort 3123 -State Listen -ErrorAction SilentlyContinue; if (\$c) { Stop-Process -Id \$c[0].OwningProcess -Force }; foreach (\$d in '.next\server','.next\static') { if (Test-Path \$d) { try { Remove-Item -Recurse -Force \$d -ErrorAction Stop } catch { 'lock on ' + \$d } } }" && npm.cmd run build 2>&1 | grep -E "rror|Compiled|Finished TypeScript" | head -3
+```
+
+**Tool call — PowerShell**
+
+```
+# Start my test server on port 3123
+$p = Start-Process -FilePath "npm.cmd" -ArgumentList "run","start","--","-p","3123" -PassThru -WindowStyle Hidden; $ok=$false; for ($i=0; $i -lt 40 -and -not $ok; $i++) { Start-Sleep -Milliseconds 700; try { $null = Invoke-WebRequest -Uri "http://localhost:3123/insights" -UseBasicParsing -TimeoutSec 20; $ok=$true } catch {} }; "server up: $ok"
+```
+
+**Tool call — Bash**
+
+```
+# Run new behaviour test and regression test
+cd "c:/Users/hegde/OneDrive/Desktop/Verve Interview/ar-manager-ca-it-main" && A="C:/Users/hegde/AppData/Local/Temp/claude/19ae7b2bcb9cf67a/6bfa9a87-bae9-4522-b9e6-b162623b6f41/scratchpad/audit" && BASE=http://localhost:3123 A="$A" PROJ="$(pwd)" node "$A/ui3.mjs" 2>&1 | grep -v "^    at" | cut -c1-170; echo "--- regression (earlier 33 checks)"; BASE=http://localhost:3123 A="$A" PROJ="$(pwd)" node "$A/ui2.mjs" 2>&1 | grep -v "^    at" > "$A/ui2.out"; grep -E "^FAIL|Error" "$A/ui2.out"; echo "PASS $(grep -c '^PASS' "$A/ui2.out") / FAIL $(grep -c '^FAIL' "$A/ui2.out")"
+```
+
+<details><summary>Result</summary>
+
+```
+live rows: 9/31/2/17/18/7
+✓ Compiled successfully in 1952ms
+  Finished TypeScript in 4.5s ...
+```
+
+</details>
+
+<details><summary>Result</summary>
+
+```
+server up: True
+```
+
+</details>
+
+<details><summary>Result</summary>
+
+```
+PASS  consolidated only: 2-lakh steps  — 0,2,4,6,8,10,12,14,16,18,20,22
+PASS  consolidated + C002: still 2-lakh steps  — 0,2,4,6,8,10,12,14,16,18,20,22
+PASS  C002 only: 1-lakh steps, top just above its highest balance  — 0,1,2,3 (max ₹2.36 lakh)
+PASS  C002 + C004 + C007: 1-lakh steps up to the highest of the three  — 0,1,2,3,4,5,6,7,8 (max ₹7.32 lakh)
+PASS  C004 figures unchanged and correct
+PASS  every point is drawn at its correct height on the 1-lakh scale
+PASS  "De-select all" is in the customer filter
+PASS  De-select all → only the consolidated line
+PASS  …all customer boxes unticked, consolidated ticked
+PASS  …URL back to the default (no cust=)  — http://localhost:3123/insights?asof=2026-11-18
+PASS  …axis back to 2-lakh steps
+PASS  …picker button reads the consolidated name
+PASS  De-select all is greyed out when only consolidated is shown
+PASS  link with C007 only opens with 1-lakh steps  — 0,1,2,3,4,5,6,7,8
+PASS  weekly, customers only: 1-lakh steps
+PASS  no browser errors
+--- regression (earlier 33 checks)
+PASS 33 / FAIL 0
+```
+
+</details>
+
+**Tool call — Read**
+
+```
+{
+  "file_path": "C:\\Users\\hegde\\AppData\\Local\\Temp\\claude\\19ae7b2bcb9cf67a\\6bfa9a87-bae9-4522-b9e6-b162623b6f41\\scratchpad\\audit\\one-lakh.png"
+}
+```
+
+<details><summary>Result</summary>
+
+```
+[image]
+```
+
+</details>
+
+**Assistant:**
+
+The weekly customer-only view now has 1-lakh gridlines from 0 to 8, labelled every lakh, and the caption reads "1-lakh steps". Updating the two documents that describe the axis and the picker:
+
+**Tool call — Bash**
+
+```
+# Find axis and picker wording in docs
+cd "c:/Users/hegde/OneDrive/Desktop/Verve Interview/ar-manager-ca-it-main" && grep -n "2-lakh\|2 lakh\|At least one line is always shown\|Up to \*\*7 customers\*\*" docs/PHASE2.md docs/USER_GUIDE.md | cut -c1-220
+```
+
+<details><summary>Result</summary>
+
+```
+docs/PHASE2.md:45:- **Customer filter** (inside the chart box): tick any combination of *All customers (consolidated)* and individual customers; each ticked item is its own line, and the chart redraws instantly (every li
+docs/PHASE2.md:48:- **Axes:** **X axis = time**, monthly by default or weekly as selected, earliest on the left, labelled *Dec '25* (monthly) or *7 Dec '25* (weekly). **Y axis = amount** in ₹ lakh with 2-lakh steps (0,
+docs/PHASE2.md:67:8. Axes follow the corrected specification: time on X (monthly by default), amount on Y in ₹ lakh with 2-lakh steps.
+docs/USER_GUIDE.md:319:**Axes:** months (or weeks) run left to right, labelled like **Dec '25** (weekly: **7 Dec '25**); amounts run up the side in **₹ lakh**, in steps of 2 lakh.
+docs/USER_GUIDE.md:325:- **Customers** (inside the chart box): tick **All customers (consolidated)** and/or any individual customers. Each ticked item is drawn as its own line, so you can compare customers against each o
+```
+
+</details>
+
+**Tool call — Bash**
+
+```
+# Update Phase 2 doc and user guide
+cd "c:/Users/hegde/OneDrive/Desktop/Verve Interview/ar-manager-ca-it-main" && node - <<'EOF'
+const fs = require('fs');
+function edit(f, pairs) { let s = fs.readFileSync(f, 'utf8'); for (const [a, b] of pairs) { if (!s.includes(a)) throw new Error(f + ': missing ' + a.slice(0, 60)); s = s.replace(a, b); } fs.writeFileSync(f, s); }
+let p = fs.readFileSync('docs/PHASE2.md', 'utf8');
+const l48 = p.split('\n').find((l) => l.startsWith('- **Axes:** **X axis = time**'));
+const l45 = p.split('\n').find((l) => l.startsWith('- **Customer filter** (inside the chart box)'));
+edit('docs/PHASE2.md', [
+  [l48, "- **Axes:** **X axis = time**, monthly by default or weekly as selected, earliest on the left, labelled *Dec '25* (monthly) or *7 Dec '25* (weekly). **Y axis = amount** in ₹ lakh from 0 up to the first step at or above the largest balance shown: **2-lakh steps** whenever the consolidated line is shown, **1-lakh steps** when only customer lines are shown. The caption above the chart states the step in use."],
+  [l45, l45 + " **De-select all** (at the top of the picker) clears every customer and returns to the consolidated trend only."],
+  ["8. Axes follow the corrected specification: time on X (monthly by default), amount on Y in ₹ lakh with 2-lakh steps.",
+   "8. Axes follow the corrected specification: time on X (monthly by default), amount on Y in ₹ lakh with 2-lakh steps; at the user's request, customer-only views use 1-lakh steps. When the consolidated line is shown the 2-lakh step is kept, because 1-lakh steps up to the consolidated total (about ₹22 lakh) would crowd the axis. If a customer-only scale ever needed more than 16 steps, gridlines stay at every lakh and every second one is labelled."],
+]);
+let u = fs.readFileSync('docs/USER_GUIDE.md', 'utf8');
+const c325 = u.split('\n').find((l) => l.startsWith('- **Customers** (inside the chart box)'));
+edit('docs/USER_GUIDE.md', [
+  ["amounts run up the side in **₹ lakh**, in steps of 2 lakh.", "amounts run up the side in **₹ lakh**, in steps of **2 lakh** — or **1 lakh** when only customer lines are shown (consolidated unticked), so smaller customer balances are easier to read. The line above the chart states the step in use."],
+  [c325, c325 + " **De-select all**, at the top of the list, clears all customers and returns to the consolidated trend."],
+]);
+console.log('ok');
+EOF
+grep -c "De-select all" docs/PHASE2.md docs/USER_GUIDE.md
+```
+
+<details><summary>Result</summary>
+
+```
+ok
+docs/PHASE2.md:1
+docs/USER_GUIDE.md:1
+```
+
+</details>
+
+**Assistant:**
+
+I'll stop my test server (port 3123 only), then commit and push:
+
+**Tool call — PowerShell**
+
+```
+# Stop my test server; show changes
+$c = Get-NetTCPConnection -LocalPort 3123 -State Listen -ErrorAction SilentlyContinue; if ($c) { Stop-Process -Id $c[0].OwningProcess -Force; "test server on 3123 stopped" }; git status --short
+```
+
+**Tool call — Bash**
+
+```
+# Commit and push
+cd "c:/Users/hegde/OneDrive/Desktop/Verve Interview/ar-manager-ca-it-main" && git add components/insights/TrendChart.tsx lib/insights/trend.ts tests/insights.test.ts docs/PHASE2.md docs/USER_GUIDE.md && git commit -q -F - <<'EOF'
+AR trend: 1-lakh axis steps for customer views, De-select all
+
+- Y axis uses 1-lakh steps when only customer lines are shown; 2-lakh
+  steps remain whenever the consolidated line is shown. lakhAxis now
+  takes the step and works in whole paise.
+- "De-select all" in the customer picker clears every customer and
+  returns to the consolidated trend.
+- Tests for the axis boundaries; docs updated.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+EOF
+git push -q origin main 2>&1 | tail -1; git log --oneline -1
+```
+
+<details><summary>Result</summary>
+
+```
+test server on 3123 stopped
+ M components/insights/TrendChart.tsx
+ M docs/PHASE2.md
+ M docs/USER_GUIDE.md
+ M lib/insights/trend.ts
+ M tests/insights.test.ts
+```
+
+</details>
+
+<details><summary>Result</summary>
+
+```
+warning: in the working copy of 'components/insights/TrendChart.tsx', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'docs/PHASE2.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'docs/USER_GUIDE.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'lib/insights/trend.ts', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'tests/insights.test.ts', LF will be replaced by CRLF the next time Git touches it
+a1e1265 AR trend: 1-lakh axis steps for customer views, De-select all
+```
+
+</details>
+
+**Assistant:**
+
+Pushed (`a1e1265`). I'll wait for Vercel to deploy, then run both browser tests against the live site:
+
+**Tool call — PowerShell**
+
+```
+# Wait for Vercel to deploy the change
+$ok=$false; for ($i=0; $i -lt 40 -and -not $ok; $i++) { try { $r = Invoke-WebRequest -Uri "https://ar-manager-nine.vercel.app/insights?asof=2026-11-18&cust=868" -UseBasicParsing -TimeoutSec 30; if ($r.Content -match '1-lakh steps') { $ok=$true } } catch {}; if (-not $ok) { Start-Sleep -Seconds 10 } }; "new version deployed: $ok"
+```
+
+**Tool call — Bash**
+
+```
+# Run both browser tests on the live site
+cd "c:/Users/hegde/OneDrive/Desktop/Verve Interview/ar-manager-ca-it-main" && A="C:/Users/hegde/AppData/Local/Temp/claude/19ae7b2bcb9cf67a/6bfa9a87-bae9-4522-b9e6-b162623b6f41/scratchpad/audit" && BASE=https://ar-manager-nine.vercel.app A="$A" PROJ="$(pwd)" node "$A/ui3.mjs" 2>&1 | grep -v "^    at" > "$A/ui3.out"; grep -E "^FAIL|Error" "$A/ui3.out"; echo "new checks: PASS $(grep -c '^PASS' "$A/ui3.out") / FAIL $(grep -c '^FAIL' "$A/ui3.out")"; BASE=https://ar-manager-nine.vercel.app A="$A" PROJ="$(pwd)" node "$A/ui2.mjs" 2>&1 | grep -v "^    at" > "$A/ui2.out"; grep -E "^FAIL|Error" "$A/ui2.out"; echo "regression: PASS $(grep -c '^PASS' "$A/ui2.out") / FAIL $(grep -c '^FAIL' "$A/ui2.out")"; rm -f "$A/live.json"; echo "uncommitted: $(git status --short | wc -l)"
+```
+
+<details><summary>Result</summary>
+
+```
+new version deployed: False
+```
+
+</details>
+
+<details><summary>Result</summary>
+
+```
+new checks: PASS 16 / FAIL 0
+regression: PASS 33 / FAIL 0
+uncommitted: 0
+```
+
+</details>
+
+**Assistant:**
+
+Both changes are live on the site and checked there: all 16 new checks pass, and the earlier 33 chart checks still pass. It's pushed as `a1e1265`.
+
+**1. 1-lakh steps for customer-wise lines.**
+- **Customer lines only** (consolidated unticked): the amount axis goes up in **1-lakh steps**. For example, C002 alone shows 0–3 lakh (its highest balance is ₹2.36 lakh), and C002 + C004 + C007 shows 0–8 lakh (highest ₹7.32 lakh).
+- **Consolidated line shown** (alone or with customers): it **keeps 2-lakh steps**. The consolidated total reaches about ₹22 lakh, so 1-lakh steps would mean 22 labels squeezed too close to read. If you'd rather have 1-lakh steps whenever *any* customer is ticked, I can change it.
+- **Caption:** the line above the chart now states the step in use, "1-lakh steps" or "2-lakh steps".
+- **Very large balances:** if a customer ever reaches more than ₹16 lakh, the gridlines stay at every lakh but only every second line is labelled, so the labels stay readable.
+
+**2. "De-select all"** sits at the top of the customer list. It unticks every customer and returns to the consolidated trend only. The page address also resets, so a bookmark shows the default view. The option is greyed out when only the consolidated line is shown, since there's nothing to clear.
+
+**Checked:**
+- **Axis:** switches correctly as lines are added and removed, monthly and weekly. Every point is drawn at its correct height on the 1-lakh scale.
+- **Exact top of the scale:** ₹4,00,000.00 tops out at 4 lakh, and one paisa more moves it to 5.
+- **Shared links:** a link showing customers only opens straight on the 1-lakh axis.
+- **Figures:** unchanged, and still match the independent calculation.
+- **Unit tests:** 101 of 101 pass (2 new, for the axis steps). Lint and the production build are clean, and the browser showed no errors.
+
+`docs/PHASE2.md` and `docs/USER_GUIDE.md` now describe the step rule and the "De-select all" option.
+
+---
+
+## User message 26
+
+Question: to check if your testing is effective, you add bugs deliberately and see if you can find it. Since you planted it yourself, you know where to find it. Its like you're meta-gaming. Will this defeat the integrity of the check? Short answer. Make no changes to the code.
+
+**Assistant:**
+
+No, it doesn't defeat the check, but it does have a real limit.
+
+**Why it isn't meta-gaming:** knowing where I planted the bug doesn't help the check find it. The check is blind: it recalculates every figure for every day and compares each one with the app, without being told where to look. A planted bug only counts as caught if it changes some figure and that difference shows up. The proof it isn't rigged is the first audit: two of my planted bugs **weren't** caught, because the sample data never exercised them. I reported that and added the random test data to close the gap.
+
+**The real limits:**
+1. **I choose which bugs to plant.** That proves the check catches the mistakes *I* thought of, not every possible mistake. It's like an auditor testing a control with exceptions they designed themselves.
+2. **I wrote both the app and the second calculator.** If I misread a rule the same way in both, they'd agree and the comparison would pass. This is the biggest risk, and planted bugs can't detect it.
+
+**What covers those limits:** checks that don't depend on me:
+- the brief's own spot checks, set by Verve;
+- examples worked by hand from the sample data;
+- **your review of the business rules.** As the accountant, you're the true independent check on whether the rules were interpreted correctly.
+
+---
+
+## User message 27
+
+is the chat log accessible to the evaluator?
+
+**Assistant:**
+
+Yes. The chat log is saved in the project at `ai-logs/2026-11-17-claude-code-session.md` and pushed to GitHub, as section 4.17 of the brief requires. The evaluators can read it once they can open the repository.
+
+**What you need to do:**
+
+1. **Give them access.** The GitHub repository is private, so either add the GitHub user named in the assignment email as a collaborator, or make the repository public.
+2. **Refresh the log before submitting.** It currently stops at your "update the AI logs" request. Everything since isn't in it: the 1-lakh axis, De-select all, your question about planted bugs, and this one. I can regenerate it whenever you're ready, ideally as the very last step.
+
+**What they'll see:**
+- every message you sent, word for word, including your questions and corrections;
+- every reply I gave;
+- every command run and every file change, with results (very long outputs are shortened).
+
+**What they won't see:**
+- your email address or the workspace ID (both are masked);
+- the hidden context Claude Code attaches automatically;
+- the conversation from Steps 1–2, which happened in an earlier chat. You'd need to add that yourself if you have it.
+
+---
+
+## User message 28
+
+update the AI logs
+
+**Tool call — Bash**
+
+```
+# Regenerate full log, run privacy checks, show latest messages
+cd "c:/Users/hegde/OneDrive/Desktop/Verve Interview/ar-manager-ca-it-main" && T="C:/Users/hegde/.claude/projects/c--Users-hegde-OneDrive-Desktop-Verve-Interview-ar-manager-ca-it-main/6bfa9a87-bae9-4522-b9e6-b162623b6f41.jsonl" && LOCAL=$(printf 'carrvg%s' claude) && REDACT_TERMS="$LOCAL" node --env-file=.env.local scripts/export-transcript.mjs "$T" ai-logs/2026-11-17-claude-code-session.md && F=ai-logs/2026-11-17-claude-code-session.md && node --env-file=.env.local -e "
+const s=require('fs').readFileSync('$F','utf8');
+console.log('workspace id present:', s.includes(process.env.AR_WORKSPACE_ID) ? 'YES' : 'no');
+console.log('any @gmail.com address:', /[A-Za-z0-9._%+-]+@gmail\.com/.test(s) ? 'YES' : 'no');
+console.log('account local part:', s.includes(process.argv[1]) ? 'YES' : 'no');
+console.log('hidden-context blocks:', (s.match(/<system-reminder>[\s\S]*?<\/system-reminder>/g)||[]).length);
+" "$LOCAL" && for n in 25 26 27 28; do awk -v n="$n" '$0 ~ "^## User message "n"$" {getline; getline; print n": "substr($0,1,80); exit}' $F; done
+```
+

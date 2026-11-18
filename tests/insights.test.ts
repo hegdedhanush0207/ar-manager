@@ -315,3 +315,47 @@ describe('exact rounding for display', () => {
     expect(ratioText(15_000, 1_000_000, 2)).toBe('0.02'); // 0.015 exactly → 0.02
   });
 });
+
+describe('chart labels and line selection', () => {
+  it("x-axis labels: Dec '25 (monthly), 7 Dec '25 (weekly), * for a period in progress", async () => {
+    const { axisLabel } = await import('../lib/insights/trend');
+    expect(axisLabel('2025-12-31', 'month', false)).toBe("Dec '25");
+    expect(axisLabel('2026-01-31', 'month', false)).toBe("Jan '26");
+    expect(axisLabel('2026-11-18', 'month', true)).toBe("Nov '26*");
+    expect(axisLabel('2026-12-07', 'week', false)).toBe("7 Dec '26");
+    expect(axisLabel('2026-11-15', 'week', false)).toBe("15 Nov '26");
+    expect(axisLabel('2026-11-18', 'week', true)).toBe("18 Nov '26*");
+    expect(axisLabel('2099-12-31', 'month', false)).toBe("Dec '99");
+    expect(axisLabel('2100-01-31', 'month', false)).toBe("Jan '00");
+  });
+
+  it('selection from the URL: defaults, unknown keys, duplicates, cap', async () => {
+    const { parseSelection, selectionParam, MAX_CUSTOMER_LINES } = await import('../lib/insights/selection');
+    const keys = ['all', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
+    expect(parseSelection(undefined, keys)).toEqual(['all']);
+    expect(parseSelection('', keys)).toEqual(['all']);
+    expect(parseSelection('x,99', keys)).toEqual(['all']); // nothing valid → default
+    expect(parseSelection('3', keys)).toEqual(['3']); // the old single-customer link still works
+    expect(parseSelection('all,3,3,5', keys)).toEqual(['all', '3', '5']);
+    expect(parseSelection('1,2,3,4,5,6,7,8,9,all', keys)).toEqual(['1', '2', '3', '4', '5', '6', '7', 'all']);
+    expect(MAX_CUSTOMER_LINES).toBe(7);
+    expect(selectionParam(['all'])).toBe('');
+    expect(selectionParam(['all', '3'])).toBe('all,3');
+    expect(parseSelection(selectionParam(['all', '3', '5']), keys)).toEqual(['all', '3', '5']);
+  });
+
+  it('colours: consolidated always slot 1; customers keep their colour; freed slots are reused; no duplicates', async () => {
+    const { assignColors, PALETTE } = await import('../lib/insights/selection');
+    const a = assignColors(['all', '3', '5']);
+    expect(a).toEqual({ all: PALETTE[0], '3': PALETTE[1], '5': PALETTE[2] });
+    const b = assignColors(['all', '5'], a); // remove 3: 5 keeps its colour
+    expect(b['5']).toBe(PALETTE[2]);
+    const c = assignColors(['all', '5', '8'], b); // 8 takes the lowest free slot (3's old one)
+    expect(c).toEqual({ all: PALETTE[0], '5': PALETTE[2], '8': PALETTE[1] });
+    const d = assignColors(['1', '2', '3', '4', '5', '6', '7']);
+    expect(new Set(Object.values(d)).size).toBe(7);
+    expect(Object.values(d)).not.toContain(PALETTE[0]);
+    const e = assignColors(['all', '1', '2', '3', '4', '5', '6', '7'], d);
+    expect(e).toEqual({ ...d, all: PALETTE[0] });
+  });
+});

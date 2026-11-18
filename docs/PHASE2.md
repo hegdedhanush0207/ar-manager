@@ -8,7 +8,9 @@ The **Insights** tab (`/insights`, next to Statement) adds customer-wise collect
 | [lib/insights/trend.ts](../lib/insights/trend.ts) | Section 2: closing AR at a date, month-end/week-end series, period windows, % change, lakh axis |
 | [lib/insights/round.ts](../lib/insights/round.ts) | Exact rounding of displayed ratios (no floating-point half errors) |
 | [app/insights/page.tsx](../app/insights/page.tsx) | The page: metrics table, filters, chart, figures table |
-| [components/insights/TrendChart.tsx](../components/insights/TrendChart.tsx) | The interactive SVG line chart (no chart library) |
+| [lib/insights/selection.ts](../lib/insights/selection.ts) | Which lines the chart shows (from ?cust=) and their colours |
+| [components/insights/TrendChart.tsx](../components/insights/TrendChart.tsx) | The chart box: customer picker, legend, interactive SVG line chart (no chart library), figures table |
+| [components/insights/TrendFilters.tsx](../components/insights/TrendFilters.tsx) | Monthly/weekly and period controls, applied as soon as they change |
 | [tests/insights.test.ts](../tests/insights.test.ts) | 31 tests: hand-calculated figures, edge cases, and cross-checks against Phase 1 |
 
 ## Section 1: customer metrics
@@ -39,11 +41,13 @@ So the line reflects invoices raised, payments received and allocated, credit no
 - **Monthly (default):** one point per month, the balance on the **last calendar day** of the month.
 - **Weekly:** one point per week, the balance on the **Sunday** that ends each Monday–Sunday week.
 - **Period still in progress:** the last point is the balance **to the end of the window** (the as-at date), labelled e.g. "Nov 2026 (to 18-Nov-2026)" and drawn hollow.
-- **Period filter:** last 12 / 6 / 3 months = the current month and the 11 / 5 / 2 before it, ending at the as-at date. **Custom range:** any From and To, with To no later than the as-at date (later records do not exist yet at that date).
-- **Customer filter:** consolidated by default, or one customer.
+- **Period filter** (above the chart; applies as soon as it changes, no Apply button): last 12 / 6 / 3 months = the current month and the 11 / 5 / 2 before it, ending at the as-at date. **Custom range:** any From and To, with To no later than the as-at date (later records do not exist yet at that date). Choosing *Custom* starts from the window shown; a date applies once both dates are complete and From is not after To.
+- **Customer filter** (inside the chart box): tick any combination of *All customers (consolidated)* and individual customers; each ticked item is its own line, and the chart redraws instantly (every line is calculated on the server in advance). Consolidated is shown by default. The choice is kept in the URL (`?cust=all,868`), so a bookmarked or shared link opens with the same lines, and it is kept when the period changes. At least one line is always shown; up to 7 customers at once plus the consolidated line.
+- **Colours and legend:** a validated 8-colour palette (checked for colour-blind separation on line charts). The consolidated line is always blue; each customer takes the next free colour and keeps it while shown, so adding or removing a line never repaints the others. With two or more lines a legend appears, and with two to four lines each line is also labelled at its end (when the labels do not collide).
 - **% change** from the previous month/week: (closing − previous) ÷ previous × 100, where *previous* is the balance at the end of the period before (also for the first point in the window). Shown with one decimal; "N/A" when the previous balance is nil. The latest figure and its change are shown at the top of the chart.
-- **Axes:** **X axis = time**, monthly by default or weekly as selected, earliest on the left. **Y axis = amount** in ₹ lakh with 2-lakh steps (0, 2, 4, …), from 0 up to the first step above the largest balance.
-- **Interaction:** hover (or focus the chart and use the left/right arrow keys) to see the period, the balance (₹ and lakh) and the % change. A table of every point is available under the chart.
+- **Axes:** **X axis = time**, monthly by default or weekly as selected, earliest on the left, labelled *Dec '25* (monthly) or *7 Dec '25* (weekly). **Y axis = amount** in ₹ lakh with 2-lakh steps (0, 2, 4, …), from 0 up to the first step above the largest balance.
+- **Interaction:** hover (or focus the chart and use the left/right arrow keys) to see the period, the balance and the % change of every line shown. The tooltip stays inside the chart and beside the hovered points. A table of every point, grouped by line, is available under the chart.
+- **Size:** the chart box is exactly as wide as the chart, so there is no empty space on its right; the title is on the left and the headline figures (consolidated closing AR and its % change) stay at the top right.
 
 ## Verification
 
@@ -61,3 +65,6 @@ So the line reflects invoices raised, payments received and allocated, credit no
 6. The as-at date in the header applies to Insights too, so all figures agree with the rest of the app.
 7. Weeks run Monday–Sunday; month and week points in progress are shown "to date".
 8. Axes follow the corrected specification: time on X (monthly by default), amount on Y in ₹ lakh with 2-lakh steps.
+9. The headline figures at the top right always show the **consolidated** total, whatever lines are ticked, so they stay fixed; each line's own figures are in the tooltip and the table.
+10. Up to **7 customer lines** plus the consolidated line: the most a validated palette can keep distinguishable. Further customers are disabled in the picker until one is unticked.
+11. The period controls also apply without an Apply button, for consistency with the customer picker.

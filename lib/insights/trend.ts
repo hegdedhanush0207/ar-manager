@@ -179,3 +179,10 @@ export function lakh(paise: Paise): string {
 function signed(text: string): string {
   return text.startsWith('-') || /^0(.0+)?$/.test(text) ? text : `+${text}`;
 }
+
+/** X-axis label: "Dec '25" (monthly) or "7 Dec '25" (weekly); "*" marks a period still in progress. */
+export function axisLabel(date: string, g: Granularity, partial: boolean): string {
+  const [y, m, d] = date.split('-');
+  const month = `${MONTHS[Number(m) - 1]} '${y.slice(2)}`;
+  return (g === 'month' ? month : `${Number(d)} ${month}`) + (partial ? '*' : '');
+}

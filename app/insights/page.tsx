@@ -3,12 +3,13 @@ import { loadArData } from '@/lib/ar/load';
 import type { SearchParams } from '@/lib/asof';
 import { formatDate, formatMoney } from '@/lib/format';
 import { customerInsights, totalOutstanding, type CustomerInsight } from '@/lib/insights/metrics';
-import { lakh, lakhAxis, pointLabel, previousPeriodEnd, trendSeries, trendWindow, type Granularity } from '@/lib/insights/trend';
+import { axisLabel, lakh, pointLabel, previousPeriodEnd, trendSeries, trendWindow, type Granularity, type TrendPoint } from '@/lib/insights/trend';
+import { CONSOLIDATED, parseSelection } from '@/lib/insights/selection';
 import { readPage } from '@/lib/page';
 import { sortRows, withParams, type Dir } from '@/lib/table';
-import { TrendChart, type ChartPoint } from '@/components/insights/TrendChart';
-import { Alert, Badge, Empty, Money, PageHeader, Section, SortTh, TableWrap, Td, Th } from '@/components/ui';
-import { inputClass } from '@/components/form';
+import { TrendChart, type ChartPoint, type SeriesData } from '@/components/insights/TrendChart';
+import { TrendFilters } from '@/components/insights/TrendFilters';
+import { Alert, Badge, Empty, Money, PageHeader, Section, SortTh, TableWrap, Td } from '@/components/ui';
 
 /** Reads live data and the as-at date on every request (see app/layout.tsx). */
 export const instant = false;
@@ -33,25 +34,38 @@ export default async function InsightsPage({ searchParams }: { searchParams: Pro
   const sortParams = { ...params, sort, dir };
 
   // ---- Section 2: Historical AR trend ----
+  // Every line (consolidated and each customer) is calculated here, so the chart can switch lines instantly.
   const granularity: Granularity = params.gran === 'week' ? 'week' : 'month';
   const window = trendWindow(asof, params.range, params.from, params.to);
-  const customer = data.customers.find((c) => String(c.id) === params.cust);
-  const series = trendSeries(data, window, granularity, customer?.id);
-  const ticks = lakhAxis(Math.max(0, ...series.map((p) => p.closing)));
-  const prevLabel = (date: string) => `${granularity === 'month' ? 'previous month' : 'previous week'} (${pointLabel(previousPeriodEnd(date, granularity), granularity, false)})`;
-  const chartPoints: ChartPoint[] = series.map((p) => ({
+  const toChart = (p: TrendPoint): ChartPoint => ({
     date: p.date,
+    dateText: formatDate(p.date),
     label: p.label,
+    axisLabel: axisLabel(p.date, granularity, p.partial),
     partial: p.partial,
+    closing: p.closing,
     closingText: formatMoney(p.closing),
     lakhValue: p.closing / 10_000_000,
     lakhText: lakh(p.closing),
+    previousText: formatMoney(p.previous),
+    previousLabel: `${granularity === 'month' ? 'previous month' : 'previous week'} (${pointLabel(previousPeriodEnd(p.date, granularity), granularity, false)})`,
+    previousShort: axisLabel(previousPeriodEnd(p.date, granularity), granularity, false),
     changeText: p.changeText,
-    previousLabel: prevLabel(p.date),
-  }));
-  const latest = series[series.length - 1];
-  const label = 'mb-1 block text-xs font-medium text-slate-600';
-  const keep = (extra: Record<string, string | undefined>) => withParams('/insights', params, extra);
+    direction: p.closing > p.previous ? 'up' : p.closing < p.previous ? 'down' : 'flat',
+    unappliedText: formatMoney(p.unapplied),
+  });
+  const consolidated = trendSeries(data, window, granularity);
+  const allSeries: SeriesData[] = [
+    { key: CONSOLIDATED, name: 'All customers (consolidated)', short: 'All', points: consolidated.map(toChart) },
+    ...data.customers.map((c) => ({
+      key: String(c.id),
+      name: `${c.code} · ${c.name}`,
+      short: c.code,
+      points: trendSeries(data, window, granularity, c.id).map(toChart),
+    })),
+  ];
+  const selected = parseSelection(params.cust, allSeries.map((s) => s.key));
+  const latest = consolidated[consolidated.length - 1];
 
   return (
     <>
@@ -123,68 +137,28 @@ export default async function InsightsPage({ searchParams }: { searchParams: Pro
       </Section>
 
       <Section title="Historical AR trend">
-        <form action="/insights" className="mb-4 flex flex-wrap items-end gap-3">
-          <input type="hidden" name="asof" value={asof} />
-          {params.sort && <input type="hidden" name="sort" value={params.sort} />}
-          {params.dir && <input type="hidden" name="dir" value={params.dir} />}
-          <label className="w-72">
-            <span className={label}>Customer</span>
-            <select name="cust" defaultValue={customer ? String(customer.id) : ''} className={inputClass}>
-              <option value="">All customers (consolidated)</option>
-              {data.customers.map((c) => (
-                <option key={c.id} value={c.id}>
-                  {c.code} · {c.name}
-                </option>
-              ))}
-            </select>
-          </label>
-          <label>
-            <span className={label}>Show</span>
-            <select name="gran" defaultValue={granularity} className={inputClass}>
-              <option value="month">Monthly</option>
-              <option value="week">Weekly</option>
-            </select>
-          </label>
-          <label>
-            <span className={label}>Period</span>
-            <select name="range" defaultValue={window.preset} className={inputClass}>
-              <option value="12m">Last 12 months</option>
-              <option value="6m">Last 6 months</option>
-              <option value="3m">Last 3 months</option>
-              <option value="custom">Custom date range</option>
-            </select>
-          </label>
-          <label>
-            <span className={label}>From (custom)</span>
-            <input type="date" name="from" defaultValue={window.preset === 'custom' ? window.from : (params.from ?? '')} className={inputClass} />
-          </label>
-          <label>
-            <span className={label}>To (custom)</span>
-            <input type="date" name="to" defaultValue={window.preset === 'custom' ? window.to : (params.to ?? '')} max={asof} className={inputClass} />
-          </label>
-          <button className="rounded border border-slate-300 bg-white px-3 py-1.5 hover:bg-slate-50">Apply</button>
-          {(params.cust || params.gran || params.range) && (
-            <Link href={keep({ cust: undefined, gran: undefined, range: undefined, from: undefined, to: undefined })} className="py-1.5 text-blue-700 underline">
-              Reset chart filters
-            </Link>
-          )}
-        </form>
+        <TrendFilters key={`${window.preset}|${window.from}|${window.to}`} granularity={granularity} range={window.preset} from={window.from} to={window.to} asof={asof} />
         {window.error && <Alert tone="warn">{window.error}</Alert>}
         {window.note && <Alert tone="info">{window.note}</Alert>}
 
-        <div className="rounded border border-slate-200 bg-white p-4">
-          <div className="mb-3 flex flex-wrap items-baseline justify-between gap-2">
-            <div>
+        <TrendChart
+          series={allSeries}
+          initialSelected={selected}
+          unit={granularity}
+          header={
+          <div className="mb-3 flex items-start justify-between gap-4">
+            <div className="min-w-0">
               <h3 className="text-base font-semibold text-slate-900">Historical AR trend</h3>
               <div className="text-xs text-slate-500">
-                {customer ? `${customer.code} · ${customer.name}` : 'All customers (consolidated)'} · {granularity === 'month' ? 'month-end' : 'week-end (Sunday)'} balances · {formatDate(window.from)} to {formatDate(window.to)}
+                {granularity === 'month' ? 'Month-end' : 'Week-end (Sunday)'} balances · {formatDate(window.from)} to {formatDate(window.to)}
               </div>
             </div>
             {latest && (
-              <div className="text-right">
+              <div className="shrink-0 text-right">
                 <div className="text-lg font-semibold">{formatMoney(latest.closing)}</div>
                 <div className="text-xs text-slate-600">
-                  {latest.label} ·{' '}
+                  All customers · {latest.label}
+                  <br />
                   {latest.changeText === null ? 'no % change (previous balance nil)' : (
                     <span className={latest.closing > latest.previous ? 'text-red-700' : latest.closing < latest.previous ? 'text-emerald-700' : ''}>
                       {latest.changeText} vs {granularity === 'month' ? 'previous month' : 'previous week'}
@@ -194,42 +168,8 @@ export default async function InsightsPage({ searchParams }: { searchParams: Pro
               </div>
             )}
           </div>
-          <TrendChart points={chartPoints} ticks={ticks} unit={granularity} />
-        </div>
-
-        <details className="mt-3">
-          <summary className="cursor-pointer text-sm text-blue-700">Show the trend figures as a table</summary>
-          <div className="mt-2">
-            <TableWrap>
-              <thead>
-                <tr>
-                  <Th>Period</Th>
-                  <Th>Balance as at</Th>
-                  <Th numeric>Outstanding AR</Th>
-                  <Th numeric>₹ lakh</Th>
-                  <Th numeric>Previous {granularity === 'month' ? 'month' : 'week'}</Th>
-                  <Th numeric>Change</Th>
-                  <Th numeric>Unapplied credit (not deducted)</Th>
-                </tr>
-              </thead>
-              <tbody>
-                {series.map((p) => (
-                  <tr key={p.date}>
-                    <Td>{p.label}</Td>
-                    <Td>{formatDate(p.date)}</Td>
-                    <Td numeric>{formatMoney(p.closing)}</Td>
-                    <Td numeric>{lakh(p.closing)}</Td>
-                    <Td numeric>{formatMoney(p.previous)}</Td>
-                    <Td numeric className={p.changePct === null ? 'text-slate-400' : p.closing > p.previous ? 'text-red-700' : p.closing < p.previous ? 'text-emerald-700' : ''}>
-                      {p.changeText ?? 'N/A'}
-                    </Td>
-                    <Td numeric>{formatMoney(p.unapplied)}</Td>
-                  </tr>
-                ))}
-              </tbody>
-            </TableWrap>
-          </div>
-        </details>
+          }
+        />
         <p className="mt-2 text-xs text-slate-500">
           Month-end AR = Σ outstanding invoice balances on the last calendar day of the month: invoices raised, less payments (bank + TDS) allocated and credit notes issued, each up to that date. An increase in AR is shown in red, a decrease in green.
         </p>

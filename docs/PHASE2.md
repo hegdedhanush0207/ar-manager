@@ -42,8 +42,8 @@ So the line reflects invoices raised, payments received and allocated, credit no
 - **Period filter:** last 12 / 6 / 3 months = the current month and the 11 / 5 / 2 before it, ending at the as-at date. **Custom range:** any From and To, with To no later than the as-at date (later records do not exist yet at that date).
 - **Customer filter:** consolidated by default, or one customer.
 - **% change** from the previous month/week: (closing − previous) ÷ previous × 100, where *previous* is the balance at the end of the period before (also for the first point in the window). Shown with one decimal; "N/A" when the previous balance is nil. The latest figure and its change are shown at the top of the chart.
-- **Axes:** as specified, **X axis = amount** in ₹ lakh with 2-lakh steps (0, 2, 4, …), **Y axis = time**, earliest at the top. A checkbox lays time across the bottom instead (the more common layout); figures are identical.
-- **Interaction:** hover (or focus the chart and use the arrow keys) to see the period, the balance (₹ and lakh) and the % change. A table of every point is available under the chart.
+- **Axes:** **X axis = time**, monthly by default or weekly as selected, earliest on the left. **Y axis = amount** in ₹ lakh with 2-lakh steps (0, 2, 4, …), from 0 up to the first step above the largest balance.
+- **Interaction:** hover (or focus the chart and use the left/right arrow keys) to see the period, the balance (₹ and lakh) and the % change. A table of every point is available under the chart.
 
 ## Verification
 
@@ -60,4 +60,4 @@ So the line reflects invoices raised, payments received and allocated, credit no
 5. Average collection period counts only invoices where money was collected; an invoice cleared **entirely by credit notes** is excluded.
 6. The as-at date in the header applies to Insights too, so all figures agree with the rest of the app.
 7. Weeks run Monday–Sunday; month and week points in progress are shown "to date".
-8. Axes follow the specification (amount on X, time on Y), with an optional swap.
+8. Axes follow the corrected specification: time on X (monthly by default), amount on Y in ₹ lakh with 2-lakh steps.

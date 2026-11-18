@@ -4,6 +4,7 @@ An accounts receivable manager for a services firm: who owes the firm money, how
 
 - **Live:** https://ar-manager-nine.vercel.app
 - **Brief:** [docs/BRIEF.md](docs/BRIEF.md) (the business rules R1–R18 are in Part 1)
+- **User guide (analysts and managers):** [docs/USER_GUIDE.md](docs/USER_GUIDE.md)
 - **Manual test script:** [docs/TESTING.md](docs/TESTING.md)
 - **How it is built (walkthrough):** [docs/WALKTHROUGH.md](docs/WALKTHROUGH.md)
 

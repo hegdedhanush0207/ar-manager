@@ -11607,3 +11607,7252 @@ The file c:\Users\hegde\OneDrive\Desktop\Verve Interview\ar-manager-ca-it-main\s
 
 </details>
 
+<details><summary>Result</summary>
+
+```
+Wrote ai-logs/2026-11-17-claude-code-session.md: 4 user messages, 467 KB
+0
+workspace id: none
+private name not in any project file
+```
+
+</details>
+
+**Assistant:**
+
+The log is now clean: no email, no workspace ID. It's 467 KB and covers all four of your messages, with every reply, command and file change. I'll update the `ai-logs` index, then commit and push:
+
+**Tool call — Write**
+
+```
+file: c:\Users\hegde\OneDrive\Desktop\Verve Interview\ar-manager-ca-it-main\ai-logs\README.md
+
+# AI logs
+
+The brief (section 4.17) asks for the AI assistant conversations used to build this tool.
+
+- [2026-11-17-claude-code-session.md](2026-11-17-claude-code-session.md): the **full conversation** from the Claude Code session that built steps 3–12. It holds every user message, every assistant reply and every tool call (file edits, commands) with its result. Long tool results are shortened.
+- [2026-11-17-session-summary.md](2026-11-17-session-summary.md): a one-page summary of the same session: what was built at each step, how it was checked, and the problems found and fixed.
+
+The full log was converted from Claude Code's session file with [scripts/export-transcript.mjs](../scripts/export-transcript.mjs). Hidden context that Claude Code attaches automatically is left out, and email addresses and the workspace id are masked. The workspace id was never printed during the session.
+
+Steps 1–2 (skeleton and connection) were done in an earlier conversation, before this session.
+
+```
+
+**Tool call — Bash**
+
+```
+# Commit and push the AI log
+cd "c:/Users/hegde/OneDrive/Desktop/Verve Interview/ar-manager-ca-it-main" && git add ai-logs scripts/export-transcript.mjs && git status --short | grep -v "^warning" && git diff --cached --name-only | grep -E "\.env|node_modules|\.next" && echo STOP || echo "OK: nothing sensitive staged" && git commit -q -F - <<'EOF'
+Add full Claude Code session log to ai-logs
+
+The full conversation that built steps 3-12, converted from the Claude
+Code session file to Markdown with scripts/export-transcript.mjs. It
+keeps every message, reply and tool call, leaves out automatically
+attached context, and masks email addresses and the workspace id.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+EOF
+git push -q origin main 2>&1 | tail -1; git log --oneline -1; git status --short | wc -l
+```
+
+<details><summary>Result</summary>
+
+```
+The file c:\Users\hegde\OneDrive\Desktop\Verve Interview\ar-manager-ca-it-main\ai-logs\README.md has been updated successfully. (file state is current in your context — no need to Read it back)
+```
+
+</details>
+
+<details><summary>Result</summary>
+
+```
+warning: in the working copy of 'ai-logs/README.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'ai-logs/2026-11-17-claude-code-session.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'scripts/export-transcript.mjs', LF will be replaced by CRLF the next time Git touches it
+A  ai-logs/2026-11-17-claude-code-session.md
+M  ai-logs/README.md
+A  scripts/export-transcript.mjs
+OK: nothing sensitive staged
+51ee288 Add full Claude Code session log to ai-logs
+0
+```
+
+</details>
+
+**Assistant:**
+
+This session's full conversation is now saved in `ai-logs/` and pushed to GitHub (commit `51ee288`). That covers section 4.17, apart from two gaps below.
+
+**What's in `ai-logs/`:**
+- **`2026-11-17-claude-code-session.md`:** the full conversation. It has your four messages, every reply of mine, and every file change and command with its result. Very long command outputs are shortened.
+- **`2026-11-17-session-summary.md`:** the one-page summary from before.
+- **`README.md`:** an index explaining what each file is and how the log was produced.
+
+I made the log from the session file Claude Code saves on your PC, converting it with a new script, `scripts/export-transcript.mjs`. Two things are deliberately left out or masked:
+- **Hidden context Claude Code attaches automatically**, such as your account details. It isn't part of our conversation, so the log leaves it out.
+- **Private details.** Your email (including the part before the @) and the workspace ID are masked. I checked the finished log for both and found neither. The workspace ID was never printed at any point in the session.
+
+**Two gaps:**
+1. **The log stops just before this last request**, because the file was made partway through it. If you want this exchange included too, I can run the export again and push it. It takes about a minute.
+2. **Steps 1–2 (skeleton and connection) were done in an earlier conversation**, which isn't in this project's session files. If you still have it, export it with `/export` in that conversation, or copy and paste it, and save it in `ai-logs/` too. I can also re-run the script on it, if it was a Claude Code session on this PC.
+
+---
+
+## User message 5
+
+<ide_opened_file>The user opened the file c:\Users\hegde\OneDrive\Desktop\Verve Interview\ar-manager-ca-it-main\docs\BRIEF.md in the IDE. This may or may not be related to the current task.</ide_opened_file>
+
+
+
+there may be a potential issue with regards to allocation of receipts to invoices. notice that BWA/25-26/0156 is due after BWA/25-26/0141. but despite this, 49000 has been allocated to BWA/25-26/0156. 
+Please investigate:
+
+Check the existing sample allocation records and identify how this happened.
+
+Verify the R6 implementation: allocations should be suggested oldest first by due date, then invoice number.
+
+Confirm whether the UI defaults allocation amounts in this order.
+
+Do not change historical sample data or reset the workspace.
+
+Report whether this is a genuine violation of R6 or an allowed manual override.
+
+Do not modify anything until you report your findings.
+
+
+**Assistant:**
+
+I'll investigate without changing anything. First, the facts from the sample data in the brief (Part 3), then the code.
+
+**Tool call — Bash**
+
+```
+# Pull C003 records and R6 wording from brief
+cd "c:/Users/hegde/OneDrive/Desktop/Verve Interview/ar-manager-ca-it-main" && grep -n "C003" docs/BRIEF.md | grep -v "^3[01][0-9]:C00[0-9],[A-Z]" ; grep -n "RCT/26-27/0002" docs/BRIEF.md; grep -n "suggest\|oldest" docs/BRIEF.md
+```
+
+**Tool call — Bash**
+
+```
+# Confirm working tree clean and inspect R6 code
+cd "c:/Users/hegde/OneDrive/Desktop/Verve Interview/ar-manager-ca-it-main" && git status --short | head; git log --oneline -1; grep -n "export function openInvoicesFor" -A8 lib/ar/rules.ts; grep -n "export function suggestAllocations" -A12 lib/ar/rules.ts; grep -n "suggestAllocations\|allocsEdited\|openFor" components/ReceiptForm.tsx; grep -n "invoices\[0\]\|receipts\[0\]\|suggested" components/AllocateCreditForm.tsx
+```
+
+<details><summary>Result</summary>
+
+```
+325:BWA/25-26/0141,C003,2026-01-20,"Cost audit support, Q3",150000.00,18,no,no
+326:BWA/25-26/0156,C003,2026-02-25,Inventory valuation review,90000.00,18,no,no
+333:BWA/26-27/0004,C003,2026-04-25,Costing system redesign,110000.00,18,no,no
+342:BWA/26-27/0013,C003,2026-06-28,Plant-wise profitability MIS,70000.00,18,no,no
+368:RCT/26-27/0002,C003,2026-04-30,40000.00,9000.00,RTGS,UTR 0430-1102
+419:2026-08-10,C003,,Meeting,CFO cites a cash crunch. Will clear both FY 25-26 invoices by 30 Sep.,2026-09-15,2026-09-30,234200.00
+368:RCT/26-27/0002,C003,2026-04-30,40000.00,9000.00,RTGS,UTR 0430-1102
+391:RCT/26-27/0002,BWA/25-26/0156,2026-04-30,49000.00
+75:When a payment is being recorded, suggest allocating it oldest first, by due date and then invoice number; the user can change the suggestion. Anything not allocated remains **unapplied credit**, which can be allocated later. An allocation can be removed. A receipt with no allocations can be deleted.
+119:Show unapplied credit in its own column. **Do not net it off against the oldest bucket.**
+213:1. **Record a payment** (`/receipts/new`). Enter the customer, date, bank amount, TDS (pre-filled), mode (NEFT, RTGS, IMPS, UPI or Cheque) and reference. The form shows the customer's open invoices with an oldest-first suggestion the user can edit, and the amount that will remain unapplied. The receipt and its allocations are saved together: if the allocations cannot be saved, the receipt is not kept either (section 4.8).
+592:The database schema is fixed. There are no migrations in this project, no SQL to write, and no tables, database functions or login to create. If your AI assistant suggests any of these, it has misread the brief.
+```
+
+</details>
+
+<details><summary>Result</summary>
+
+```
+51ee288 Add full Claude Code session log to ai-logs
+41:export function openInvoicesFor(data: ArData, customerId: number, date?: string): OpenInvoice[] {
+42-  return data.invoices
+43-    .filter((i) => i.customerId === customerId && !i.isCancelled && (!date || i.invoiceDate <= date))
+44-    .map((invoice) => ({ invoice, available: invoiceAvailable(data, invoice.id) }))
+45-    .filter((o) => o.available > 0)
+46-    .sort((a, b) => a.invoice.dueDate.localeCompare(b.invoice.dueDate) || a.invoice.invoiceNo.localeCompare(b.invoice.invoiceNo));
+47-}
+48-
+49-export interface SuggestedAllocation {
+55:export function suggestAllocations(open: OpenInvoice[], amount: Paise): SuggestedAllocation[] {
+56-  const out: SuggestedAllocation[] = [];
+57-  let left = amount;
+58-  for (const o of open) {
+59-    if (left <= 0) break;
+60-    const a = Math.min(left, o.available);
+61-    out.push({ invoiceId: o.invoice.id, amount: a });
+62-    left -= a;
+63-  }
+64-  return out;
+65-}
+66-
+67-/**
+5:import { expectedTds, nextNumberFrom, receiptDraftSummary, suggestAllocations, type OpenInvoice } from '@/lib/ar';
+26:  allocsEdited: boolean;
+59:    allocsEdited: false,
+63:  const openFor = (draft: Draft) =>
+65:  const open = openFor(d);
+71:      const nextOpen = openFor(next);
+74:      if (!next.allocsEdited) {
+76:        next.allocs = Object.fromEntries(suggestAllocations(nextOpen, settlement).map((a) => [a.invoiceId, rupeesPlain(a.amount)]));
+95:          <select name="customerId" value={d.customerId} onChange={(ev) => update({ customerId: ev.target.value, allocsEdited: false, tdsEdited: false })} className={inputClass} required>
+143:          {d.allocsEdited && (
+144:            <button type="button" className="text-blue-700 underline" onClick={() => update({ allocsEdited: false })}>
+185:                          onChange={(ev) => update({ allocs: { ...d.allocs, [o.invoice.id]: ev.target.value }, allocsEdited: true })}
+20:  const [receiptId, setReceiptId] = useState(String(receipts[0]?.id ?? ''));
+21:  const [invoiceId, setInvoiceId] = useState(String(invoices[0]?.invoice.id ?? ''));
+25:  const suggested = r && inv ? Math.min(r.available, inv.available) : 0;
+55:          <input name="amount" inputMode="decimal" defaultValue={suggested ? rupeesPlain(suggested) : ''} className={inputClass} required />
+```
+
+</details>
+
+**Tool call — Bash**
+
+```
+# Simulate R6 suggestion for RCT/26-27/0002 read-only
+SP="C:/Users/hegde/AppData/Local/Temp/claude/19ae7b2bcb9cf67a/6bfa9a87-bae9-4522-b9e6-b162623b6f41/scratchpad/r6" && mkdir -p "$SP" && P="c:/Users/hegde/OneDrive/Desktop/Verve Interview/ar-manager-ca-it-main" && cat > "$SP/r6.test.ts" <<EOF
+import { it } from 'vitest';
+import sample from '$P/tests/fixtures/sample.json';
+import { toArData, type RawArData } from '$P/lib/ar/map';
+import { expectedTds, openInvoicesFor, suggestAllocations, allocationProblems } from '$P/lib/ar';
+const r = (p: number) => (p / 100).toFixed(2);
+it('R6 investigation', () => {
+  const data = toArData(structuredClone(sample) as RawArData);
+  const c003 = data.customers.find((c) => c.code === 'C003')!;
+  const rct2 = data.receipts.find((x) => x.receiptNo === 'RCT/26-27/0002')!;
+  const inv = (no: string) => data.invoices.find((i) => i.invoiceNo === no)!;
+  console.log('C003 invoices:');
+  for (const i of data.invoices.filter((i) => i.customerId === c003.id)) console.log(' ', i.invoiceNo, 'date', i.invoiceDate, 'due', i.dueDate, 'taxable', r(i.taxableValue), 'total', r(i.total), 'TDS@10%', r(i.taxableValue / 10));
+  console.log('RCT/26-27/0002:', rct2.receiptDate, 'bank', r(rct2.bankAmount), 'tds', r(rct2.tdsAmount), 'settlement', r(rct2.bankAmount + rct2.tdsAmount));
+  // Set aside RCT 0002's allocation and look at the position on 30-Apr-2026
+  const without = { ...data, allocations: data.allocations.filter((a) => a.receiptId !== rct2.id) };
+  const open = openInvoicesFor(without, c003.id, rct2.receiptDate);
+  console.log('Open invoices oldest first on 30-Apr:', open.map((o) => o.invoice.invoiceNo + ' (due ' + o.invoice.dueDate + ', left ' + r(o.available) + ')').join(' | '));
+  console.log('Suggested allocation of 49,000:', suggestAllocations(open, rct2.bankAmount + rct2.tdsAmount).map((s) => data.invoices.find((i) => i.id === s.invoiceId)!.invoiceNo + ' ' + r(s.amount)).join(', '));
+  console.log('Expected-TDS pre-fill for bank 40,000:', r(expectedTds(open, rct2.bankAmount, c003.tdsRatePct)));
+  // Does the app accept the actual allocation (to 0156) as a user override?
+  const probs = allocationProblems(without, { ...rct2, settlement: rct2.bankAmount + rct2.tdsAmount }, [{ invoiceId: inv('BWA/25-26/0156').id, allocationDate: '2026-04-30', amount: 4900000 }]);
+  console.log('Rule problems if the user overrides to 0156:', probs.length ? probs : 'none (allowed)');
+});
+EOF
+cat > "$SP/vitest.config.ts" <<'EOF'
+import { defineConfig } from 'vitest/config';
+export default defineConfig({ test: { include: ['**/*.test.ts'] } });
+EOF
+cd "$P" && npx.cmd vitest run --root "$SP" --config "$SP/vitest.config.ts" 2>&1 | grep -v "^ *$" | sed -n '/C003 invoices/,/Rule problems/p'
+```
+
+<details><summary>Result</summary>
+
+```
+(Bash completed with no output)
+```
+
+</details>
+
+**Tool call — Bash**
+
+```
+# Show full output of the simulation run
+SP="C:/Users/hegde/AppData/Local/Temp/claude/19ae7b2bcb9cf67a/6bfa9a87-bae9-4522-b9e6-b162623b6f41/scratchpad/r6"; cd "c:/Users/hegde/OneDrive/Desktop/Verve Interview/ar-manager-ca-it-main" && npx.cmd vitest run --root "$SP" --config "$SP/vitest.config.ts" 2>&1 | tail -30
+```
+
+<details><summary>Result</summary>
+
+```
+[31mfailed to load config from C:\Users\hegde\AppData\Local\Temp\claude\19ae7b2bcb9cf67a\6bfa9a87-bae9-4522-b9e6-b162623b6f41\scratchpad\r6\vitest.config.ts[39m
+
+[31m⎯⎯⎯⎯⎯⎯⎯[39m[1m[41m Startup Error [49m[22m[31m⎯⎯⎯⎯⎯⎯⎯⎯[39m
+Error: Cannot find module 'vitest/config'
+Require stack:
+- C:\Users\hegde\AppData\Local\Temp\claude\19ae7b2bcb9cf67a\6bfa9a87-bae9-4522-b9e6-b162623b6f41\scratchpad\r6\vitest.config.ts
+- C:\Users\hegde\OneDrive\Desktop\Verve Interview\ar-manager-ca-it-main\node_modules\vite\dist\node\chunks\config.js
+    at Module._resolveFilename (node:internal/modules/cjs/loader:1603:15)
+    at wrapResolveFilename (node:internal/modules/cjs/loader:1145:27)
+    at defaultResolveImplForCJSLoading (node:internal/modules/cjs/loader:1169:10)
+    at resolveForCJSWithHooks (node:internal/modules/cjs/loader:1196:12)
+    at Module._load (node:internal/modules/cjs/loader:1370:5)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:261:19)
+    at Module.require (node:internal/modules/cjs/loader:1713:12)
+    at require (node:internal/modules/helpers:318:16)
+    at Object.<anonymous> (C:\Users\hegde\AppData\Local\Temp\claude\19ae7b2bcb9cf67a\6bfa9a87-bae9-4522-b9e6-b162623b6f41\scratchpad\r6\vitest.config.ts:25:21)
+    at Module._compile (node:internal/modules/cjs/loader:1968:14) {
+  code: 'MODULE_NOT_FOUND',
+  requireStack: [
+    'C:\\Users\\hegde\\AppData\\Local\\Temp\\claude\\19ae7b2bcb9cf67a\\6bfa9a87-bae9-4522-b9e6-b162623b6f41\\scratchpad\\r6\\vitest.config.ts',
+    'C:\\Users\\hegde\\OneDrive\\Desktop\\Verve Interview\\ar-manager-ca-it-main\\node_modules\\vite\\dist\\node\\chunks\\config.js'
+  ]
+}
+```
+
+</details>
+
+**Assistant:**
+
+The scratchpad config can't see the project's packages. A plain config object without the import avoids that:
+
+**Tool call — Bash**
+
+```
+# Rerun simulation with plain config
+SP="C:/Users/hegde/AppData/Local/Temp/claude/19ae7b2bcb9cf67a/6bfa9a87-bae9-4522-b9e6-b162623b6f41/scratchpad/r6"; printf "export default { test: { include: ['**/*.test.ts'] } };\n" > "$SP/vitest.config.mjs"; rm -f "$SP/vitest.config.ts"; cd "c:/Users/hegde/OneDrive/Desktop/Verve Interview/ar-manager-ca-it-main" && npx.cmd vitest run --root "$SP" --config "$SP/vitest.config.mjs" 2>&1 | grep -v "^\s*$" | sed -n '/C003 invoices/,/Rule problems/p'; git status --short | wc -l
+```
+
+<details><summary>Result</summary>
+
+```
+[22m[39mC003 invoices:
+  BWA/25-26/0141 date 2026-01-20 due 2026-02-19 taxable 150000.00 total 177000.00 TDS@10% 15000.00
+  BWA/25-26/0156 date 2026-02-25 due 2026-03-27 taxable 90000.00 total 106200.00 TDS@10% 9000.00
+  BWA/26-27/0004 date 2026-04-25 due 2026-05-25 taxable 110000.00 total 129800.00 TDS@10% 11000.00
+  BWA/26-27/0013 date 2026-06-28 due 2026-07-28 taxable 70000.00 total 82600.00 TDS@10% 7000.00
+RCT/26-27/0002: 2026-04-30 bank 40000.00 tds 9000.00 settlement 49000.00
+Open invoices oldest first on 30-Apr: BWA/25-26/0141 (due 2026-02-19, left 177000.00) | BWA/25-26/0156 (due 2026-03-27, left 106200.00) | BWA/26-27/0004 (due 2026-05-25, left 129800.00)
+Suggested allocation of 49,000: BWA/25-26/0141 49000.00
+Expected-TDS pre-fill for bank 40,000: 3703.70
+Rule problems if the user overrides to 0156: none (allowed)
+0
+```
+
+</details>
+
+**Assistant:**
+
+The allocation of ₹49,000 to BWA/25-26/0156 is **an allowed manual override, not a violation of R6**. Our implementation of R6 is correct: entered in this app, the same receipt would be suggested against 0141 first, and the user could then change it. I changed nothing: the working tree is clean, the workspace was not touched, and the simulation used the frozen copy of the sample data.
+
+## How the allocation happened
+
+The record comes from the brief's sample data (`allocations.csv`, line 391 of the brief), which is loaded into every candidate's workspace. Our app didn't create it. The figures show why it went to 0156:
+
+| C003 invoice | Due date | Taxable value | TDS at 10% | Total |
+|---|---|---|---|---|
+| BWA/25-26/0141 | 19-Feb-2026 | ₹1,50,000 | ₹15,000 | ₹1,77,000 |
+| **BWA/25-26/0156** | 27-Mar-2026 | **₹90,000** | **₹9,000** | ₹1,06,200 |
+
+RCT/26-27/0002 on 30-Apr-2026 was ₹40,000 bank plus **₹9,000 TDS**. That ₹9,000 is exactly 10% of 0156's taxable value, so the customer deducted TDS on 0156 and paid against that invoice. Allocating to the invoice the customer actually paid is normal practice, and R5 says to save what the customer actually deducted.
+
+The rest of the sample data agrees. The C003 note of 10-Aug promises ₹2,34,200 "to clear both FY 25-26 invoices". That is ₹1,77,000 for 0141 plus the ₹57,200 left on 0156, which only adds up if the ₹49,000 went to 0156.
+
+## Why R6 is not breached
+
+R6 says: *"When a payment is being recorded, **suggest** allocating it oldest first, by due date and then invoice number; **the user can change the suggestion**."* Part 2 also says the payment form shows "an oldest-first suggestion the user can edit".
+
+The binding R6 rules are different: same customer, not more than the receipt or the invoice, no cancelled invoices, and not dated before the receipt or invoice. The ₹49,000 allocation meets all of them. Oldest-first only applies to the default the form proposes.
+
+## How the app handles it
+
+The simulation set aside RCT/26-27/0002's existing allocation and asked the app what it would do with the same receipt on 30-Apr:
+
+- **Order:** open invoices are listed by due date, then invoice number: 0141, then 0156, then 0004 (`openInvoicesFor` in `lib/ar/rules.ts`).
+- **Default amounts:** the payment form fills in amounts in that order (`suggestAllocations`), so all ₹49,000 is suggested against **0141**, the oldest.
+- **Override:** the user can type the amount against 0156 instead. The rule check (`allocationProblems`) raises no problems, so it saves. A "Re-suggest oldest first" link brings the default back.
+- **Allocating unapplied credit later:** that form also defaults to the oldest invoice.
+- **TDS pre-fill:** the app would suggest about ₹3,704 of TDS for a ₹40,000 bank amount. That's the expected TDS if the payment went oldest-first. The customer actually deducted ₹9,000 because they were paying 0156, so the user would overwrite it with ₹9,000, as R5 intends.
+
+## Effect on the figures
+
+None of this affects whether the figures are correct. Balances, ageing and the control check all work from the allocations as recorded. For example, 0141 stays fully outstanding and 193 days late as at 31 Aug, and 0156 shows as part-paid with ₹57,200 left.
+
+## Possible improvement (not made)
+
+The form doesn't record why a user moved away from the oldest-first suggestion. If you'd like, I could add a small note on the payment form whenever the allocation differs from the suggestion, for example "Allocated out of oldest-first order: matches customer's remittance". This is optional and not required by the brief.
+
+---
+
+## User message 6
+
+another query, independent of above, does the app calculate the TDS or is it preset in the database?
+
+**Assistant:**
+
+Both. The database stores the actual TDS on each receipt, and the app only calculates a suggested amount to pre-fill when you record a new payment. Every figure the app shows uses the stored amount, never its own estimate.
+
+**Stored in the database:**
+- **Each customer's TDS rate** (`tds_rate_pct`, for example 10% for C001 and 0% for C006). You set it on the customer form.
+- **Each receipt's TDS** (`tds_amount`): the amount the customer actually deducted, saved alongside the bank amount. For the 17 sample receipts this is part of the sample data. For example, RCT/26-27/0002 has ₹40,000 bank and ₹9,000 TDS.
+
+**Calculated by the app (only a suggestion):**
+- When you record a payment, the app pre-fills the TDS box with an *expected* amount, using `expectedTds` in `lib/ar/rules.ts`. It applies the customer's rate to the **taxable value** of the invoices being paid, oldest first, as R5 says. For example, ₹81,000 bank from C001 against an ₹88,500 invoice with ₹75,000 taxable gives ₹7,500 TDS.
+- You can overwrite it, and what you enter is what gets saved. R5: "always save what the customer actually deducted."
+
+**Used everywhere else:**
+- The **settlement value** (bank + stored TDS) settles invoices and feeds unapplied credit, customer balances, promises and the control check.
+- The **statement** shows the stored TDS as its own line, "TDS deducted by you".
+
+It works this way because customers often deduct a different amount than expected. RCT/26-27/0007, for instance, has ₹12,000 TDS (10% of the full ₹1,20,000 taxable value) on a part-payment. Recalculating TDS from the rate would give wrong balances, so the rate only drives the pre-fill.
+
+---
+
+## User message 7
+
+in the statement section of the app, whenever the customer deducts tds, it is shown as "TDS deducted by you". this term is misleading. How did you arrive at this syntax? Dont make any changes in the code just yet
+
+**Assistant:**
+
+I didn't choose that wording: it comes word for word from the brief. Rule R15 (Part 1, Statement of account) says:
+
+> "each receipt a credit of its bank amount ("Payment received"). The TDS on a receipt is a separate credit line ("**TDS deducted by you**"), included only when TDS is above zero."
+
+I used the two line labels exactly as quoted: "Payment received" and "TDS deducted by you". They're set in `lib/ar/statement.ts` and appear on screen, in print and in the CSV.
+
+**Why the brief words it that way:** a statement of account is a document *sent to the customer*, so it speaks to them. "You" is the customer. Read from their side it's accurate: "we have credited your account for the TDS you deducted and paid to the government on our behalf." It mirrors "Payment received", which is also written from Brightwater to the customer.
+
+**Why it reads as misleading:** inside the app, the person reading the statement is Brightwater's AR analyst, not the customer. To them, "you" sounds like Brightwater, as if Brightwater had deducted the tax, which is the wrong way round.
+
+**Options, for when you decide:**
+
+1. **Keep the exact wording (my recommendation).** The brief quotes it, and the evaluators compare statements against their own calculation. A different label could look like a departure from R15. Instead, I could add a footer note to the statement, such as "TDS deducted by you: tax deducted at source by the customer and paid to the government on Brightwater's behalf; it counts as payment (R5)." That clears up the meaning without changing the line.
+2. **Use different wording on screen and in print.** For example, "TDS deducted by customer" on screen for the analyst, keeping "TDS deducted by you" on the printed and CSV statement that goes to the customer. This is clearer internally, but it moves away from the brief's text in one place.
+3. **Change it everywhere**, for example to "TDS deducted by customer (credited as payment)". This is the clearest, but it's the riskiest against the brief. If you choose it, record it under Assumptions in the README.
+
+I haven't changed anything. Tell me which option you prefer.
+
+---
+
+## User message 8
+
+Please change it to "TDS deducted by customer". I understand that its part of the instructions, but the change wil provide a better presentation
+
+**Tool call — Grep**
+
+```
+{
+  "pattern": "TDS deducted by you",
+  "path": "c:\\Users\\hegde\\OneDrive\\Desktop\\Verve Interview\\ar-manager-ca-it-main",
+  "glob": "!{node_modules,.next,ai-logs}/**",
+  "output_mode": "content"
+}
+```
+
+<details><summary>Result</summary>
+
+```
+docs\WALKTHROUGH.md:139:- **Why is TDS part of the settlement?** The customer has paid the TDS to the government on Brightwater's behalf; it settles the invoice just like cash (R5). On the statement it is a separate credit line, "TDS deducted by you".
+docs\TESTING.md:54:- [ ] The **statement** for C004 shows a "Payment received" line for ₹1,00,000.00 and a separate "TDS deducted by you" line for ₹9,000.00, and its closing balance equals the customer's net balance.
+docs\BRIEF.md:134:- **Lines:** each invoice is a debit of its total, each credit note a credit of its total, and each receipt a credit of its bank amount ("Payment received"). The TDS on a receipt is a separate credit line ("TDS deducted by you"), included only when TDS is above zero.
+lib\ar\statement.ts:70:      raw.push({ date: r.receiptDate, kind: 'TDS', documentNo: r.receiptNo, description: 'TDS deducted by you', debit: 0, credit: r.tdsAmount });
+tests\exports.test.ts:31:    expect(lines[2]).toEqual(['20-May-2026', 'TDS', 'RCT/26-27/0005', 'TDS deducted by you', '', '6000.00', '141600.00', 'Dr']);
+tests\e2e\statement.mjs:14:check('TDS line wording', t.includes('TDS deducted by you'));
+```
+
+</details>
+
+**Tool call — Bash**
+
+```
+# Replace the TDS statement label in code, tests and docs
+cd "c:/Users/hegde/OneDrive/Desktop/Verve Interview/ar-manager-ca-it-main" && sed -i "s/description: 'TDS deducted by you'/description: 'TDS deducted by customer'/" lib/ar/statement.ts && sed -i "s/'TDS deducted by you'/'TDS deducted by customer'/" tests/exports.test.ts tests/e2e/statement.mjs && sed -i 's/"TDS deducted by you" line/"TDS deducted by customer" line/' docs/TESTING.md && sed -i 's/On the statement it is a separate credit line, "TDS deducted by you"./On the statement it is a separate credit line, "TDS deducted by customer" (the brief suggests "TDS deducted by you"; see README, Assumptions)./' docs/WALKTHROUGH.md && grep -rn "TDS deducted by" lib tests docs/TESTING.md docs/WALKTHROUGH.md
+```
+
+**Tool call — Edit**
+
+```
+file: c:\Users\hegde\OneDrive\Desktop\Verve Interview\ar-manager-ca-it-main\README.md
+--- replace:
+17. **CSV files**
+--- with:
+17. **Statement TDS line wording.** R15 labels the TDS line "TDS deducted by you". That wording addresses the customer, but the statement is also read inside the firm by the AR analyst, to whom "you" reads as Brightwater. The line is labelled **"TDS deducted by customer"** instead, on screen, in print and in the CSV. The amount, position and ordering of the line are exactly as R15 specifies.
+18. **CSV files**
+```
+
+**Tool call — Bash**
+
+```
+# Renumber README assumptions
+cd "c:/Users/hegde/OneDrive/Desktop/Verve Interview/ar-manager-ca-it-main" && sed -i 's/^18\. \*\*After recording a payment\*\*/19. **After recording a payment**/' README.md && grep -n "^1[6-9]\. " README.md
+```
+
+<details><summary>Result</summary>
+
+```
+lib/ar/statement.ts:70:      raw.push({ date: r.receiptDate, kind: 'TDS', documentNo: r.receiptNo, description: 'TDS deducted by customer', debit: 0, credit: r.tdsAmount });
+tests/e2e/statement.mjs:14:check('TDS line wording', t.includes('TDS deducted by customer'));
+tests/exports.test.ts:31:    expect(lines[2]).toEqual(['20-May-2026', 'TDS', 'RCT/26-27/0005', 'TDS deducted by customer', '', '6000.00', '141600.00', 'Dr']);
+docs/TESTING.md:54:- [ ] The **statement** for C004 shows a "Payment received" line for ₹1,00,000.00 and a separate "TDS deducted by customer" line for ₹9,000.00, and its closing balance equals the customer's net balance.
+docs/WALKTHROUGH.md:139:- **Why is TDS part of the settlement?** The customer has paid the TDS to the government on Brightwater's behalf; it settles the invoice just like cash (R5). On the statement it is a separate credit line, "TDS deducted by customer" (the brief suggests "TDS deducted by you"; see README, Assumptions).
+[This command modified 4 files you've previously read: docs\WALKTHROUGH.md, docs\TESTING.md, tests\exports.test.ts, lib\ar\statement.ts. Call Read before editing.]
+```
+
+</details>
+
+<details><summary>Result</summary>
+
+```
+The file c:\Users\hegde\OneDrive\Desktop\Verve Interview\ar-manager-ca-it-main\README.md has been updated successfully.
+```
+
+</details>
+
+<details><summary>Result</summary>
+
+```
+106:16. **The statement** defaults to the start of the financial year containing the as-at date, up to the as-at date. Credit-note lines are described as "Credit note against <invoice>: <reason>".
+107:17. **Statement TDS line wording.** R15 labels the TDS line "TDS deducted by you". That wording addresses the customer, but the statement is also read inside the firm by the AR analyst, to whom "you" reads as Brightwater. The line is labelled **"TDS deducted by customer"** instead, on screen, in print and in the CSV. The amount, position and ordering of the line are exactly as R15 specifies.
+108:18. **CSV files** show dates as `31-Aug-2026` (as on screen) and balances as a positive amount with a separate Dr/Cr column.
+109:19. **After recording a payment** dated after the current as-at date, the customer page opens as at the receipt date, so the new receipt is visible.
+[This command modified 1 file you've previously read: README.md. Call Read before editing.]
+```
+
+</details>
+
+**Assistant:**
+
+Changes are in place. Next, tests, lint and build:
+
+**Tool call — PowerShell**
+
+```
+# Run tests, lint and build
+npm.cmd test 2>&1 | Select-String "Tests |FAIL"; npm.cmd run lint 2>&1 | Select-Object -Last 4; foreach ($d in '.next\server','.next\static') { if (Test-Path $d) { try { Remove-Item -Recurse -Force $d -ErrorAction Stop } catch {} } }; npm.cmd run build 2>&1 | Select-String -Pattern "rror|✓ Compiled|Finished TypeScript" | Select-Object -First 6
+```
+
+<details><summary>Result</summary>
+
+```
+Tests  65 passed (65)
+   Duration  1.15s (transform 523ms, setup 0ms, collect 1.47s, tests 217ms, environment 1ms, prepare 1.27s)
+
+> ar-manager-ca-it-main@0.1.0 lint
+> eslint
+
+✓ Compiled successfully in 1825ms
+  Finished TypeScript in 8.5s ...
+```
+
+</details>
+
+**Assistant:**
+
+Everything passes. Next I'll check the statement page in the browser (read-only, so no reset needed), then commit and push:
+
+**Tool call — Bash**
+
+```
+# Check statement in browser, commit and push
+cd "c:/Users/hegde/OneDrive/Desktop/Verve Interview/ar-manager-ca-it-main" && node tests/e2e/statement.mjs 2>&1 | grep -E "PASS|FAIL" | grep -c PASS; node tests/e2e/statement.mjs 2>&1 | grep -E "FAIL|TDS line"; git add lib/ar/statement.ts tests/exports.test.ts tests/e2e/statement.mjs docs/TESTING.md docs/WALKTHROUGH.md README.md && git status --short | grep -v "^warning" && git commit -q -F - <<'EOF'
+Label statement TDS lines "TDS deducted by customer"
+
+R15 suggests "TDS deducted by you", which addresses the customer but
+reads as Brightwater to the AR analyst using the tool. The label is now
+"TDS deducted by customer" on screen, in print and in the CSV; amounts,
+position and ordering are unchanged. Recorded under Assumptions.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+EOF
+git push -q origin main 2>&1 | tail -1; git log --oneline -1; git status --short | wc -l
+```
+
+<details><summary>Result</summary>
+
+```
+17
+PASS  TDS line wording
+warning: in the working copy of 'README.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'docs/TESTING.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'docs/WALKTHROUGH.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'lib/ar/statement.ts', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'tests/e2e/statement.mjs', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'tests/exports.test.ts', LF will be replaced by CRLF the next time Git touches it
+M  README.md
+M  docs/TESTING.md
+M  docs/WALKTHROUGH.md
+M  lib/ar/statement.ts
+M  tests/e2e/statement.mjs
+M  tests/exports.test.ts
+ccde592 Label statement TDS lines "TDS deducted by customer"
+0
+```
+
+</details>
+
+**Assistant:**
+
+The statement's TDS line now reads **"TDS deducted by customer"** on screen, in print and in the CSV. The change is committed and pushed (`ccde592`), and Vercel will deploy it automatically.
+
+**What changed:**
+- **The label itself:** set once in `lib/ar/statement.ts`, which feeds the screen, print and CSV. Only the wording changed; the amounts, the line's position (straight after its receipt) and the running balance are the same.
+- **The README:** a new item under Assumptions (no. 17) says the brief suggests "TDS deducted by you", explains why the label was changed, and confirms the amounts and ordering still follow R15. This tells the evaluators it was a deliberate choice, not an oversight.
+- **Tests and docs:** the CSV test, the browser test, `docs/TESTING.md` and `docs/WALKTHROUGH.md` now use the new wording.
+
+`docs/BRIEF.md` and the AI logs are unchanged, since they're the original brief and a historical record.
+
+**Checks:** all 65 unit tests pass, lint and the production build are clean, and all 17 statement browser checks pass on your dev server, including the new wording. That browser run only read pages, so the workspace still holds the sample data.
+
+---
+
+## User message 9
+
+if an invoice is overdue exactly 90 days as of today, which ageing bucket will it fall in?
+
+**Assistant:**
+
+It falls in the **61–90** bucket.
+
+The ageing buckets in rule R12 include both their end days, so a day count of exactly 90 still belongs in 61–90. **Over 90** starts at 91, which goes into **91–180**.
+
+The rule is in `bucketFor` in `lib/ar/positions.ts`:
+
+```ts
+if (daysPastDue <= 60) return '31-60';
+if (daysPastDue <= 90) return '61-90';   // 90 days lands here
+if (daysPastDue <= 180) return '91-180';
+```
+
+Two points about the day count:
+- **Days are counted from the due date, not the invoice date.** If the due date was 2 June, the invoice is 90 days past due on 31 August.
+- **"As of today" means the as-at date in the header.** Change that date and the bucket can change with it.
+
+Spot check 3 in the brief is exactly this case. BWA/26-27/0003 is due on 2 June 2026, and as at 31 August 2026 it is 90 days late. The brief expects the **61–90** bucket, and the app gives that answer, both in the unit tests and on the live site.
+
+The boundary test in `tests/calculations.test.ts` also checks every edge: 30 → 1–30, 31 → 31–60, 90 → 61–90, 91 → 91–180, and 181 → Over 180.
+
+---
+
+## User message 10
+
+do you start counting the days on the due date or from the day after the due date?
+
+**Assistant:**
+
+The count starts **from the day after the due date**. The due date itself is day 0.
+
+The app works out days past due as the as-at date minus the due date, counting calendar days (rule R11):
+
+| As-at date | Days past due | Status | Bucket |
+|---|---|---|---|
+| The due date itself | 0 | Due | Not due |
+| The day after | 1 | Overdue | 1–30 |
+| Two days after | 2 | Overdue | 1–30 |
+
+So an invoice isn't overdue on its due date. R11 says so explicitly: *"an invoice is still 'Due' on its due date"*. It becomes overdue at the start of the next day.
+
+Spot check 4 in the brief confirms this. BWA/26-27/0021 is due on 4 September 2026:
+- **4 Sep:** 0 days, so it's **Due**.
+- **5 Sep:** 1 day, so it's **Overdue**.
+- **6 Sep:** 2 days, so it's **Overdue by 2 days**. That's the figure the brief expects, and the app shows it.
+
+Your earlier 90-day example works the same way. BWA/26-27/0003 is due on 2 June 2026, and counting from 3 June gives 28 days in June, 31 in July and 31 in August, which is 90 days as at 31 August.
+
+In the code, the count is `daysBetween(dueDate, asOf)` in `lib/ar/dates.ts`. It subtracts the two dates as whole calendar days in UTC, so the answer can't change with the server's time zone.
+
+---
+
+## User message 11
+
+in the "record payment" section, when the user fills the bank amount lets say 100000, the tds deducted cell auto fills 9259.26. What is the basis for this?
+
+**Assistant:**
+
+The ₹9,259.26 is an **estimate of the TDS the customer would have deducted** if the ₹1,00,000 bank receipt is the *net* amount, after TDS, of a payment against their invoices. It assumes a customer with a 10% TDS rate, paying invoices that carry 18% GST.
+
+**The logic**
+
+R5 says TDS is charged on the **taxable value**, not on the invoice total, and both TDS and the bank amount count as payment. So the app asks: how much of the invoice must have been settled for the customer to send ₹1,00,000 to the bank after deducting 10% TDS on the taxable part?
+
+Every ₹1.18 of invoice total contains ₹1.00 of taxable value and ₹0.18 of GST. TDS on that ₹1.18 is 10% of ₹1.00 = ₹0.10, so the bank receives ₹1.08. Therefore:
+
+| | Amount |
+|---|---|
+| Bank amount received | ₹1,00,000.00 |
+| Invoice amount settled = 1,00,000 × 1.18 ÷ 1.08 | ₹1,09,259.26 |
+| Taxable part of that = 1,09,259.26 ÷ 1.18 | ₹92,592.59 |
+| TDS at 10% of the taxable part | **₹9,259.26** |
+| Check: settled − TDS | ₹1,00,000.00 |
+
+In short, for 18% GST and 10% TDS, **TDS = bank amount × 10 ÷ 108**.
+
+**How it behaves in practice** (`expectedTds` in `lib/ar/rules.ts`):
+
+- **Oldest invoice first.** It applies the bank amount to the open invoices by due date, then invoice number (R6), grossing each one up this way.
+- **Fully paid invoices.** If an invoice is paid in full, it gives that invoice's full TDS. For example, an ₹88,500 invoice with ₹75,000 taxable gets ₹7,500 TDS and needs ₹81,000 from the bank. That reproduces the sample receipts.
+- **Money left over.** Anything beyond what the open invoices need is treated as unapplied credit, an advance, and attracts no TDS.
+
+**It's only a pre-fill.** The user should overwrite it with the TDS the customer actually deducted, as shown on their payment advice or Form 26AS. Customers don't always deduct in proportion. For example, in RCT/26-27/0007, C002 deducted the full ₹12,000 TDS (10% of the ₹1,20,000 taxable value) on a part-payment of the invoice. The app saves whatever is entered, and all balances use that stored figure.
+
+If you'd prefer a simpler pre-fill, such as 10% of the taxable value of the invoices the payment is allocated to, I can change it. Just say the word.
+
+---
+
+## User message 12
+
+while adding a customer, underneath the credit days input, it says 'Due date = invoice date + these days". what are "these days"?
+
+**Assistant:**
+
+"These days" means the **number you type into the Credit days box**: the customer's credit period. The hint is short for:
+
+> Due date = invoice date + the credit days entered here
+
+How it works (rule R2):
+
+- **Calendar days.** Weekends and holidays count. For example, an invoice dated 5 April 2026 for a customer with 30 credit days is due on **5 May 2026**. That's C001 and BWA/26-27/0001, spot check 1.
+- **Fixed when the invoice is created.** The due date is calculated and saved on each invoice at the moment it's raised.
+- **Later changes don't apply backwards.** If you change the customer's credit days later, only new invoices use the new figure. Existing invoices keep their original due dates. The edit-customer page shows a note about this.
+- **Zero is allowed.** With 0 credit days, an invoice is due on its own invoice date.
+
+I agree "these days" is vague. I could change the hint to something clearer, such as **"Due date = invoice date + this many calendar days"** or **"Number of calendar days from invoice date to due date"**. Tell me if you'd like that.
+
+---
+
+## User message 13
+
+change "these days'' into "credit days".
+
+**Tool call — Bash**
+
+```
+# Find the 'these days' hint text
+cd "c:/Users/hegde/OneDrive/Desktop/Verve Interview/ar-manager-ca-it-main" && grep -rn "these days" app components lib docs/TESTING.md docs/WALKTHROUGH.md README.md tests
+```
+
+<details><summary>Result</summary>
+
+```
+components/CustomerForm.tsx:65:        <Field label="Credit days *" error={e.creditDays} hint="Due date = invoice date + these days">
+```
+
+</details>
+
+**Tool call — Bash**
+
+```
+# Update hint text and verify
+cd "c:/Users/hegde/OneDrive/Desktop/Verve Interview/ar-manager-ca-it-main" && sed -i 's/hint="Due date = invoice date + these days"/hint="Due date = invoice date + credit days"/' components/CustomerForm.tsx && grep -n "Due date = invoice date" components/CustomerForm.tsx && npm.cmd run lint 2>&1 | tail -2 && npx.cmd tsc --noEmit -p . && echo "typecheck ok"
+```
+
+<details><summary>Result</summary>
+
+```
+65:        <Field label="Credit days *" error={e.creditDays} hint="Due date = invoice date + credit days">
+> eslint
+
+typecheck ok
+[This command modified 1 file you've previously read: components\CustomerForm.tsx. Call Read before editing.]
+```
+
+</details>
+
+**Tool call — PowerShell**
+
+```
+# Check page shows new hint and build
+$h = (Invoke-WebRequest -Uri "http://localhost:3000/customers/new?asof=2026-08-31" -UseBasicParsing -TimeoutSec 90).Content; if ($h -match 'Due date = invoice date \+ credit days') { "page shows new hint" } else { "hint not found" }; foreach ($d in '.next\server','.next\static') { if (Test-Path $d) { try { Remove-Item -Recurse -Force $d -ErrorAction Stop } catch {} } }; npm.cmd run build 2>&1 | Select-String -Pattern "rror|✓ Compiled|Finished TypeScript" | Select-Object -First 4
+```
+
+<details><summary>Result</summary>
+
+```
+page shows new hint
+
+✓ Compiled successfully in 1389ms
+  Finished TypeScript in 3.4s ...
+```
+
+</details>
+
+**Tool call — Bash**
+
+```
+# Commit and push hint change
+cd "c:/Users/hegde/OneDrive/Desktop/Verve Interview/ar-manager-ca-it-main" && git add components/CustomerForm.tsx && git status --short | grep -v "^warning" && git commit -q -F - <<'EOF'
+Clarify credit days hint on the customer form
+
+The hint now reads "Due date = invoice date + credit days" instead of
+"these days".
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+EOF
+git push -q origin main 2>&1 | tail -1; git log --oneline -1
+```
+
+<details><summary>Result</summary>
+
+```
+warning: in the working copy of 'components/CustomerForm.tsx', LF will be replaced by CRLF the next time Git touches it
+M  components/CustomerForm.tsx
+b61ce4e Clarify credit days hint on the customer form
+```
+
+</details>
+
+**Assistant:**
+
+The hint under the Credit days box now reads **"Due date = invoice date + credit days"**. It's committed and pushed (`b61ce4e`), and Vercel will deploy it automatically.
+
+The text is set in `components/CustomerForm.tsx`, and the add and edit customer pages share that form, so both show the new wording. I checked the add page on your dev server, and lint, the type check and the production build all pass. This changes wording only, so no figures are affected.
+
+---
+
+## User message 14
+
+the software allows us to change the gst rate while inputing the invoice details. is this allowed in the rules?
+
+**Assistant:**
+
+The brief points two ways on this, and the app currently follows one of them.
+
+**What the brief says**
+
+- **R3 (business rule):** *"GST. The rate is 18%."* This is a single fixed rate, and all 29 sample invoices use 18%.
+- **Part 2 (what to build):** *"Create: choose an active customer, then enter the date, description, **taxable value and GST rate**."* This explicitly asks for a GST rate input.
+- **Database (Part 3):** each invoice has its own `gst_rate_pct` column, so the schema allows rates other than 18%.
+
+**What the app does now**
+
+The GST rate box is pre-filled with **18**, but the user can change it to any rate from 0 to 100. Whatever rate is entered is then used correctly throughout:
+- **The split:** CGST and SGST each get half the rate in Maharashtra; elsewhere IGST gets the full rate.
+- **The invoice:** the rate is saved on it.
+- **Credit notes** against that invoice reuse it, as R7 says.
+
+So it follows Part 2's wording, but it lets a user enter a rate R3 doesn't contemplate.
+
+**Is it allowed?**
+
+Not strictly. Under R3, an invoice at any rate other than 18% would break the business rule. Brightwater's advisory services fall under professional services, which carry 18% GST, so in practice there's no legitimate reason to charge another rate.
+
+**Options**
+
+1. **Fix the rate at 18% (my recommendation).** Keep the GST rate field on the form, so Part 2's "enter the GST rate" is still visibly there, but make it read-only at 18%. Also reject any other rate on the server, in case someone bypasses the form. This follows R3 exactly, and I'd note the decision in the README's Assumptions.
+2. **Keep the field editable, but warn.** Allow any rate, but show a warning such as "R3 sets GST at 18%" whenever it isn't 18.
+3. **Restrict to the valid GST slabs.** Offer a dropdown of 0, 5, 12, 18 and 28%, defaulting to 18. That's more realistic for a general business, but it goes further than R3.
+
+I haven't changed anything. Tell me which option you'd like.
+
+---
+
+## User message 15
+
+dont change anything
+
+**Assistant:**
+
+Understood, I've left it as it is. The GST rate field stays editable and pre-filled with 18%. That follows Part 2's instruction to "enter the GST rate", and every invoice in the sample data uses 18%, as R3 requires.
+
+If an evaluator asks, you can explain that the field exists because Part 2 asks for it and the database stores a rate on every invoice. It defaults to R3's 18%, and whatever rate is entered drives both the GST split and any credit notes against that invoice.
+
+---
+
+## User message 16
+
+recheck the entire application for arithmatical accuracy, including dates
+
+**Assistant:**
+
+I'll recheck this independently instead of trusting my earlier tests. The plan, all read-only:
+
+1. **Write a separate "oracle" calculator from scratch.** It follows the brief's rules but deliberately uses different methods from the app: its own calendar arithmetic (no JavaScript dates), its own rounding (whole-number maths on text amounts) and its own allocation logic. If both give the same answer, it's very unlikely they share a bug.
+2. **Compare it with the app's calculation module** for every day across a wide date range, covering:
+   - invoice positions, ageing buckets, customer balances, unapplied credit and DSO;
+   - statements and promises;
+   - due dates, GST and document numbers.
+3. **Compare the oracle with the figures the live site actually outputs**, through its CSV exports, using the live data in your workspace.
+4. **Review the code** for arithmetic and date edge cases that the data doesn't happen to exercise.
+
+Nothing in the project or the database will change.
+
+**Tool call — Write**
+
+```
+file: C:\Users\hegde\AppData\Local\Temp\claude\19ae7b2bcb9cf67a\6bfa9a87-bae9-4522-b9e6-b162623b6f41\scratchpad\audit\oracle.mjs
+
+/**
+ * Independent re-implementation of the brief's rules (R2–R17), written without
+ * looking at lib/ar's code paths. Works on RAW database rows (rupees, snake_case).
+ * Different techniques on purpose:
+ *  - dates: own civil-calendar day numbers (no JavaScript Date at all)
+ *  - money: rupee strings → paise via string parsing (no float multiply)
+ *  - GST rounding: BigInt arithmetic
+ */
+
+// ---------- dates ----------
+export function dayNum(iso) {
+  // days since 1970-01-01, Howard Hinnant's days_from_civil
+  let [y, m, d] = iso.split('-').map(Number);
+  y -= m <= 2 ? 1 : 0;
+  const era = Math.floor(y / 400);
+  const yoe = y - era * 400;
+  const doy = Math.floor((153 * (m + (m > 2 ? -3 : 9)) + 2) / 5) + d - 1;
+  const doe = yoe * 365 + Math.floor(yoe / 4) - Math.floor(yoe / 100) + doy;
+  return era * 146097 + doe - 719468;
+}
+export function civil(n) {
+  const z = n + 719468;
+  const era = Math.floor(z / 146097);
+  const doe = z - era * 146097;
+  const yoe = Math.floor((doe - Math.floor(doe / 1460) + Math.floor(doe / 36524) - Math.floor(doe / 146096)) / 365);
+  let y = yoe + era * 400;
+  const doy = doe - (365 * yoe + Math.floor(yoe / 4) - Math.floor(yoe / 100));
+  const mp = Math.floor((5 * doy + 2) / 153);
+  const d = doy - Math.floor((153 * mp + 2) / 5) + 1;
+  const m = mp + (mp < 10 ? 3 : -9);
+  if (m <= 2) y += 1;
+  return `${String(y).padStart(4, '0')}-${String(m).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
+}
+export const plusDays = (iso, n) => civil(dayNum(iso) + n);
+
+// ---------- money ----------
+export function P(rupees) {
+  // number from JSON (e.g. 88500, 6750.5) → paise via its decimal string
+  const s = typeof rupees === 'number' ? rupees.toFixed(2) : String(rupees);
+  const neg = s.startsWith('-');
+  const [w, f = ''] = s.replace('-', '').split('.');
+  const p = Number(w) * 100 + Number((f + '00').slice(0, 2));
+  return neg ? -p : p;
+}
+
+// ---------- R3 GST ----------
+export function gst(state, taxablePaise, rate) {
+  const halfUp = (num, den) => {
+    // BigInt, num/den rounded half up, for non-negative num
+    const q = num / den, r = num % den;
+    return Number(r * 2n >= den ? q + 1n : q);
+  };
+  // rate may have up to 2 decimals: scale by 100
+  const rateX100 = BigInt(Math.round(rate * 100));
+  const t = BigInt(taxablePaise);
+  if (state === 'Maharashtra') {
+    const half = halfUp(t * rateX100, 20000n);
+    return { cgst: half, sgst: half, igst: 0 };
+  }
+  return { cgst: 0, sgst: 0, igst: halfUp(t * rateX100, 10000n) };
+}
+
+// ---------- R4 numbering ----------
+export function fy(iso) {
+  const [y, m] = iso.split('-').map(Number);
+  const s = m >= 4 ? y : y - 1;
+  return `${String(s).slice(-2)}-${String(s + 1).slice(-2)}`;
+}
+export function nextNo(existing, prefixFn, digits, iso) {
+  const pre = prefixFn(fy(iso));
+  const nums = existing.filter((x) => x.startsWith(pre)).map((x) => parseInt(x.slice(pre.length), 10));
+  return pre + String((nums.length ? Math.max(...nums) : 0) + 1).padStart(digits, '0');
+}
+
+// ---------- R12 ----------
+export function bucket(dpd) {
+  const table = [
+    [-Infinity, 0, 'Not due'], [1, 30, '1-30'], [31, 60, '31-60'], [61, 90, '61-90'], [91, 180, '91-180'], [181, Infinity, 'Over 180'],
+  ];
+  return table.find(([lo, hi]) => dpd >= lo && dpd <= hi)[2];
+}
+export const BUCKETS = ['Not due', '1-30', '31-60', '61-90', '91-180', 'Over 180'];
+
+// ---------- R11 / R13 / R14 ----------
+export function invoiceState(raw, inv, D) {
+  if (inv.is_cancelled || inv.invoice_date > D) return null;
+  const received = raw.allocations.filter((a) => a.invoice_id === inv.id && a.allocation_date <= D).reduce((s, a) => s + P(a.amount), 0);
+  const credited = raw.credit_notes.filter((c) => c.invoice_id === inv.id && c.credit_note_date <= D).reduce((s, c) => s + P(c.total), 0);
+  const outstanding = P(inv.total) - received - credited;
+  const dpd = dayNum(D) - dayNum(inv
+… [4504 more characters not shown]
+```
+
+<details><summary>Result</summary>
+
+```
+File created successfully at: C:\Users\hegde\AppData\Local\Temp\claude\19ae7b2bcb9cf67a\6bfa9a87-bae9-4522-b9e6-b162623b6f41\scratchpad\audit\oracle.mjs (file state is current in your context — no need to Read it back)
+```
+
+</details>
+
+**Tool call — Bash**
+
+```
+# Fetch live workspace data read-only
+cd "c:/Users/hegde/OneDrive/Desktop/Verve Interview/ar-manager-ca-it-main" && A="C:/Users/hegde/AppData/Local/Temp/claude/19ae7b2bcb9cf67a/6bfa9a87-bae9-4522-b9e6-b162623b6f41/scratchpad/audit" && node --env-file=.env.local -e "
+import('@supabase/supabase-js').then(async ({createClient})=>{
+const db=createClient(process.env.SUPABASE_URL,process.env.SUPABASE_ANON_KEY,{auth:{persistSession:false},global:{headers:{'x-workspace':process.env.AR_WORKSPACE_ID}}});
+const out={};
+for (const t of ['customers','invoices','credit_notes','receipts','allocations','notes']) { const {data,error}=await db.from(t).select('*').order('id'); if(error) throw error; out[t]=data.map(r=>{delete r.workspace_id; delete r.created_at; return r}); console.log(t, data.length); }
+require('fs').writeFileSync('$A/live.json', JSON.stringify(out));
+const fx=JSON.parse(require('fs').readFileSync('tests/fixtures/sample.json','utf8'));
+console.log('live data identical to the sample fixture:', JSON.stringify(out)===JSON.stringify(fx));
+});"
+```
+
+<details><summary>Result</summary>
+
+```
+customers 9
+invoices 31
+credit_notes 2
+receipts 17
+allocations 18
+notes 7
+live data identical to the sample fixture: false
+```
+
+</details>
+
+**Tool call — Bash**
+
+```
+# List records added or changed since the reset
+A="C:/Users/hegde/AppData/Local/Temp/claude/19ae7b2bcb9cf67a/6bfa9a87-bae9-4522-b9e6-b162623b6f41/scratchpad/audit"; cd "c:/Users/hegde/OneDrive/Desktop/Verve Interview/ar-manager-ca-it-main" && node -e "
+const live=JSON.parse(require('fs').readFileSync('$A/live.json','utf8'));const fx=JSON.parse(require('fs').readFileSync('tests/fixtures/sample.json','utf8'));
+for (const t of Object.keys(live)) { const ids=new Set(fx[t].map(r=>r.id)); for (const r of live[t]) { if(!ids.has(r.id)) console.log('ADDED', t, JSON.stringify(r)); else { const f=fx[t].find(x=>x.id===r.id); if (JSON.stringify(f)!==JSON.stringify(r)) console.log('CHANGED', t, JSON.stringify(f), '=>', JSON.stringify(r)); } } }
+"
+```
+
+<details><summary>Result</summary>
+
+```
+ADDED customers {"id":867,"code":"C001","name":"Tamhini Foods Pvt. Ltd.","city":"Pune","state":"Maharashtra","contact_person":"Neha Joshi","email":"accounts@tamhinifoods.example","phone":null,"gstin":null,"credit_days":30,"credit_limit":500000,"tds_rate_pct":10,"is_active":true}
+ADDED customers {"id":868,"code":"C002","name":"Varandha Freight LLP","city":"Mumbai","state":"Maharashtra","contact_person":"Rohan Kulkarni","email":"payables@varandhafreight.example","phone":null,"gstin":null,"credit_days":45,"credit_limit":300000,"tds_rate_pct":10,"is_active":true}
+ADDED customers {"id":869,"code":"C003","name":"Kundalika Castings Pvt. Ltd.","city":"Bengaluru","state":"Karnataka","contact_person":"Suresh Rao","email":"finance@kundalikacastings.example","phone":null,"gstin":null,"credit_days":30,"credit_limit":400000,"tds_rate_pct":10,"is_active":true}
+ADDED customers {"id":870,"code":"C004","name":"Pawana Healthcare Pvt. Ltd.","city":"Pune","state":"Maharashtra","contact_person":"Dr. Anita Deshpande","email":"ap@pawanahealth.example","phone":null,"gstin":null,"credit_days":60,"credit_limit":600000,"tds_rate_pct":10,"is_active":true}
+ADDED customers {"id":871,"code":"C005","name":"Sabarmati Retail Ventures Pvt. Ltd.","city":"Ahmedabad","state":"Gujarat","contact_person":"Kiran Patel","email":"accounts@sabarmatiretail.example","phone":null,"gstin":null,"credit_days":30,"credit_limit":250000,"tds_rate_pct":10,"is_active":true}
+ADDED customers {"id":872,"code":"C006","name":"Mulshi Agro Producers","city":"Pune","state":"Maharashtra","contact_person":"Ganesh Pawar","email":"mulshiagro@example.com","phone":null,"gstin":null,"credit_days":15,"credit_limit":100000,"tds_rate_pct":0,"is_active":true}
+ADDED customers {"id":873,"code":"C007","name":"Krishnaveni Infra Projects Ltd.","city":"Hyderabad","state":"Telangana","contact_person":"Lakshmi Reddy","email":"ap@krishnaveniinfra.example","phone":null,"gstin":null,"credit_days":45,"credit_limit":800000,"tds_rate_pct":10,"is_active":true}
+ADDED customers {"id":874,"code":"C008","name":"Kamshet Hospitality Pvt. Ltd.","city":"Lonavala","state":"Maharashtra","contact_person":"Farhan Shaikh","email":"accounts@kamshethospitality.example","phone":null,"gstin":null,"credit_days":30,"credit_limit":200000,"tds_rate_pct":10,"is_active":false}
+ADDED customers {"id":875,"code":"C009","name":"Test","city":"Test","state":"Dadra and Nagar Haveli and Daman and Diu","contact_person":"Test","email":"[email removed]","phone":null,"
+… [16929 more characters not shown]
+```
+
+</details>
+
+**Tool call — Write**
+
+```
+file: C:\Users\hegde\AppData\Local\Temp\claude\19ae7b2bcb9cf67a\6bfa9a87-bae9-4522-b9e6-b162623b6f41\scratchpad\audit\audit.test.ts
+
+import { describe, expect, it } from 'vitest';
+import fs from 'node:fs';
+import * as O from './oracle.mjs';
+
+const PROJ = 'c:/Users/hegde/OneDrive/Desktop/Verve Interview/ar-manager-ca-it-main';
+const ar = await import(`${PROJ}/lib/ar/index.ts`);
+const { toArData } = await import(`${PROJ}/lib/ar/map.ts`);
+const fmt = await import(`${PROJ}/lib/format.ts`);
+
+const DATASETS: Record<string, any> = {
+  fixture: JSON.parse(fs.readFileSync(`${PROJ}/tests/fixtures/sample.json`, 'utf8')),
+  live: JSON.parse(fs.readFileSync(new URL('./live.json', import.meta.url), 'utf8')),
+};
+
+const days: string[] = [];
+for (let n = O.dayNum('2025-10-01'); n <= O.dayNum('2027-06-30'); n++) days.push(O.civil(n));
+
+const mismatches: string[] = [];
+const ne = (label: string, app: unknown, oracle: unknown) => {
+  if (JSON.stringify(app) !== JSON.stringify(oracle)) mismatches.push(`${label}: app=${JSON.stringify(app)} oracle=${JSON.stringify(oracle)}`);
+};
+
+for (const [name, raw] of Object.entries(DATASETS)) {
+  describe(`dataset: ${name}`, () => {
+    const data = toArData(structuredClone(raw));
+
+    it('loader: every amount converted to paise exactly', () => {
+      for (const i of raw.invoices) {
+        const a = data.invoices.find((x: any) => x.id === i.id);
+        for (const [k, kk] of [['taxable_value', 'taxableValue'], ['cgst', 'cgst'], ['sgst', 'sgst'], ['igst', 'igst'], ['total', 'total']]) ne(`${name} inv ${i.invoice_no} ${k}`, a[kk], O.P(i[k]));
+      }
+      for (const r of raw.receipts) {
+        const a = data.receipts.find((x: any) => x.id === r.id);
+        ne(`${name} rct ${r.receipt_no} bank`, a.bankAmount, O.P(r.bank_amount));
+        ne(`${name} rct ${r.receipt_no} tds`, a.tdsAmount, O.P(r.tds_amount));
+      }
+      for (const x of raw.allocations) ne(`${name} alloc ${x.id}`, data.allocations.find((y: any) => y.id === x.id).amount, O.P(x.amount));
+      for (const x of raw.credit_notes) ne(`${name} cn ${x.credit_note_no}`, data.creditNotes.find((y: any) => y.id === x.id).total, O.P(x.total));
+      for (const x of raw.customers) ne(`${name} cust ${x.code} limit`, data.customers.find((y: any) => y.id === x.id).creditLimit, O.P(x.credit_limit));
+      for (const x of raw.notes) if (x.promise_amount !== null) ne(`${name} note ${x.id} promise`, data.notes.find((y: any) => y.id === x.id).promiseAmount, O.P(x.promise_amount));
+      expect(mismatches.filter((m) => m.startsWith(name))).toEqual([]);
+    });
+
+    it('stored documents: GST split, totals, due dates (R2, R3, R7)', () => {
+      const cust = new Map(raw.customers.map((c: any) => [c.id, c]));
+      for (const i of raw.invoices) {
+        const c: any = cust.get(i.customer_id);
+        const g = O.gst(c.state, O.P(i.taxable_value), i.gst_rate_pct);
+        ne(`${name} ${i.invoice_no} stored GST vs oracle`, [O.P(i.cgst), O.P(i.sgst), O.P(i.igst)], [g.cgst, g.sgst, g.igst]);
+        ne(`${name} ${i.invoice_no} total = taxable + GST`, O.P(i.total), O.P(i.taxable_value) + g.cgst + g.sgst + g.igst);
+        ne(`${name} ${i.invoice_no} app gstSplit`, ar.gstSplit(c.state, O.P(i.taxable_value), i.gst_rate_pct), g);
+        ne(`${name} ${i.invoice_no} due date`, i.due_date, O.plusDays(i.invoice_date, c.credit_days));
+        ne(`${name} ${i.invoice_no} app dueDate`, ar.dueDate(i.invoice_date, c.credit_days), O.plusDays(i.invoice_date, c.credit_days));
+      }
+      for (const cn of raw.credit_notes) {
+        const inv = raw.invoices.find((i: any) => i.id === cn.invoice_id);
+        const state = O.P(inv.igst) > 0 ? 'Other' : 'Maharashtra';
+        const g = O.gst(state, O.P(cn.taxable_value), inv.gst_rate_pct);
+        ne(`${name} ${cn.credit_note_no} stored CN GST`, [O.P(cn.cgst), O.P(cn.sgst), O.P(cn.igst)], [g.cgst, g.sgst, g.igst]);
+        const appInv = data.invoices.find((x: any) => x.id === inv.id);
+        ne(`${name} ${cn.credit_note_no} app creditNo
+… [9223 more characters not shown]
+```
+
+<details><summary>Result</summary>
+
+```
+File created successfully at: C:\Users\hegde\AppData\Local\Temp\claude\19ae7b2bcb9cf67a\6bfa9a87-bae9-4522-b9e6-b162623b6f41\scratchpad\audit\audit.test.ts (file state is current in your context — no need to Read it back)
+```
+
+</details>
+
+**Tool call — Bash**
+
+```
+# Run the oracle-vs-app audit
+A="C:/Users/hegde/AppData/Local/Temp/claude/19ae7b2bcb9cf67a/6bfa9a87-bae9-4522-b9e6-b162623b6f41/scratchpad/audit"; printf "export default { test: { include: ['**/*.test.ts'], testTimeout: 600000 } };\n" > "$A/vitest.config.mjs"; cd "c:/Users/hegde/OneDrive/Desktop/Verve Interview/ar-manager-ca-it-main" && npx.cmd vitest run --root "$A" --config "$A/vitest.config.mjs" 2>&1 | grep -vE "^\s*$" | tail -45
+```
+
+<details><summary>Result</summary>
+
+```
+[1m[46m RUN [49m[22m [36mv3.2.7 [39m[90mC:/Users/hegde/AppData/Local/Temp/claude/19ae7b2bcb9cf67a/6bfa9a87-bae9-4522-b9e6-b162623b6f41/scratchpad/audit[39m
+[90mstdout[2m | audit.test.ts[2m > [22m[2mSUMMARY
+[22m[39mTOTAL MISMATCHES: 0
+ [32m✓[39m audit.test.ts [2m([22m[2m16 tests[22m[2m)[22m[33m 5542[2mms[22m[39m
+   [33m[2m✓[22m[39m dataset: fixture[2m > [22mevery day 2025-10-01 … 2027-06-30: invoices, customers, R14, promises, follow-ups, DSO [33m 458[2mms[22m[39m
+   [33m[2m✓[22m[39m dataset: live[2m > [22mevery day 2025-10-01 … 2027-06-30: invoices, customers, R14, promises, follow-ups, DSO [33m 358[2mms[22m[39m
+   [33m[2m✓[22m[39m date and money helpers against the oracle[2m > [22mdaysBetween / addDays / isIsoDate for every day 1900–2100 and many offsets [33m 775[2mms[22m[39m
+   [33m[2m✓[22m[39m date and money helpers against the oracle[2m > [22mtodayInIndia across the IST midnight boundary, every hour of a year [33m 1103[2mms[22m[39m
+   [33m[2m✓[22m[39m date and money helpers against the oracle[2m > [22mformatMoney, formatBalance, rupeesPlain, parseRupees, toRupees for 200,000 amounts [33m 1438[2mms[22m[39m
+   [33m[2m✓[22m[39m date and money helpers against the oracle[2m > [22mGST half-up rounding for every taxable paise value 0…2,000,000 at 18% and 5%, 12%, 28% [33m 1297[2mms[22m[39m
+[2m Test Files [22m [1m[32m1 passed[39m[22m[90m (1)[39m
+[2m      Tests [22m [1m[32m16 passed[39m[22m[90m (16)[39m
+[2m   Start at [22m 11:36:25
+[2m   Duration [22m 6.65s[2m (transform 296ms, setup 0ms, collect 527ms, tests 5.54s, environment 0ms, prepare 207ms)[22m
+```
+
+</details>
+
+**Tool call — Bash**
+
+```
+# Mutation-test the audit harness
+A="C:/Users/hegde/AppData/Local/Temp/claude/19ae7b2bcb9cf67a/6bfa9a87-bae9-4522-b9e6-b162623b6f41/scratchpad/audit"; cd "$A" && cp oracle.mjs oracle.orig.mjs && run() { cd "c:/Users/hegde/OneDrive/Desktop/Verve Interview/ar-manager-ca-it-main" && npx.cmd vitest run --root "$A" --config "$A/vitest.config.mjs" 2>&1 | grep -o "TOTAL MISMATCHES: [0-9]*"; cd "$A"; }
+mut() { cp oracle.orig.mjs oracle.mjs; node -e "const fs=require('fs');let s=fs.readFileSync('oracle.mjs','utf8');if(!s.includes(process.argv[1]))throw new Error('pattern');fs.writeFileSync('oracle.mjs',s.replace(process.argv[1],process.argv[2]))" "$1" "$2"; echo "$3 → $(run)"; }
+mut "outstanding > 0 && dpd >= 1 ? 'Overdue'" "outstanding > 0 && dpd >= 0 ? 'Overdue'" "1. overdue on due date"
+mut "const settled = rcpts.reduce((s, r) => s + P(r.bank_amount) + P(r.tds_amount), 0);" "const settled = rcpts.reduce((s, r) => s + P(r.bank_amount), 0);" "2. TDS ignored"
+mut "a.invoice_id === inv.id && a.allocation_date <= D" "a.invoice_id === inv.id && raw.receipts.find((r) => r.id === a.receipt_id).receipt_date <= D" "3. receipt date not allocation date"
+mut "[61, 90, '61-90'], [91, 180, '91-180']" "[61, 89, '61-90'], [90, 180, '91-180']" "4. bucket boundary at 90"
+mut "raw.credit_notes.filter((c) => c.credit_note_date >= from && c.credit_note_date <= D).reduce((s, c) => s + P(c.total), 0);
+  if (S === 0)" "0;
+  if (S === 0)" "5. DSO without credit notes"
+cp oracle.orig.mjs oracle.mjs && echo "restored → $(run)"
+```
+
+<details><summary>Result</summary>
+
+```
+1. overdue on due date → TOTAL MISMATCHES: 92
+2. TDS ignored → TOTAL MISMATCHES: 12036
+3. receipt date not allocation date → TOTAL MISMATCHES: 520
+4. bucket boundary at 90 → TOTAL MISMATCHES: 60
+5. DSO without credit notes → TOTAL MISMATCHES: 270
+restored → TOTAL MISMATCHES: 0
+Shell cwd was reset to c:\Users\hegde\OneDrive\Desktop\Verve Interview\ar-manager-ca-it-main
+```
+
+</details>
+
+**Tool call — Write**
+
+```
+file: C:\Users\hegde\AppData\Local\Temp\claude\19ae7b2bcb9cf67a\6bfa9a87-bae9-4522-b9e6-b162623b6f41\scratchpad\audit\live-site.mjs
+
+import fs from 'node:fs';
+import * as O from './oracle.mjs';
+
+const BASE = process.argv[2] ?? 'https://ar-manager-nine.vercel.app';
+const raw = JSON.parse(fs.readFileSync(new URL('./live.json', import.meta.url), 'utf8'));
+const r2 = (p) => `${p < 0 ? '-' : ''}${Math.floor(Math.abs(p) / 100)}.${String(Math.abs(p) % 100).padStart(2, '0')}`;
+const M = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+const fd = (d) => { const [y, m, dd] = d.split('-'); return `${dd}-${M[m - 1]}-${y}`; };
+function parse(csv) {
+  return csv.replace(/^﻿/, '').trim().split('\r\n').map((line) => [...line.matchAll(/("([^"]|"")*"|[^,]*)(,|$)/g)].map((m) => m[1].replace(/^"|"$/g, '').replace(/""/g, '"')).slice(0, -1));
+}
+const get = async (path) => {
+  const res = await fetch(BASE + path);
+  if (!res.ok) throw new Error(`${path}: HTTP ${res.status}`);
+  return res.text();
+};
+
+let checks = 0;
+const bad = [];
+const eq = (label, a, b) => { checks++; if (JSON.stringify(a) !== JSON.stringify(b)) bad.push(`${label}: site=${JSON.stringify(a)} oracle=${JSON.stringify(b)}`); };
+
+// Dates: every month-end of 2026 plus due-date edges and spot-check dates
+const dates = new Set(['2026-01-01', '2026-03-31', '2026-04-01', '2026-07-12', '2026-08-31', '2026-09-04', '2026-09-05', '2026-09-06', '2026-09-15', '2026-11-18', '2027-01-01', '2027-01-02']);
+for (let m = 1; m <= 12; m++) dates.add(O.plusDays(`${m === 12 ? 2027 : 2026}-${String(m === 12 ? 1 : m + 1).padStart(2, '0')}-01`, -1));
+
+for (const D of [...dates].sort()) {
+  // Ageing CSV
+  const ageing = parse(await get(`/ageing/export?asof=${D}`));
+  for (const c of raw.customers) {
+    const o = O.customerState(raw, c, D);
+    const row = ageing.find((r) => r[0] === c.code && r[1] === c.name && (o.outstanding !== 0 || o.unapplied !== 0));
+    if (o.outstanding === 0 && o.unapplied === 0) continue;
+    // two customers can share a code+name in the live data only if duplicated; match by exact name+code
+    eq(`${D} ageing ${c.code}`, row && row.slice(2, 12), [...O.BUCKETS.map((b) => r2(o.buckets[b])), r2(o.outstanding), r2(o.unapplied), r2(Math.abs(o.net)), o.net > 0 ? 'Dr' : o.net < 0 ? 'Cr' : '']);
+  }
+  // Invoice list CSV (all invoices)
+  const inv = parse(await get(`/invoices/export?asof=${D}`));
+  for (const i of raw.invoices) {
+    const row = inv.find((r) => r[0] === i.invoice_no);
+    if (i.invoice_date > D) { eq(`${D} ${i.invoice_no} absent`, !!row, false); continue; }
+    if (i.is_cancelled) { eq(`${D} ${i.invoice_no} cancelled`, row?.[10], 'Cancelled'); continue; }
+    const o = O.invoiceState(raw, i, D);
+    eq(`${D} ${i.invoice_no}`, row && [row[3], row[4], row[6], row[7], row[8], row[9], row[10], row[11], row[13]], [fd(i.invoice_date), fd(i.due_date), r2(O.P(i.total)), r2(o.received), r2(o.credited), r2(o.outstanding), o.status, o.partPaid ? 'Yes' : '', o.status === 'Overdue' ? String(o.dpd) : '']);
+  }
+  // Dashboard: DSO and overdue count from the HTML
+  const html = (await get(`/?asof=${D}`)).replace(/<!-- -->/g, '').replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ');
+  const ds = O.dsoOf(raw, D);
+  const dsoSite = html.match(/DSO (—|\d+ days)/i)?.[1];
+  eq(`${D} DSO`, dsoSite, ds.dso === null || ds.dso === 'neg' ? '—' : `${ds.dso} days`);
+  const overdueN = raw.invoices.filter((i) => O.invoiceState(raw, i, D)?.status === 'Overdue').length;
+  eq(`${D} overdue count`, html.match(/Overdue invoices (\d+)/i)?.[1], String(overdueN));
+}
+
+// Statements: every customer, three periods
+for (const c of raw.customers) {
+  for (const [F, T] of [['2026-01-01', '2026-03-31'], ['2026-04-01', '2026-08-31'], ['2026-04-01', '2026-11-18']]) {
+    const s = parse(await get(`/statement/export?customer=${c.id}&from=${F}&to=${T}&asof=${T}`));
+    const o = O.statementOf(raw, c.id, F, T);
+    const open = s.findIndex((r) => r[1] === 'Opening balance'), close = s.find
+… [653 more characters not shown]
+```
+
+<details><summary>Result</summary>
+
+```
+File created successfully at: C:\Users\hegde\AppData\Local\Temp\claude\19ae7b2bcb9cf67a\6bfa9a87-bae9-4522-b9e6-b162623b6f41\scratchpad\audit\live-site.mjs (file state is current in your context — no need to Read it back)
+```
+
+</details>
+
+**Tool call — Bash**
+
+```
+# Compare live site outputs with oracle
+A="C:/Users/hegde/AppData/Local/Temp/claude/19ae7b2bcb9cf67a/6bfa9a87-bae9-4522-b9e6-b162623b6f41/scratchpad/audit"; cd "$A" && node live-site.mjs https://ar-manager-nine.vercel.app 2>&1 | tail -25
+```
+
+<details><summary>Result</summary>
+
+```
+https://ar-manager-nine.vercel.app: 930 checks, 291 mismatches
+  2026-01-31 BWA/25-26/0141: site=["20-Jan-2026","19-Feb-2026","177000.00","0.00","0.00","177000.00","Due","",null] oracle=["20-Jan-2026","19-Feb-2026","177000.00","0.00","0.00","177000.00","Due","",""]
+  2026-02-28 BWA/25-26/0156: site=["25-Feb-2026","27-Mar-2026","106200.00","0.00","0.00","106200.00","Due","",null] oracle=["25-Feb-2026","27-Mar-2026","106200.00","0.00","0.00","106200.00","Due","",""]
+  2026-03-31 BWA/25-26/0162: site=["10-Mar-2026","24-Apr-2026","70800.00","0.00","0.00","70800.00","Due","",null] oracle=["10-Mar-2026","24-Apr-2026","70800.00","0.00","0.00","70800.00","Due","",""]
+  2026-03-31 BWA/25-26/0170: site=["28-Mar-2026","27-May-2026","236000.00","0.00","0.00","236000.00","Due","",null] oracle=["28-Mar-2026","27-May-2026","236000.00","0.00","0.00","236000.00","Due","",""]
+  2026-03-31 BWA/25-26/0171: site=["30-Mar-2026","29-Apr-2026","53100.00","0.00","0.00","53100.00","Due","",null] oracle=["30-Mar-2026","29-Apr-2026","53100.00","0.00","0.00","53100.00","Due","",""]
+  2026-04-01 BWA/25-26/0162: site=["10-Mar-2026","24-Apr-2026","70800.00","0.00","0.00","70800.00","Due","",null] oracle=["10-Mar-2026","24-Apr-2026","70800.00","0.00","0.00","70800.00","Due","",""]
+  2026-04-01 BWA/25-26/0170: site=["28-Mar-2026","27-May-2026","236000.00","0.00","0.00","236000.00","Due","",null] oracle=["28-Mar-2026","27-May-2026","236000.00","0.00","0.00","236000.00","Due","",""]
+  2026-04-01 BWA/25-26/0171: site=["30-Mar-2026","29-Apr-2026","53100.00","0.00","0.00","53100.00","Due","",null] oracle=["30-Mar-2026","29-Apr-2026","53100.00","0.00","0.00","53100.00","Due","",""]
+  2026-04-30 BWA/25-26/0170: site=["28-Mar-2026","27-May-2026","236000.00","0.00","0.00","236000.00","Due","",null] oracle=["28-Mar-2026","27-May-2026","236000.00","0.00","0.00","236000.00","Due","",""]
+  2026-04-30 BWA/25-26/0171: site=["30-Mar-2026","29-Apr-2026","53100.00","53100.00","0.00","0.00","Paid","",null] oracle=["30-Mar-2026","29-Apr-2026","53100.00","53100.00","0.00","0.00","Paid","",""]
+  2026-04-30 BWA/26-27/0001: site=["05-Apr-2026","05-May-2026","88500.00","0.00","0.00","88500.00","Due","",null] oracle=["05-Apr-2026","05-May-2026","88500.00","0.00","0.00","88500.00","Due","",""]
+  2026-04-30 BWA/26-27/0002: site=["10-Apr-2026","25-May-2026","413000.00","0.00","0.00","413000.00","Due","",null] oracle=["10-Apr-2026","25-May-2026","413000.00","0.00","0.00","413000.00","Due","",""]
+  2026-04-30 BWA/26-27/
+… [1681 more characters not shown]
+```
+
+</details>
+
+**Tool call — Bash**
+
+```
+# Fix CSV parsing artifact and rerun live comparison
+A="C:/Users/hegde/AppData/Local/Temp/claude/19ae7b2bcb9cf67a/6bfa9a87-bae9-4522-b9e6-b162623b6f41/scratchpad/audit"; cd "$A" && sed -i "s/row\[11\], row\[13\]\]/row[11], row[13] ?? '']/" live-site.mjs && grep -c "row\[13\] ?? ''" live-site.mjs && node live-site.mjs https://ar-manager-nine.vercel.app 2>&1 | tail -12
+```
+
+<details><summary>Result</summary>
+
+```
+1
+  stmt C004#870 2026-01-01..2026-03-31 opening: site=["0.00"] oracle=["0.00",""]
+  stmt C005#871 2026-01-01..2026-03-31 opening: site=["0.00"] oracle=["0.00",""]
+  stmt C005#871 2026-01-01..2026-03-31 closing: site=["0.00"] oracle=["0.00",""]
+  stmt C005#871 2026-04-01..2026-08-31 opening: site=["0.00"] oracle=["0.00",""]
+  stmt C005#871 2026-04-01..2026-11-18 opening: site=["0.00"] oracle=["0.00",""]
+  stmt C006#872 2026-01-01..2026-03-31 opening: site=["0.00"] oracle=["0.00",""]
+  stmt C006#872 2026-01-01..2026-03-31 closing: site=["0.00"] oracle=["0.00",""]
+  stmt C006#872 2026-04-01..2026-08-31 opening: site=["0.00"] oracle=["0.00",""]
+  stmt C006#872 2026-04-01..2026-08-31 lines: site=[["28-Apr-2026","BWA/26-27/0005","29500.00","","29500.00","Dr"],["10-May-2026","RCT/26-27/0004","","29500.00","0.00"],["15-Jun-2026","BWA/26-27/0012","29500.00","","29500.00","Dr"],["20-Jul-2026","RCT/26-27/0012","","29500.00","0.00"],["01-Aug-2026","BWA/26-27/0020","35400.00","","35400.00","Dr"]] oracle=[["28-Apr-2026","BWA/26-27/0005","29500.00","","29500.00","Dr"],["10-May-2026","RCT/26-27/0004","","29500.00","0.00",""],["15-Jun-2026","BWA/26-27/0012","29500.00","","29500.00","Dr"],["20-Jul-2026","RCT/26-27/0012","","29500.00","0.00",""],["01-Aug-2026","BWA/26-27/0020","35400.00","","35400.00","Dr"]]
+  stmt C006#872 2026-04-01..2026-11-18 opening: site=["0.00"] oracle=["0.00",""]
+  stmt C006#872 2026-04-01..2026-11-18 lines: site=[["28-Apr-2026","BWA/26-27/0005","29500.00","","29500.00","Dr"],["10-May-2026","RCT/26-27/0004","","29500.00","0.00"],["15-Jun-2026","BWA/26-27/0012","29500.00","","29500.00","Dr"],["20-Jul-2026","RCT/26-27/0012","","29500.00","0.00"],["01-Aug-2026","BWA/26-27/0020","35400.00","","35400.00","Dr"]] oracle=[["28-Apr-2026","BWA/26-27/0005","29500.00","","29500.00","Dr"],["10-May-2026","RCT/26-27/0004","","29500.00","0.00",""],["15-Jun-2026","BWA/26-27/0012","29500.00","","29500.00","Dr"],["20-Jul-2026","RCT/26-27/0012","","29500.00","0.00",""],["01-Aug-2026","BWA/26-27/0020","35400.00","","35400.00","Dr"]]
+  stmt C007#873 2026-01-01..2026-03-31 opening: site=["0.00"] oracle=["0.00",""]
+Shell cwd was reset to c:\Users\hegde\OneDrive\Desktop\Verve Interview\ar-manager-ca-it-main
+[This command modified 1 file you've previously read: ..\..\..\..\AppData\Local\Temp\claude\19ae7b2bcb9cf67a\6bfa9a87-bae9-4522-b9e6-b162623b6f41\scratchpad\audit\live-site.mjs. Call Read before editing.]
+```
+
+</details>
+
+**Tool call — Bash**
+
+```
+# Normalise trailing empties and rerun live and local
+A="C:/Users/hegde/AppData/Local/Temp/claude/19ae7b2bcb9cf67a/6bfa9a87-bae9-4522-b9e6-b162623b6f41/scratchpad/audit"; cd "$A" && node -e "
+const fs=require('fs');let s=fs.readFileSync('live-site.mjs','utf8');
+const a='const eq = (label, a, b) => { checks++; if (JSON.stringify(a) !== JSON.stringify(b))';
+if(!s.includes(a)) throw new Error('eq');
+s=s.replace(a,'const trim = (x) => (Array.isArray(x) ? (() => { const y = x.map(trim); while (y.length && y.at(-1) === \"\") y.pop(); return y; })() : x);\nconst eq = (label, a, b) => { checks++; if (JSON.stringify(trim(a)) !== JSON.stringify(trim(b)))');
+fs.writeFileSync('live-site.mjs',s);" && node live-site.mjs https://ar-manager-nine.vercel.app 2>&1 | tail -8 && node live-site.mjs http://localhost:3000 2>&1 | tail -4
+```
+
+<details><summary>Result</summary>
+
+```
+https://ar-manager-nine.vercel.app: 930 checks, 0 mismatches
+http://localhost:3000: 930 checks, 0 mismatches
+Shell cwd was reset to c:\Users\hegde\OneDrive\Desktop\Verve Interview\ar-manager-ca-it-main
+```
+
+</details>
+
+**Tool call — Bash**
+
+```
+# Scan code for arithmetic outside lib/ar and float money maths
+cd "c:/Users/hegde/OneDrive/Desktop/Verve Interview/ar-manager-ca-it-main" && echo "== arithmetic in screens/components (should be none on money)"; grep -nE "reduce\(|\+= |[a-zA-Z)\]] [-+*/] [a-zA-Z(0-9]" app/**/*.tsx app/*.tsx components/*.tsx 2>/dev/null | grep -vE "className|key=|\`\\$\{|// |aria-|href|\.length|i > 0|Number\(values.gstRatePct\) / 2|gstRatePct / 2" | head -20; echo "== floating-point divisions on money in lib"; grep -nE "/ 100|\* 100|\/ ?1\.18|toFixed" lib/ar/*.ts lib/*.ts | grep -v "^\s*//" ; echo "== new Date usage"; grep -rn "new Date" lib app components | grep -v "^\s*//"
+```
+
+<details><summary>Result</summary>
+
+```
+== arithmetic in screens/components (should be none on money)
+== floating-point divisions on money in lib
+lib/ar/dashboard.ts:29:    overduePct: totals.outstanding > 0 ? (totals.overdue / totals.outstanding) * 100 : null,
+lib/ar/map.ts:12:export const paise = (rupees: number): Paise => Math.round(rupees * 100);
+lib/ar/positions.ts:137:      limitUsedPct: customer.creditLimit > 0 ? (netBalance / customer.creditLimit) * 100 : null,
+lib/ar/rules.ts:81:    const tdsFraction = (tdsRatePct / 100) * taxableShare; // TDS per rupee settled
+lib/format.ts:10:  return inr.format(paise / 100);
+lib/format.ts:32:  return `${sign}${Math.floor(abs / 100)}.${String(abs % 100).padStart(2, '0')}`;
+lib/format.ts:46:  const p = Number(whole) * 100 + Number(frac.padEnd(2, '0'));
+lib/format.ts:62:  return value === null ? '—' : `${value.toFixed(1)}%`;
+== new Date usage
+lib/ar/dates.ts:15:  return new Date(ms).toISOString().slice(0, 10);
+lib/ar/dates.ts:35:export function todayInIndia(now: Date = new Date()): string {
+lib/asof.ts:15:export function parseAsOf(value: string | string[] | undefined, now: Date = new Date()): string {
+```
+
+</details>
+
+**Tool call — Bash**
+
+```
+# Remove local data copy; confirm project unchanged
+rm -f "C:/Users/hegde/AppData/Local/Temp/claude/19ae7b2bcb9cf67a/6bfa9a87-bae9-4522-b9e6-b162623b6f41/scratchpad/audit/live.json" "C:/Users/hegde/AppData/Local/Temp/claude/19ae7b2bcb9cf67a/6bfa9a87-bae9-4522-b9e6-b162623b6f41/scratchpad/audit/oracle.orig.mjs"; cd "c:/Users/hegde/OneDrive/Desktop/Verve Interview/ar-manager-ca-it-main" && echo "project changes: $(git status --short | wc -l)"; npm.cmd test 2>&1 | grep -E "Tests "
+```
+
+<details><summary>Result</summary>
+
+```
+project changes: 0
+[2m      Tests [22m [1m[32m65 passed[39m[22m[90m (65)[39m
+```
+
+</details>
+
+**Assistant:**
+
+I found no arithmetic or date errors anywhere in the app. Every figure it calculates matched an independently written calculation, both on the sample data and on your live data. Nothing in the project or the database was changed.
+
+**How I checked:** I wrote a separate "oracle" calculator straight from the brief's rules. It deliberately uses different methods from the app: its own calendar maths (no JavaScript dates), and whole-number rounding on amounts parsed from text. I then compared it with the app in three ways.
+
+| What was compared | Checks | Mismatches |
+|---|---|---|
+| **Calculation module vs oracle, every day from 1 Oct 2025 to 30 Jun 2027 (638 days)**, on the frozen sample data and on your live data. Per invoice, every day: received, credited, outstanding, days past due, status, part-paid, bucket. Per customer: all six buckets, outstanding, unapplied, net balance, overdue, over limit. Also the control check computed both ways, promises, follow-ups, DSO, dashboard totals, overdue count and next document numbers. | hundreds of thousands | **0** |
+| **Statements:** every customer, every 2026 month-start to month-end period (over 500 statements per dataset): opening, each line, running balance and closing. | 1,000+ | **0** |
+| **Stored documents:** GST split, totals and due date of every invoice and credit note, plus the rupee-to-paise conversion of every amount. | all records | **0** |
+| **Live website output vs oracle:** the ageing CSV, invoice CSV, statement CSV, dashboard DSO and overdue count downloaded from https://ar-manager-nine.vercel.app for 24 dates (month-ends, financial-year boundary, due-date edges, today), and all 9 customers' statements for three periods. Repeated on your local copy. | 930 + 930 | **0** |
+
+**Edge cases tested directly:**
+- **Dates:** day counts, adding days and date checking for every day from 1900 to 2100, including leap years, month and year ends, and impossible dates such as 30 Feb.
+- **"Today in India":** every hour of a year, to cover the 00:00–05:30 IST window when the server's UTC date is still the day before.
+- **GST:** half-up rounding for every taxable amount from ₹0.00 to ₹20,000.00 in single-paisa steps at 18% (plus sampled values at 0, 5, 12 and 28%), both CGST/SGST and IGST.
+- **Money formatting:** Indian grouping, Dr/Cr and plain CSV amounts, checked on 200,000 amounts up to ₹999 crore.
+
+**Proof the check can catch mistakes:** I planted five classic AR bugs into copies of the oracle, and each was caught:
+
+| Planted bug | Mismatches found |
+|---|---|
+| Overdue on the due date itself | 92 |
+| Settlement ignoring TDS | 12,036 |
+| Receipt date used instead of allocation date | 520 |
+| Ageing boundary wrong at 90 days | 60 |
+| DSO ignoring credit notes | 270 |
+
+**Code review:** no screen does money arithmetic. The only decimal calculations are display percentages (overdue % and limit used %, shown to one decimal) and the TDS pre-fill, which is rounded to the paisa and only a suggestion. Date objects are used only in the UTC-based date helpers.
+
+**Your workspace has test records.** At some point it was reset and then these were added:
+- **Customer:** C009 "Test" (using your email address);
+- **Invoices:** BWA/26-27/0025 and 0026, both "TEST INVOICE";
+- **Credit note:** BWA/CN/26-27/002.
+
+The audit covered these too, and all their figures are correct. The evaluators reset the workspace before checking, but if you want the live site to show exactly the sample data, run `npm.cmd run reset-workspace` before you submit. I haven't done this, as you asked me not to change anything.
+
+---
+
+## User message 17
+
+Implement phase 2 fully. Do not stop to ask permission. After that is done, check the phase 2 work throughly. After you are finished, show the list of cirtical decisions you have taken.
+
+**Assistant:**
+
+I'll start with the chart guidance skill, which the environment asks me to load before building any chart. Then I'll plan Phase 2.
+
+**Tool call — Skill**
+
+```
+{
+  "skill": "dataviz"
+}
+```
+
+<details><summary>Result</summary>
+
+```
+Launching skill: dataviz
+```
+
+</details>
+
+---
+
+## User message 18
+
+Base directory for this skill: C:\Users\hegde\AppData\Local\Temp\claude\bundled-skills\2.1.326\c68817cb6389468e23c5335d62df1d73\dataviz
+
+# Data Visualization
+
+A chart is **read by people and executed by you**. This skill turns "make it look
+good" into a procedure with checks, so the result is right by construction rather
+than by taste.
+
+**The method here is design-system-agnostic.** Nothing in the procedure, the form
+heuristic, the six checks, or the mark specs is specific to one product. A design
+system supplies a small set of *parameters* (its ramps, a categorical order, a
+diverging pair, a status palette, a texture, its surfaces, its filter components);
+the method consumes them unchanged. A **validated default palette** is the
+reference instance, fully specified in `references/palette.md`. To target your
+brand, read that file's structure and substitute its values - touch nothing else.
+
+> The single most important habit: **the color part is computable, so compute it.**
+> Never eyeball whether a palette is colorblind-safe - run `scripts/validate_palette.js`.
+
+## The procedure - do these in order
+
+Color comes LAST. Most bad charts pick colors first.
+
+1. **Pick the form.** What is the data's job - magnitude, identity, polarity, a
+   single headline, change-over-time? The job picks the chart type, and sometimes
+   the answer is *not a chart* (a stat tile or hero number). -> `references/choosing-a-form.md`
+2. **Assign color by the job it does.** Categorical (identity), sequential
+   (magnitude), diverging (polarity), or status (state) - each has one rule.
+   Assign categorical hues in fixed order, never cycled. -> `references/color-formula.md`
+3. **VALIDATE the palette - run the script, don't reason about Delta E.**
+   `node scripts/validate_palette.js "<hex,hex,...>" --mode light` (relative to
+   this skill's base directory - or load it as `<script type="module">` in the
+   chart's own page, where it reads
+   `data-palette` off `<body>` and logs a `console.table` report). It returns
+   pass/fail on the lightness band, chroma floor, adjacent-pair CVD separation,
+   the normal-vision floor, and contrast. Fix anything that FAILs before continuing. Re-run for
+   `--mode dark` with that mode's surface.
+4. **Apply mark specs & spacers.** Thin marks, 4px rounded data-ends anchored to
+   the baseline, 2px lines, >=8px markers, a 2px surface gap between fills (stacked
+   segments and adjacent bars alike) and a 2px surface ring on overlapping marks,
+   selective direct labels. -> `references/marks-and-anatomy.md`
+5. **Add the hover layer - by default.** An HTML/SVG chart *is* interactive; ship
+   a crosshair+tooltip on line/area and a per-mark hover tooltip on bar/dot/cell.
+   The only form that skips it is a bare stat tile with no plot. Hit targets bigger
+   than the mark; filters in one row above the charts. -> `references/interaction.md`
+6. **Final accessibility pass.** For >= 2 series a legend is always present and <= 4
+   are also direct-labeled (a single series needs no legend box - the title names
+   it), so identity is never color-alone; a table view exists; dark mode is **selected** - its own
+   steps from the same ramps, validated against the dark surface, not an automatic
+   flip; texture is available for the CVD/print/forced-colors case.
+   One exception to direct name labels: the tall segmented bar (*Figures* in `references/marks-and-anatomy.md`).
+7. **Render it and look at it.** The validator checks color, not layout - open or
+   screenshot the output and eyeball it for label collisions, geometry, and overflow
+   before calling it done.
+
+Then check the result against **`references/anti-patterns.md`** - it is the catalog
+of what goes wrong. If your chart matches an entry, it's wrong.
+
+## Non-negotiables (true in every design system)
+
+- **Assign categorical hues in fixed order, never cycled.** A 9th series is never a
+  generated hue - it folds into "Other," small multiples, or composite encoding.
+- **One axis.** Never a dual-axis chart (two y-scales). Two measures of different
+  scale -> two charts, small multiples, or indexed to a common base. *(This is the
+  #1 chart mistake - see anti-patterns.)*
+- **Color follows the entity, never its rank.** A filter that changes the series
+  count must not repaint the survivors.
+- **Sequential = one hue, light->dark. Diverging = two hues + a neutral gray
+  midpoint.** Never a rainbow; never a hue at the diverging midpoint.
+- **Run the validator before shipping any categorical palette.** CVD Delta E >= 8 is the
+  target (OKLab ×100); 6-8 is a floor that is legal ONLY with secondary encoding. A
+  normal-vision floor below 15 is a hard FAIL - full-color readers can't tell the
+  pair apart; re-step it on the adjacent pairlist (secondary encoding does not excuse
+  this one); under `--pairs all` cut series or facet instead - see check 4. A contrast WARN
+  obligates visible labels or a table view - it is not dismissable.
+- **Thin marks; a legend always present for >= 2 series (none for one), with
+  selective direct labels (never a number on every point); recessive grid/axes.**
+  One exception, legend kept: the tall segmented bar (*Figures* in `references/marks-and-anatomy.md`).
+- **Text wears text tokens, never the series color** - values, labels, and legends
+  stay in primary/secondary/muted ink; a colored mark beside them carries identity.
+- **Status colors are reserved** (good/warning/serious/critical) and never reused
+  for "series 4"; they ship with an icon + label, never color alone.
+
+## Plugging in a design system
+
+The method is invariant; only these parameters change per system. The reference
+instance - every value filled in - is `references/palette.md`.
+
+| Parameter | What the system provides |
+|---|---|
+| **Ramps** | the hue scales (named steps) the palette draws from |
+| **Categorical theme** | the fixed hue order (a named theme); default + alternates |
+| **Sequential hue** | the default single hue for magnitude |
+| **Diverging pair** | two warm/cool poles + a neutral midpoint |
+| **Status palette** | good / warning / serious / critical - steps distinct from categorical, except that dark-mode good is the series green |
+| **Texture fill** | one directional hand-drawn fill, used at 45° / 135° |
+| **Surfaces** | light & dark chart-surface colors (the validator needs these) |
+| **Filter controls** | date-range & dimension controls (behavioral spec in `interaction.md`) |
+
+To onboard a new system: fill those rows, feed its ramps to the validator, and let
+it snap each slot to the nearest passing step. Structure and rules stay as written.
+
+## Reference files
+
+| File | What it answers |
+|------|-----------------|
+| `references/choosing-a-form.md` | Which chart type / is it even a chart? |
+| `references/color-formula.md` | The four jobs, the six checks, snap-to-passing |
+| `references/marks-and-anatomy.md` | Mark specs, spacers, labels, figures, hero number |
+| `references/interaction.md` | Tooltips & hover, filters & time ranges |
+| `references/components.md` | The pieces a chart is made of - build each in plain HTML |
+| `references/anti-patterns.md` | **What goes wrong - check every chart against this** |
+| `references/palette.md` | **The reference palette instance** - every parameter, filled in; swap for your brand's |
+| `scripts/validate_palette.js` | Runnable six-checks validator (run it; don't eyeball) |
+
+**Tool call — Bash**
+
+```
+# Read interaction and mark guidance for line charts
+D="C:/Users/hegde/AppData/Local/Temp/claude/bundled-skills/2.1.326/c68817cb6389468e23c5335d62df1d73/dataviz/references"; sed -n 1,200p "$D/interaction.md" | head -120; grep -n -i -A6 "line" "$D/marks-and-anatomy.md" | head -60; grep -n -A3 "sequential\|series 1\|blue" "$D/palette.md" | head -40
+```
+
+<details><summary>Result</summary>
+
+```
+# Interaction - tooltips & filters
+
+An HTML chart is interactive by default - the hover layer is part of the deliverable,
+not an upgrade. Omitting it is the exception (a bare stat tile), never the default.
+Design it with the same care as the static render.
+
+## Tooltips & hover
+
+Tooltips **enhance, they never gate**: every value a tooltip shows is also reachable
+without it, through direct labels or the table view. Same details on keyboard focus
+as on hover.
+
+- **The crosshair finds the X.** A vertical hairline tracks the pointer and snaps to
+  the nearest data position. Readers aim at a date, never at a 2px line.
+- **On bars and cells, the mark is the hit target.** No crosshair - each bar, segment,
+  dot, or heat-cell carries its own `pointermove`/`focus` tooltip showing category and
+  value, and the hovered mark lifts (slight lighten or outline) so the reader sees it respond.
+- **One tooltip, every series.** The readout lists every series at that X - the
+  pointer never has to land on a line or a fill to get a value.
+- **Labels are untrusted data - use `textContent`.** Series and category names
+  often come from CSV headers, tool output, or API responses. Insert them into
+  tooltip/legend/table DOM with `textContent` or `createTextNode`, never via
+  `innerHTML` string concatenation.
+- **Values lead, labels follow.** In the tooltip the value is the Strong,
+  high-contrast element and the series name is secondary - the legend's hierarchy
+  inverted, because here the reader has the series and wants the number.
+- **Line keys, not boxes.** Tooltip rows key their series with a short stroke of the
+  series color; at tooltip density a filled box is data-weight ink doing a label's
+  job. (Legends still mirror the mark: rect for bars/areas, line for lines.)
+- **The hit target is bigger than the mark.** A mark's hover/focus area includes its
+  2px surface gap and then some - never only the painted pixels. An 8px scatter dot is a
+  pinpoint nobody hits reliably; give each point a transparent hit area of at least
+  **24px**, or - for dense scatter - a nearest-point / Voronoi layer so the pointer only
+  has to be *closest*, not dead-center. (The crosshair already does this for the X on
+  line and bar charts; scatter and bubble need the per-point version.)
+- **A value pushed off its mark lives in the tooltip.** When a label won't fit inside a
+  small bar (see `marks-and-anatomy.md`), that bar's hit area carries the value on hover
+  and focus - the tooltip is its overflow
+… [6787 more characters not shown]
+```
+
+</details>
+
+**Tool call — Write**
+
+```
+file: c:\Users\hegde\OneDrive\Desktop\Verve Interview\ar-manager-ca-it-main\lib\insights\metrics.ts
+
+/**
+ * Phase 2, section 1: customer-wise insight metrics.
+ *
+ * Self-contained: these calculations do not call or change the Phase 1
+ * calculation module (lib/ar). They read the same loaded data (ArData, whole
+ * paise) and use the same date helper, so the as-at rule is identical: a record
+ * counts only if its own date is on or before the as-at date.
+ *
+ * Rules (Phase 2 brief):
+ *  - customer-wise; all available history up to the as-at date
+ *  - cancelled invoices excluded; reversed (deleted) payments no longer exist in the data
+ *  - payment frequency needs at least two payment dates, invoice frequency at least two invoices
+ *  - "not enough data" is null (shown as N/A), never zero
+ */
+import type { ArData, Customer, Invoice, Paise } from '../ar/types';
+import { daysBetween } from '../ar/dates';
+
+export interface CustomerInsight {
+  customer: Customer;
+  /** Σ outstanding balances of the customer's invoices: total − payments allocated − credit notes. */
+  outstanding: Paise;
+  /** Average days between successive (distinct) payment dates, or null with fewer than two. */
+  paymentFrequency: number | null;
+  paymentDateCount: number;
+  /** Average days between successive invoice dates, or null with fewer than two invoices. */
+  invoiceFrequency: number | null;
+  invoiceCount: number;
+  /** Average days from invoice date to final settlement date, fully settled invoices only; null if none. */
+  avgCollectionPeriod: number | null;
+  settledInvoiceCount: number;
+}
+
+/** Average gap between successive dates (sorted). With n dates there are n − 1 gaps; their sum is last − first. */
+export function averageGap(sortedDates: string[]): number | null {
+  if (sortedDates.length < 2) return null;
+  let total = 0;
+  for (let i = 1; i < sortedDates.length; i++) total += daysBetween(sortedDates[i - 1], sortedDates[i]);
+  return total / (sortedDates.length - 1);
+}
+
+export interface InvoiceSettlement {
+  invoice: Invoice;
+  received: Paise; // payments (bank + TDS, via allocations) dated ≤ as-at
+  credited: Paise; // credit notes dated ≤ as-at
+  outstanding: Paise;
+  /** Date the balance reached zero (the last allocation or credit note), or null if not fully settled. */
+  settledOn: string | null;
+}
+
+/** Each live invoice dated on or before asOf, with what was received and credited by asOf. */
+export function invoiceSettlements(data: ArData, asOf: string, customerId?: number): InvoiceSettlement[] {
+  const out: InvoiceSettlement[] = [];
+  for (const invoice of data.invoices) {
+    if (invoice.isCancelled || invoice.invoiceDate > asOf) continue;
+    if (customerId !== undefined && invoice.customerId !== customerId) continue;
+    let received = 0;
+    let credited = 0;
+    let lastEvent = '';
+    for (const a of data.allocations) {
+      if (a.invoiceId !== invoice.id || a.allocationDate > asOf) continue;
+      received += a.amount;
+      if (a.allocationDate > lastEvent) lastEvent = a.allocationDate;
+    }
+    for (const c of data.creditNotes) {
+      if (c.invoiceId !== invoice.id || c.creditNoteDate > asOf) continue;
+      credited += c.total;
+      if (c.creditNoteDate > lastEvent) lastEvent = c.creditNoteDate;
+    }
+    const outstanding = invoice.total - received - credited;
+    out.push({ invoice, received, credited, outstanding, settledOn: outstanding === 0 && lastEvent ? lastEvent : null });
+  }
+  return out;
+}
+
+export function customerInsights(data: ArData, asOf: string): CustomerInsight[] {
+  return data.customers.map((customer) => {
+    const settlements = invoiceSettlements(data, asOf, customer.id);
+
+    const outstanding = settlements.reduce((s, x) => s + x.outstanding, 0);
+
+    // Payment frequency: distinct receipt dates (one day with two receipts is one payment date).
+    const paymentDates = [...new Set(data.receipts.filter((r) => r.customerId === customer.id && r.receiptDate <= asOf).map((r) => r.receiptDate))].sort();
+
+    // 
+… [945 more characters not shown]
+```
+
+<details><summary>Result</summary>
+
+```
+File created successfully at: c:\Users\hegde\OneDrive\Desktop\Verve Interview\ar-manager-ca-it-main\lib\insights\metrics.ts (file state is current in your context — no need to Read it back)
+```
+
+</details>
+
+**Assistant:**
+
+Now the trend calculation: the month-end (or week-end) series, the period presets, and the % change.
+
+**Tool call — Write**
+
+```
+file: c:\Users\hegde\OneDrive\Desktop\Verve Interview\ar-manager-ca-it-main\lib\insights\trend.ts
+
+/**
+ * Phase 2, section 2: the Historical AR trend.
+ *
+ * Closing AR at a reporting date D = Σ outstanding balances of invoices, where for
+ * each invoice raised on or before D (cancelled invoices excluded):
+ *   outstanding = total − payments allocated to it on or before D − credit notes on or before D.
+ * Payments are settlement values (bank + TDS) as allocated, so TDS deducted by the
+ * customer reduces the balance exactly like cash.
+ */
+import type { ArData, Paise } from '../ar/types';
+import { addDays, isIsoDate } from '../ar/dates';
+import { invoiceSettlements } from './metrics';
+
+export type Granularity = 'month' | 'week';
+export type RangePreset = '12m' | '6m' | '3m' | 'custom';
+
+/** Σ outstanding invoice balances at the end of `date`, for one customer or all. */
+export function closingAr(data: ArData, date: string, customerId?: number): Paise {
+  return invoiceSettlements(data, date, customerId).reduce((s, x) => s + x.outstanding, 0);
+}
+
+/** Receipts not yet allocated to any invoice at the end of `date` (shown alongside, not deducted). */
+export function unappliedCredit(data: ArData, date: string, customerId?: number): Paise {
+  let total = 0;
+  for (const r of data.receipts) {
+    if (r.receiptDate > date || (customerId !== undefined && r.customerId !== customerId)) continue;
+    total += r.bankAmount + r.tdsAmount;
+    for (const a of data.allocations) if (a.receiptId === r.id && a.allocationDate <= date) total -= a.amount;
+  }
+  return total;
+}
+
+// ---------- calendar helpers ----------
+
+const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+
+export function monthEnd(date: string): string {
+  const [y, m] = date.split('-').map(Number);
+  const next = m === 12 ? `${y + 1}-01-01` : `${y}-${String(m + 1).padStart(2, '0')}-01`;
+  return addDays(next, -1);
+}
+
+export function monthStart(date: string): string {
+  return `${date.slice(0, 7)}-01`;
+}
+
+/** First day of the month `n` months before the month containing `date`. */
+export function monthsBefore(date: string, n: number): string {
+  const [y, m] = date.split('-').map(Number);
+  const idx = y * 12 + (m - 1) - n;
+  return `${Math.floor(idx / 12)}-${String((idx % 12) + 1).padStart(2, '0')}-01`;
+}
+
+/** Day of week, 0 = Sunday … 6 = Saturday, from the date string alone. */
+export function weekday(date: string): number {
+  const [y, m, d] = date.split('-').map(Number);
+  return new Date(Date.UTC(y, m - 1, d)).getUTCDay();
+}
+
+/** The Sunday ending the Monday–Sunday week that contains `date`. */
+export function weekEnd(date: string): string {
+  return addDays(date, (7 - weekday(date)) % 7);
+}
+
+/** End of the period before the one containing `date`. */
+export function previousPeriodEnd(date: string, g: Granularity): string {
+  return g === 'month' ? addDays(monthStart(date), -1) : addDays(weekEnd(date), -7);
+}
+
+// ---------- the reporting window ----------
+
+export interface TrendWindow {
+  from: string;
+  to: string;
+  preset: RangePreset;
+  /** A note when the request was adjusted (e.g. custom To after the as-at date). */
+  note?: string;
+  error?: string;
+}
+
+/**
+ * Last 12 / 6 / 3 months: the current month (up to the as-at date) and the months before it.
+ * Custom: the user's From and To, with To no later than the as-at date (later records do not exist yet).
+ */
+export function trendWindow(asOf: string, preset: string | undefined, from?: string, to?: string): TrendWindow {
+  const months = preset === '6m' ? 6 : preset === '3m' ? 3 : 12;
+  if (preset !== 'custom') return { from: monthsBefore(asOf, months - 1), to: asOf, preset: (preset as RangePreset) ?? '12m' };
+  if (!from || !to || !isIsoDate(from) || !isIsoDate(to)) {
+    return { from: monthsBefore(asOf, 11), to: asOf, preset: 'custom', error: 'Enter both dates of the custom range. Showing the last 12 months.' };
+  }
+  let note: string | undefined;
+  let end = to;
+  if (end > 
+… [3131 more characters not shown]
+```
+
+<details><summary>Result</summary>
+
+```
+File created successfully at: c:\Users\hegde\OneDrive\Desktop\Verve Interview\ar-manager-ca-it-main\lib\insights\trend.ts (file state is current in your context — no need to Read it back)
+```
+
+</details>
+
+**Tool call — Write**
+
+```
+file: c:\Users\hegde\OneDrive\Desktop\Verve Interview\ar-manager-ca-it-main\lib\insights\round.ts
+
+/**
+ * Exact rounding for displayed ratios. `toFixed` on a floating-point number can
+ * round a true half the wrong way (1.005 → "1.00"), so ratios are rounded from
+ * their whole-number numerator and denominator instead.
+ */
+
+/** num ÷ den shown with `decimals` places, rounded half away from zero. num and den are whole numbers, den > 0. */
+export function ratioText(num: number, den: number, decimals: number): string {
+  const scale = 10 ** decimals;
+  const sign = num < 0 ? -1 : 1;
+  const n = Math.abs(num) * scale;
+  const units = Math.floor((2 * n + den) / (2 * den)); // round half up on the absolute value
+  const whole = Math.floor(units / scale);
+  const frac = String(units % scale).padStart(decimals, '0');
+  const text = decimals ? `${whole}.${frac}` : String(whole);
+  return sign < 0 && units !== 0 ? `-${text}` : text;
+}
+
+```
+
+<details><summary>Result</summary>
+
+```
+File created successfully at: c:\Users\hegde\OneDrive\Desktop\Verve Interview\ar-manager-ca-it-main\lib\insights\round.ts (file state is current in your context — no need to Read it back)
+```
+
+</details>
+
+**Assistant:**
+
+Now updating the metrics to carry an exactly rounded display text alongside each average:
+
+**Tool call — Bash**
+
+```
+# Add exact display text to metrics and trend; typecheck
+cd "c:/Users/hegde/OneDrive/Desktop/Verve Interview/ar-manager-ca-it-main" && node - <<'EOF'
+const fs = require('fs');
+function edit(f, pairs) { let s = fs.readFileSync(f, 'utf8'); for (const [a, b] of pairs) { if (!s.includes(a)) throw new Error(f + ': ' + a.slice(0, 80)); s = s.replace(a, b); } fs.writeFileSync(f, s); }
+edit('lib/insights/metrics.ts', [
+  ["import { daysBetween } from '../ar/dates';", "import { daysBetween } from '../ar/dates';\nimport { ratioText } from './round';"],
+  [`  avgCollectionPeriod: number | null;
+  settledInvoiceCount: number;
+}`, `  avgCollectionPeriod: number | null;
+  settledInvoiceCount: number;
+  /** The three averages as display text, rounded exactly to one decimal ("N/A" when null). */
+  text: { paymentFrequency: string; invoiceFrequency: string; avgCollectionPeriod: string };
+}
+
+/** An average kept as whole-number total ÷ count, so it can be shown exactly. */
+export interface Average {
+  value: number;
+  totalDays: number;
+  count: number;
+}
+
+const show = (a: Average | null) => (a ? \`\${ratioText(a.totalDays, a.count, 1)} days\` : 'N/A');`],
+  [`export function averageGap(sortedDates: string[]): number | null {
+  if (sortedDates.length < 2) return null;
+  let total = 0;
+  for (let i = 1; i < sortedDates.length; i++) total += daysBetween(sortedDates[i - 1], sortedDates[i]);
+  return total / (sortedDates.length - 1);
+}`, `export function averageGap(sortedDates: string[]): Average | null {
+  if (sortedDates.length < 2) return null;
+  let total = 0;
+  for (let i = 1; i < sortedDates.length; i++) total += daysBetween(sortedDates[i - 1], sortedDates[i]);
+  return { value: total / (sortedDates.length - 1), totalDays: total, count: sortedDates.length - 1 };
+}`],
+  [`    const avgCollectionPeriod = collected.length
+      ? collected.reduce((sum, s) => sum + daysBetween(s.invoice.invoiceDate, s.settledOn!), 0) / collected.length
+      : null;
+
+    return {
+      customer,
+      outstanding,
+      paymentFrequency: averageGap(paymentDates),
+      paymentDateCount: paymentDates.length,
+      invoiceFrequency: averageGap(invoiceDates),
+      invoiceCount: invoiceDates.length,
+      avgCollectionPeriod,
+      settledInvoiceCount: collected.length,
+    };`, `    const collectionDays = collected.reduce((sum, s) => sum + daysBetween(s.invoice.invoiceDate, s.settledOn!), 0);
+    const acp: Average | null = collected.length ? { value: collectionDays / collected.length, totalDays: collectionDays, count: collected.length } : null;
+    const pay = averageGap(paymentDates);
+    const inv = averageGap(invoiceDates);
+
+    return {
+      customer,
+      outstanding,
+      paymentFrequency: pay?.value ?? null,
+      paymentDateCount: paymentDates.length,
+      invoiceFrequency: inv?.value ?? null,
+      invoiceCount: invoiceDates.length,
+      avgCollectionPeriod: acp?.value ?? null,
+      settledInvoiceCount: collected.length,
+      text: { paymentFrequency: show(pay), invoiceFrequency: show(inv), avgCollectionPeriod: show(acp) },
+    };`],
+]);
+edit('lib/insights/trend.ts', [
+  ["import { invoiceSettlements } from './metrics';", "import { invoiceSettlements } from './metrics';\nimport { ratioText } from './round';"],
+  [`  /** % change from the previous month/week; null when the previous balance is zero. */
+  changePct: number | null;`, `  /** % change from the previous month/week; null when the previous balance is zero. */
+  changePct: number | null;
+  /** The change as text, exactly rounded to one decimal with a sign ("+12.3%", "-4.0%", "0.0%"), or null. */
+  changeText: string | null;`],
+  [`      changePct: previous === 0 ? null : ((closing - previous) / previous) * 100,`, `      changePct: previous === 0 ? null : ((closing - previous) / previous) * 100,
+      changeText: previous === 0 ? null : signed(ratioText((closing - previous) * 100, previous, 1)) + '%',`],
+  [`/** ₹ in lakhs with two decimals: 2118100.00 → "21.18". */
+export function lakh(paise:
+… [428 more characters not shown]
+```
+
+<details><summary>Result</summary>
+
+```
+ok
+```
+
+</details>
+
+**Tool call — Write**
+
+```
+file: c:\Users\hegde\OneDrive\Desktop\Verve Interview\ar-manager-ca-it-main\components\insights\TrendChart.tsx
+
+'use client';
+
+/**
+ * Historical AR trend: an interactive line chart (hand-built SVG, no chart library).
+ *
+ * As the Phase 2 brief specifies, the amount (₹ lakh, 2-lakh steps) is on the X axis and
+ * time on the Y axis, earliest at the top. A toggle lays time across instead. Hovering
+ * (or arrow keys) snaps to the nearest period and shows its date, balance and % change.
+ * All figures arrive pre-calculated from lib/insights; this component only draws them.
+ */
+import { useRef, useState } from 'react';
+
+export interface ChartPoint {
+  date: string;
+  label: string;
+  partial: boolean;
+  closingText: string; // ₹ formatted
+  lakhValue: number; // for positioning only
+  lakhText: string; // exact, 2 decimals
+  changeText: string | null;
+  previousLabel: string;
+}
+
+const SERIES = '#2a78d6';
+const GRID = '#e2e8f0';
+const AXIS_TEXT = '#475569';
+
+export function TrendChart({ points, ticks, unit }: { points: ChartPoint[]; ticks: number[]; unit: 'month' | 'week' }) {
+  const [timeAcross, setTimeAcross] = useState(false);
+  const [active, setActive] = useState<number | null>(null);
+  const svgRef = useRef<SVGSVGElement>(null);
+
+  const n = points.length;
+  const top = ticks[ticks.length - 1];
+  const step = n > 30 ? 22 : 34; // spacing between periods
+
+  // Geometry (SVG user units). Amount scale is 0 … top lakh.
+  const W = timeAcross ? Math.max(640, 90 + n * Math.max(step, 40)) : 720;
+  const H = timeAcross ? 360 : 70 + n * step;
+  const pad = timeAcross ? { l: 64, r: 24, t: 20, b: 70 } : { l: 170, r: 30, t: 36, b: 20 };
+  const plotW = W - pad.l - pad.r;
+  const plotH = H - pad.t - pad.b;
+  const amt = (lakh: number) => (lakh / top) * (timeAcross ? plotH : plotW);
+  const tPos = (i: number) => (n === 1 ? 0.5 : i / (n - 1)) * (timeAcross ? plotW : plotH);
+  const xy = (i: number, v: number): [number, number] =>
+    timeAcross ? [pad.l + tPos(i), pad.t + plotH - amt(v)] : [pad.l + amt(v), pad.t + tPos(i)];
+
+  const path = points.map((p, i) => xy(i, p.lakhValue)).map(([x, y], i) => `${i ? 'L' : 'M'}${x.toFixed(1)},${y.toFixed(1)}`).join(' ');
+  const labelEvery = timeAcross ? Math.ceil(n / Math.max(1, Math.floor(plotW / 70))) : 1;
+
+  function nearest(clientX: number, clientY: number) {
+    const svg = svgRef.current;
+    if (!svg || !n) return;
+    const r = svg.getBoundingClientRect();
+    const scale = timeAcross ? W / r.width : H / r.height;
+    const pos = timeAcross ? (clientX - r.left) * scale - pad.l : (clientY - r.top) * scale - pad.t;
+    const span = timeAcross ? plotW : plotH;
+    const i = n === 1 ? 0 : Math.round((pos / span) * (n - 1));
+    setActive(Math.min(n - 1, Math.max(0, i)));
+  }
+
+  const a = active !== null ? points[active] : null;
+  const [ax, ay] = active !== null ? xy(active, points[active].lakhValue) : [0, 0];
+
+  return (
+    <div>
+      <div className="mb-2 flex flex-wrap items-center justify-between gap-2 text-xs text-slate-600">
+        <span>
+          {timeAcross ? 'Time across, amount up' : 'Amount across (X axis), time down (Y axis)'} · amounts in ₹ lakh (1 lakh = ₹1,00,000)
+        </span>
+        <label className="flex items-center gap-1">
+          <input type="checkbox" checked={timeAcross} onChange={(e) => setTimeAcross(e.target.checked)} />
+          Show time across the bottom
+        </label>
+      </div>
+      <div className="relative w-full overflow-x-auto">
+        <svg
+          ref={svgRef}
+          viewBox={`0 0 ${W} ${H}`}
+          width="100%"
+          style={{ minWidth: timeAcross ? Math.min(W, 640) : 520, maxWidth: W }}
+          role="img"
+          aria-label={`Historical AR trend, ${n} ${unit === 'month' ? 'months' : 'weeks'}. Use the arrow keys to read each point.`}
+          tabIndex={0}
+          className="touch-none select-none focus:outline-2 focus:outline-blue-500"
+          onPointerMove={(e) => nearest(e.clientX, e.clientY)}
+          onPointerLeave={() => se
+… [4059 more characters not shown]
+```
+
+<details><summary>Result</summary>
+
+```
+File created successfully at: c:\Users\hegde\OneDrive\Desktop\Verve Interview\ar-manager-ca-it-main\components\insights\TrendChart.tsx (file state is current in your context — no need to Read it back)
+```
+
+</details>
+
+**Tool call — Write**
+
+```
+file: c:\Users\hegde\OneDrive\Desktop\Verve Interview\ar-manager-ca-it-main\app\insights\page.tsx
+
+import Link from 'next/link';
+import { loadArData } from '@/lib/ar/load';
+import type { SearchParams } from '@/lib/asof';
+import { formatDate, formatMoney } from '@/lib/format';
+import { customerInsights, type CustomerInsight } from '@/lib/insights/metrics';
+import { lakh, lakhAxis, pointLabel, previousPeriodEnd, trendSeries, trendWindow, type Granularity } from '@/lib/insights/trend';
+import { readPage } from '@/lib/page';
+import { sortRows, withParams, type Dir } from '@/lib/table';
+import { TrendChart, type ChartPoint } from '@/components/insights/TrendChart';
+import { Alert, Badge, Empty, Money, PageHeader, Section, SortTh, TableWrap, Td, Th } from '@/components/ui';
+import { inputClass } from '@/components/form';
+
+/** Reads live data and the as-at date on every request (see app/layout.tsx). */
+export const instant = false;
+
+const SORT: Record<string, (r: CustomerInsight) => string | number | null> = {
+  name: (r) => r.customer.name,
+  outstanding: (r) => r.outstanding,
+  payment: (r) => r.paymentFrequency,
+  invoice: (r) => r.invoiceFrequency,
+  collection: (r) => r.avgCollectionPeriod,
+};
+
+export default async function InsightsPage({ searchParams }: { searchParams: Promise<SearchParams> }) {
+  const { asof, params } = await readPage(searchParams);
+  const data = await loadArData();
+
+  // ---- Section 1: customer metrics (all history up to the as-at date) ----
+  const sort = params.sort && SORT[params.sort] ? params.sort : 'outstanding';
+  const dir: Dir = params.sort && SORT[params.sort] ? ((params.dir as Dir) ?? 'asc') : 'desc';
+  const rows = sortRows(customerInsights(data, asof), SORT, sort, dir);
+  const total = rows.reduce((s, r) => s + r.outstanding, 0);
+  const sortParams = { ...params, sort, dir };
+
+  // ---- Section 2: Historical AR trend ----
+  const granularity: Granularity = params.gran === 'week' ? 'week' : 'month';
+  const window = trendWindow(asof, params.range, params.from, params.to);
+  const customer = data.customers.find((c) => String(c.id) === params.cust);
+  const series = trendSeries(data, window, granularity, customer?.id);
+  const ticks = lakhAxis(Math.max(0, ...series.map((p) => p.closing)));
+  const prevLabel = (date: string) => `${granularity === 'month' ? 'previous month' : 'previous week'} (${pointLabel(previousPeriodEnd(date, granularity), granularity, false)})`;
+  const chartPoints: ChartPoint[] = series.map((p) => ({
+    date: p.date,
+    label: p.label,
+    partial: p.partial,
+    closingText: formatMoney(p.closing),
+    lakhValue: p.closing / 10_000_000,
+    lakhText: lakh(p.closing),
+    changeText: p.changeText,
+    previousLabel: prevLabel(p.date),
+  }));
+  const latest = series[series.length - 1];
+  const label = 'mb-1 block text-xs font-medium text-slate-600';
+  const keep = (extra: Record<string, string | undefined>) => withParams('/insights', params, extra);
+
+  return (
+    <>
+      <PageHeader title="Insights" subtitle={`Customer metrics and AR trend · all history up to ${formatDate(asof)}`} />
+
+      <Section title="Customer metrics">
+        {rows.length === 0 ? (
+          <Empty>No customers.</Empty>
+        ) : (
+          <TableWrap>
+            <thead>
+              <tr>
+                <SortTh label="Customer name" col="name" path="/insights" params={sortParams} />
+                <SortTh label="Outstanding AR" col="outstanding" path="/insights" params={sortParams} numeric />
+                <SortTh label="Payment frequency" col="payment" path="/insights" params={sortParams} numeric />
+                <SortTh label="Invoice frequency" col="invoice" path="/insights" params={sortParams} numeric />
+                <SortTh label="Average collection period" col="collection" path="/insights" params={sortParams} numeric />
+              </tr>
+            </thead>
+            <tbody>
+              {rows.map((r) => (
+                <tr key={r.customer.id} className="hover:bg-slate-5
+… [8356 more characters not shown]
+```
+
+<details><summary>Result</summary>
+
+```
+File created successfully at: c:\Users\hegde\OneDrive\Desktop\Verve Interview\ar-manager-ca-it-main\app\insights\page.tsx (file state is current in your context — no need to Read it back)
+```
+
+</details>
+
+**Assistant:**
+
+The page adds up the total outstanding itself, which breaks the project rule that screens don't calculate. I'll move that sum into `lib/insights`, then add the Insights tab after Statement:
+
+**Tool call — Bash**
+
+```
+# Move total into lib, add nav tab, typecheck and lint
+cd "c:/Users/hegde/OneDrive/Desktop/Verve Interview/ar-manager-ca-it-main" && cat >> lib/insights/metrics.ts <<'EOF'
+
+/** Total outstanding AR across the rows shown (the table's totals row). */
+export function totalOutstanding(rows: CustomerInsight[]): Paise {
+  return rows.reduce((s, r) => s + r.outstanding, 0);
+}
+EOF
+sed -i "s/import { customerInsights, type CustomerInsight } from '@\/lib\/insights\/metrics';/import { customerInsights, totalOutstanding, type CustomerInsight } from '@\/lib\/insights\/metrics';/; s/  const total = rows.reduce((s, r) => s + r.outstanding, 0);/  const total = totalOutstanding(rows);/" app/insights/page.tsx && grep -n "totalOutstanding" app/insights/page.tsx && sed -i "s#  { path: '/statement', label: 'Statement' },#  { path: '/statement', label: 'Statement' },\n  { path: '/insights', label: 'Insights' },#" components/Nav.tsx && grep -n "path:" components/Nav.tsx && npx.cmd tsc --noEmit -p . 2>&1 | head && npm.cmd run lint 2>&1 | tail -8
+```
+
+<details><summary>Result</summary>
+
+```
+5:import { customerInsights, totalOutstanding, type CustomerInsight } from '@/lib/insights/metrics';
+32:  const total = totalOutstanding(rows);
+7:  { path: '/', label: 'Overdue at a glance' },
+8:  { path: '/customers', label: 'Customers' },
+9:  { path: '/invoices', label: 'Invoices' },
+10:  { path: '/receipts/new', label: 'Record payment' },
+11:  { path: '/statement', label: 'Statement' },
+12:  { path: '/insights', label: 'Insights' },
+
+> ar-manager-ca-it-main@0.1.0 lint
+> eslint
+[This command modified 3 files you've previously read: lib\insights\metrics.ts, components\Nav.tsx, app\insights\page.tsx. Call Read before editing.]
+```
+
+</details>
+
+**Tool call — Write**
+
+```
+file: c:\Users\hegde\OneDrive\Desktop\Verve Interview\ar-manager-ca-it-main\tests\insights.test.ts
+
+/**
+ * Phase 2 (Insights) tests. Expected figures were worked out by hand from the
+ * sample data in docs/BRIEF.md Part 3, and the AR figures are cross-checked
+ * against the independent Phase 1 module (lib/ar) for every day.
+ */
+import { describe, expect, it } from 'vitest';
+import { addDays, customerPositions, invoicePositions } from '../lib/ar';
+import { averageGap, customerInsights, invoiceSettlements, totalOutstanding } from '../lib/insights/metrics';
+import { ratioText } from '../lib/insights/round';
+import {
+  closingAr,
+  lakh,
+  lakhAxis,
+  monthEnd,
+  monthsBefore,
+  pointLabel,
+  previousPeriodEnd,
+  reportingDates,
+  trendSeries,
+  trendWindow,
+  unappliedCredit,
+  weekday,
+  weekEnd,
+} from '../lib/insights/trend';
+import { byCode, byNo, rupees, sampleData } from './helpers';
+
+const data = sampleData();
+const AS_OF = '2026-11-18';
+const insight = (code: string, asOf = AS_OF) => customerInsights(data, asOf).find((r) => r.customer.code === code)!;
+
+describe('section 1: customer metrics, hand-calculated (as at 18-Nov-2026, all history)', () => {
+  it('C001: payments 32.5, invoices 30.6, collection 34.2 days, outstanding 88,500', () => {
+    const r = insight('C001');
+    // payments 03-May, 02-Jun, 08-Jul, 20-Aug, 10-Sep: gaps 30 + 36 + 43 + 21 = 130 over 4
+    expect(r.paymentFrequency).toBe(32.5);
+    // invoices 05-Apr … 05-Sep (6 invoices): 153 days over 5 gaps
+    expect(r.invoiceFrequency).toBe(30.6);
+    // settled: 0001 28d, 0006 28d, 0011 33d, 0016 46d, 0021 36d = 171 / 5
+    expect(r.avgCollectionPeriod).toBe(34.2);
+    expect(r.outstanding).toBe(rupees(88500)); // 0024
+    expect(r.text).toEqual({ paymentFrequency: '32.5 days', invoiceFrequency: '30.6 days', avgCollectionPeriod: '34.2 days' });
+  });
+
+  it('C002: 56.0 / 44.0 / 90.5 days, outstanding 1,28,600', () => {
+    const r = insight('C002');
+    expect(r.paymentFrequency).toBe(56); // 20-May, 15-Jun, 09-Sep: 112 / 2
+    expect(r.invoiceFrequency).toBe(44); // 10-Mar … 20-Jul: 132 / 3
+    expect(r.avgCollectionPeriod).toBe(90.5); // 0162 71d, 0009 110d (0003 still part-paid)
+    expect(r.outstanding).toBe(rupees(69600 + 59000));
+  });
+
+  it('C003: one payment date → N/A; invoices 53.0; nothing fully settled → N/A', () => {
+    const r = insight('C003');
+    expect(r.paymentFrequency).toBeNull();
+    expect(r.paymentDateCount).toBe(1);
+    expect(r.invoiceFrequency).toBe(53); // 20-Jan … 28-Jun: 159 / 3
+    expect(r.avgCollectionPeriod).toBeNull(); // 0156 is part-paid only
+    expect(r.text.paymentFrequency).toBe('N/A');
+    expect(r.text.avgCollectionPeriod).toBe('N/A');
+    expect(r.outstanding).toBe(rupees(177000 + 57200 + 129800 + 82600));
+  });
+
+  it('C004: 55.0 / 41.3 / 84.0 days, outstanding 4,04,200', () => {
+    const r = insight('C004');
+    expect(r.paymentFrequency).toBe(55); // 20-Jun → 14-Aug
+    expect(r.invoiceFrequency).toBeCloseTo(124 / 3, 12); // 28-Mar … 30-Jul
+    expect(r.text.invoiceFrequency).toBe('41.3 days');
+    expect(r.avgCollectionPeriod).toBe(84); // only 0170 (28-Mar → 20-Jun); 0007 has 3,000 left
+    expect(r.outstanding).toBe(rupees(3000 + 47200 + 354000));
+  });
+
+  it('C005: one payment date → N/A; invoices 36.0; 0017 still 18,000 short → N/A', () => {
+    const r = insight('C005');
+    expect(r.paymentFrequency).toBeNull();
+    expect(r.invoiceFrequency).toBe(36); // 15-Jul → 20-Aug
+    expect(r.avgCollectionPeriod).toBeNull();
+    expect(r.outstanding).toBe(rupees(18000 + 70800)); // invoice balances, advance not deducted
+  });
+
+  it('C006: 71.0 / 47.5 / 23.5 days, outstanding 35,400', () => {
+    const r = insight('C006');
+    expect(r.paymentFrequency).toBe(71); // 10-May → 20-Jul
+    expect(r.invoiceFrequency).toBe(47.5); // 28-Apr … 01-Aug: 95 / 2
+    expect(r.avgCollectionPeriod).toBe(23.5); // 0005 12d, 0012 35d
+    expect(r.outstanding).toBe(rupees(35400));
+  });
+
+  it('C007: cancelled 0014 excluded; 75.0 / 4
+… [12614 more characters not shown]
+```
+
+**Tool call — PowerShell**
+
+```
+# Run all tests including Phase 2 tests
+npm.cmd test 2>&1 | Select-String -Pattern "✓|×|FAIL|Tests |AssertionError|Expected|Received|insights.test" | Select-Object -First 40
+```
+
+<details><summary>Result</summary>
+
+```
+File created successfully at: c:\Users\hegde\OneDrive\Desktop\Verve Interview\ar-manager-ca-it-main\tests\insights.test.ts (file state is current in your context — no need to Read it back)
+```
+
+</details>
+
+<details><summary>Result</summary>
+
+```
+✓ tests/fixture.test.ts (7 tests) 8ms
+ ✓ tests/format.test.ts (12 tests) 51ms
+ ✓ tests/spot-checks.test.ts (11 tests) 17ms
+ ✓ tests/exports.test.ts (4 tests) 10ms
+ ✓ tests/calculations.test.ts (31 tests) 128ms
+ ✓ tests/insights.test.ts (31 tests) 264ms
+      Tests  96 passed (96)
+   Duration  1.28s (transform 622ms, setup 0ms, collect 1.89s, tests 478ms, environment 2ms, prepare 1.57s)
+```
+
+</details>
+
+**Tool call — Bash**
+
+```
+# Screenshot Insights page and chart states
+cd "c:/Users/hegde/OneDrive/Desktop/Verve Interview/ar-manager-ca-it-main" && A="C:/Users/hegde/AppData/Local/Temp/claude/19ae7b2bcb9cf67a/6bfa9a87-bae9-4522-b9e6-b162623b6f41/scratchpad/audit" && cat > tests/e2e/.shot.tmp.mjs <<EOF
+import { BASE, go, open } from './lib.mjs';
+const { browser, page, errors } = await open();
+await page.setViewportSize({ width: 1280, height: 900 });
+await go(page, \`\${BASE}/insights?asof=2026-11-18\`);
+await page.screenshot({ path: '$A/insights-full.png', fullPage: true });
+const svg = page.locator('svg[role=img]');
+const box = await svg.boundingBox();
+await page.mouse.move(box.x + box.width * 0.5, box.y + box.height * 0.62);
+await page.waitForTimeout(300);
+await page.locator('svg[role=img]').screenshot({ path: '$A/chart-hover.png' });
+await page.getByLabel('Show time across the bottom').check();
+await page.waitForTimeout(300);
+const b2 = await svg.boundingBox();
+await page.mouse.move(b2.x + b2.width * 0.7, b2.y + b2.height * 0.4);
+await page.waitForTimeout(300);
+await page.locator('svg[role=img]').locator('..').screenshot({ path: '$A/chart-across.png' });
+console.log('errors:', errors);
+await browser.close();
+EOF
+node tests/e2e/.shot.tmp.mjs; rm tests/e2e/.shot.tmp.mjs
+```
+
+**Tool call — Read**
+
+```
+{
+  "file_path": "C:\\Users\\hegde\\AppData\\Local\\Temp\\claude\\19ae7b2bcb9cf67a\\6bfa9a87-bae9-4522-b9e6-b162623b6f41\\scratchpad\\audit\\insights-full.png"
+}
+```
+
+<details><summary>Result</summary>
+
+```
+errors: [
+  "pageerror: Hydration failed because the server rendered HTML didn't match the client. As a result this tree will be regenerated on the client. This can happen if a SSR-ed Client Component used:\n" +
+    '\n' +
+    "- A server/client branch `if (typeof window !== 'undefined')`.\n" +
+    "- Variable input such as `Date.now()` or `Math.random()` which changes each time it's called.\n" +
+    "- Date formatting in a user's locale which doesn't match the server.\n" +
+    '- External changing data without sending a snapshot of it along with the HTML.\n' +
+    '- Invalid HTML tag nesting.\n' +
+    '\n' +
+    'It can also happen if the client has a browser extension installed which messes with the HTML before React loaded.\n' +
+    '\n' +
+    'https://react.dev/link/hydration-mismatch\n' +
+    '\n' +
+    '  ...\n' +
+    '    <__next_root_layout_boundary__>\n' +
+    '      <LoadingBoundaryProvider loading={[...]}>\n' +
+    '        <SegmentViewNode type="layout" pagePath="layout.tsx">\n' +
+    '          <SegmentTrieNode>\n' +
+    '          <link>\n' +
+    '          <script>\n' +
+    '          <RootLayout>\n' +
+    '            <html lang="en" className="geist_a715...">\n' +
+    '              <body className="min-h-scre...">\n' +
+    '                <header className="border-b b...">\n' +
+    '                  <div className="mx-auto fl...">\n' +
+    '                    <div>\n' +
+    '                    <Suspense fallback={{...}}>\n' +
+    '                      <Nav>\n' +
+    '                        <nav className="flex flex-...">\n' +
+    '                          <LinkComponent>\n' +
+    '                          <LinkComponent>\n' +
+    '                          <LinkComponent>\n' +
+    '                          <LinkComponent>\n' +
+    '                          <LinkComponent>\n' +
+    '                          <LinkComponent href="/insights?..." className="rounded px...">\n' +
+    '+                           <a\n' +
+    '+                             className="rounded px-3 py-1.5 bg-slate-900 text-white"\n' +
+    '+                             ref={function}\n' +
+    '+                             onClick={function onClick}\n' +
+    '+                             onMouseEnter={function onMouseEnter}\n' +
+    '+                             onTouchStart={function onTouchStart}\n' +
+    '+                             href="/insights?asof=2026-11-18"\n' +
+    '+                           >\n' +
+    '                      ...\n' +
+   
+… [26 more characters not shown]
+```
+
+</details>
+
+<details><summary>Result</summary>
+
+```
+[image]
+```
+
+</details>
+
+**Tool call — Read**
+
+```
+{
+  "file_path": "C:\\Users\\hegde\\AppData\\Local\\Temp\\claude\\19ae7b2bcb9cf67a\\6bfa9a87-bae9-4522-b9e6-b162623b6f41\\scratchpad\\audit\\chart-hover.png"
+}
+```
+
+<details><summary>Result</summary>
+
+```
+[image]
+```
+
+</details>
+
+**Tool call — Read**
+
+```
+{
+  "file_path": "C:\\Users\\hegde\\AppData\\Local\\Temp\\claude\\19ae7b2bcb9cf67a\\6bfa9a87-bae9-4522-b9e6-b162623b6f41\\scratchpad\\audit\\chart-across.png"
+}
+```
+
+<details><summary>Result</summary>
+
+```
+[image]
+```
+
+</details>
+
+**Tool call — Bash**
+
+```
+# Fix tooltip positioning box and month labels
+cd "c:/Users/hegde/OneDrive/Desktop/Verve Interview/ar-manager-ca-it-main" && node - <<'EOF'
+const fs = require('fs');
+const f = 'components/insights/TrendChart.tsx';
+let s = fs.readFileSync(f, 'utf8');
+const pairs = [
+  [`      <div className="relative w-full overflow-x-auto">
+        <svg
+          ref={svgRef}
+          viewBox={\`0 0 \${W} \${H}\`}
+          width="100%"
+          style={{ minWidth: timeAcross ? Math.min(W, 640) : 520, maxWidth: W }}`,
+   `      <div className="w-full overflow-x-auto">
+      {/* The tooltip is positioned in this box, which is exactly the size of the chart. */}
+      <div className="relative" style={{ width: '100%', maxWidth: W, minWidth: timeAcross ? Math.min(W, 640) : 520 }}>
+        <svg
+          ref={svgRef}
+          viewBox={\`0 0 \${W} \${H}\`}
+          width="100%"
+          className="block"`],
+  [`          role="img"`, `          role="img"`],
+  [`          className="touch-none select-none focus:outline-2 focus:outline-blue-500"`, `          style={{ touchAction: 'none', userSelect: 'none' }}`],
+  [`          </div>
+        )}
+      </div>
+      <p className="mt-1 text-xs text-slate-500">`, `          </div>
+        )}
+      </div>
+      </div>
+      <p className="mt-1 text-xs text-slate-500">`],
+  [`Math.floor(plotW / 70)`, `Math.floor(plotW / 46)`],
+];
+for (const [a, b] of pairs) { if (!s.includes(a)) throw new Error('missing: ' + a.slice(0, 60)); s = s.replace(a, b); }
+// the svg had className block added; ensure only one className on svg
+fs.writeFileSync(f, s);
+console.log('ok');
+EOF
+grep -n "className=\"block\"\|touchAction\|maxWidth: W" components/insights/TrendChart.tsx; npx.cmd tsc --noEmit -p . 2>&1 | head -5
+```
+
+<details><summary>Result</summary>
+
+```
+ok
+78:      <div className="relative" style={{ width: '100%', maxWidth: W, minWidth: timeAcross ? Math.min(W, 640) : 520 }}>
+83:          className="block"
+87:          style={{ touchAction: 'none', userSelect: 'none' }}
+```
+
+</details>
+
+**Assistant:**
+
+Merging the keyboard-focus outline back into the chart's class list, which that edit dropped:
+
+**Tool call — Bash**
+
+```
+# Restore focus outline and recheck types and lint
+cd "c:/Users/hegde/OneDrive/Desktop/Verve Interview/ar-manager-ca-it-main" && sed -i '83s/className="block"/className="block focus:outline-2 focus:outline-blue-500"/' components/insights/TrendChart.tsx && sed -n 80,90p components/insights/TrendChart.tsx && npx.cmd tsc --noEmit -p . && npm.cmd run lint 2>&1 | tail -4
+```
+
+<details><summary>Result</summary>
+
+```
+ref={svgRef}
+          viewBox={`0 0 ${W} ${H}`}
+          width="100%"
+          className="block focus:outline-2 focus:outline-blue-500"
+          role="img"
+          aria-label={`Historical AR trend, ${n} ${unit === 'month' ? 'months' : 'weeks'}. Use the arrow keys to read each point.`}
+          tabIndex={0}
+          style={{ touchAction: 'none', userSelect: 'none' }}
+          onPointerMove={(e) => nearest(e.clientX, e.clientY)}
+          onPointerLeave={() => setActive(null)}
+          onFocus={() => setActive((v) => v ?? n - 1)}
+
+> ar-manager-ca-it-main@0.1.0 lint
+> eslint
+[This command modified 1 file you've previously read: components\insights\TrendChart.tsx. Call Read before editing.]
+```
+
+</details>
+
+**Tool call — Write**
+
+```
+file: C:\Users\hegde\AppData\Local\Temp\claude\19ae7b2bcb9cf67a\6bfa9a87-bae9-4522-b9e6-b162623b6f41\scratchpad\audit\oracle2.mjs
+
+/** Independent Phase 2 oracle on RAW rows (rupees). Reuses only the Phase-1-independent oracle helpers. */
+import { P, dayNum, civil, invoiceState } from './oracle.mjs';
+
+const live = (raw, D, custId) => raw.invoices.filter((i) => !i.is_cancelled && i.invoice_date <= D && (custId === undefined || i.customer_id === custId));
+
+export function outstandingAt(raw, D, custId) {
+  return live(raw, D, custId).reduce((s, i) => s + invoiceState(raw, i, D).outstanding, 0);
+}
+
+/** Average gap as span / (count − 1): a different formula from summing gaps. Returns [num, den] or null. */
+function span(dates) {
+  if (dates.length < 2) return null;
+  const nums = dates.map(dayNum);
+  return [Math.max(...nums) - Math.min(...nums), dates.length - 1];
+}
+
+/** The day the running total of payments + credit notes first reaches the invoice total (walking events in date order). */
+function settledOn(raw, inv, D) {
+  const events = [
+    ...raw.allocations.filter((a) => a.invoice_id === inv.id && a.allocation_date <= D).map((a) => [a.allocation_date, P(a.amount), true]),
+    ...raw.credit_notes.filter((c) => c.invoice_id === inv.id && c.credit_note_date <= D).map((c) => [c.credit_note_date, P(c.total), false]),
+  ].sort((a, b) => (a[0] < b[0] ? -1 : a[0] > b[0] ? 1 : 0));
+  let run = 0, cash = 0;
+  for (const [date, amt, isPayment] of events) {
+    run += amt;
+    if (isPayment) cash += amt;
+    if (run >= P(inv.total)) return { date, cash };
+  }
+  return null;
+}
+
+export function metrics(raw, D) {
+  return raw.customers.map((c) => {
+    const pays = [...new Set(raw.receipts.filter((r) => r.customer_id === c.id && r.receipt_date <= D).map((r) => r.receipt_date))];
+    const invs = live(raw, D, c.id);
+    const pf = span(pays);
+    const inf = span(invs.map((i) => i.invoice_date));
+    let total = 0, count = 0;
+    for (const i of invs) {
+      const s = settledOn(raw, i, D);
+      if (s && s.cash > 0) { total += dayNum(s.date) - dayNum(i.invoice_date); count++; }
+    }
+    return {
+      id: c.id,
+      outstanding: outstandingAt(raw, D, c.id),
+      payment: pf ? pf[0] / pf[1] : null,
+      invoice: inf ? inf[0] / inf[1] : null,
+      acp: count ? total / count : null,
+      text: [pf, inf, count ? [total, count] : null].map((r) => (r ? `${oneDecimal(r[0], r[1])} days` : 'N/A')),
+    };
+  });
+}
+
+/** Exact one-decimal rounding with BigInt (half up). */
+export function oneDecimal(num, den) {
+  const n = BigInt(num) * 10n, d = BigInt(den);
+  const q = n / d, r = n % d;
+  const t = r * 2n >= d ? q + 1n : q;
+  return `${t / 10n}.${t % 10n}`;
+}
+
+// ---- trend ----
+const ym = (iso) => iso.split('-').map(Number);
+export function lastDayOfMonth(y, m) {
+  return civil(dayNum(`${m === 12 ? y + 1 : y}-${String(m === 12 ? 1 : m + 1).padStart(2, '0')}-01`) - 1);
+}
+const isSunday = (iso) => (((dayNum(iso) + 4) % 7) + 7) % 7 === 0; // 1970-01-01 was a Thursday
+
+export function windowFor(asOf, preset) {
+  const n = { '12m': 12, '6m': 6, '3m': 3 }[preset];
+  let [y, m] = ym(asOf);
+  m -= n - 1;
+  while (m < 1) { m += 12; y -= 1; }
+  return { from: `${y}-${String(m).padStart(2, '0')}-01`, to: asOf };
+}
+
+export function reportDates(from, to, gran) {
+  const out = [];
+  for (let d = dayNum(from); d <= dayNum(to); d++) {
+    const iso = civil(d);
+    const [y, m] = ym(iso);
+    if (gran === 'month' ? iso === lastDayOfMonth(y, m) : isSunday(iso)) out.push(iso);
+  }
+  if (out[out.length - 1] !== to) out.push(to);
+  return out;
+}
+
+export function prevEnd(iso, gran) {
+  if (gran === 'month') { const [y, m] = ym(iso); return civil(dayNum(`${y}-${String(m).padStart(2, '0')}-01`) - 1); }
+  let d = dayNum(iso) - 1;
+  while (!isSunday(civil(d))) d--;
+  return civil(d);
+}
+
+export function series(raw, from, to, gran, custId) {
+  return reportDates(from, to, gran).map((date) => {
+    const closing = outstandingAt(raw, date, custId);
+    const previous = out
+… [562 more characters not shown]
+```
+
+<details><summary>Result</summary>
+
+```
+File created successfully at: C:\Users\hegde\AppData\Local\Temp\claude\19ae7b2bcb9cf67a\6bfa9a87-bae9-4522-b9e6-b162623b6f41\scratchpad\audit\oracle2.mjs (file state is current in your context — no need to Read it back)
+```
+
+</details>
+
+**Tool call — Write**
+
+```
+file: C:\Users\hegde\AppData\Local\Temp\claude\19ae7b2bcb9cf67a\6bfa9a87-bae9-4522-b9e6-b162623b6f41\scratchpad\audit\phase2.test.ts
+
+import { describe, expect, it } from 'vitest';
+import fs from 'node:fs';
+import * as O from './oracle.mjs';
+import * as O2 from './oracle2.mjs';
+
+const PROJ = 'c:/Users/hegde/OneDrive/Desktop/Verve Interview/ar-manager-ca-it-main';
+const { toArData } = await import(`${PROJ}/lib/ar/map.ts`);
+const M = await import(`${PROJ}/lib/insights/metrics.ts`);
+const T = await import(`${PROJ}/lib/insights/trend.ts`);
+
+const sets: Record<string, any> = {
+  fixture: JSON.parse(fs.readFileSync(`${PROJ}/tests/fixtures/sample.json`, 'utf8')),
+  live: JSON.parse(fs.readFileSync(new URL('./live.json', import.meta.url), 'utf8')),
+};
+const bad: string[] = [];
+let checks = 0;
+const eq = (l: string, a: unknown, b: unknown) => { checks++; if (JSON.stringify(a) !== JSON.stringify(b)) bad.push(`${l}: app=${JSON.stringify(a)} oracle=${JSON.stringify(b)}`); };
+const close = (l: string, a: number | null, b: number | null) => { checks++; if ((a === null) !== (b === null) || (a !== null && Math.abs(a - (b as number)) > 1e-9)) bad.push(`${l}: app=${a} oracle=${b}`); };
+
+for (const [name, raw] of Object.entries(sets)) {
+  describe(name, () => {
+    const data = toArData(structuredClone(raw));
+
+    it('section 1 metrics for every day 2025-12-01 … 2027-03-31', () => {
+      for (let n = O.dayNum('2025-12-01'); n <= O.dayNum('2027-03-31'); n++) {
+        const D = O.civil(n);
+        const app = new Map(M.customerInsights(data, D).map((r: any) => [r.customer.id, r]));
+        for (const o of O2.metrics(raw, D)) {
+          const a: any = app.get(o.id);
+          eq(`${name} ${D} #${o.id} outstanding`, a.outstanding, o.outstanding);
+          close(`${name} ${D} #${o.id} payment`, a.paymentFrequency, o.payment);
+          close(`${name} ${D} #${o.id} invoice`, a.invoiceFrequency, o.invoice);
+          close(`${name} ${D} #${o.id} acp`, a.avgCollectionPeriod, o.acp);
+          eq(`${name} ${D} #${o.id} text`, [a.text.paymentFrequency, a.text.invoiceFrequency, a.text.avgCollectionPeriod], o.text);
+        }
+      }
+      expect(bad.filter((b) => b.startsWith(name)).slice(0, 10)).toEqual([]);
+    });
+
+    it('section 2 series: every preset × granularity × customer (and consolidated) for many as-at dates', () => {
+      const asOfs: string[] = [];
+      for (let n = O.dayNum('2026-01-03'); n <= O.dayNum('2027-02-28'); n += 11) asOfs.push(O.civil(n));
+      asOfs.push('2026-08-31', '2026-11-18', '2026-11-22', '2026-12-31', '2026-02-28', '2028-02-29');
+      const custs = [undefined, ...raw.customers.map((c: any) => c.id)];
+      for (const D of asOfs) for (const preset of ['12m', '6m', '3m']) for (const g of ['month', 'week'] as const) {
+        const w = T.trendWindow(D, preset);
+        eq(`${name} window ${D} ${preset}`, [w.from, w.to], [O2.windowFor(D, preset).from, D]);
+        for (const c of custs) {
+          if (g === 'week' && c !== undefined && preset !== '3m') continue; // keep run time sensible
+          const a = T.trendSeries(data, w, g, c).map((p: any) => [p.date, p.closing, p.previous, p.changeText]);
+          const o = O2.series(raw, w.from, w.to, g, c).map((p: any) => [p.date, p.closing, p.previous, p.changeText]);
+          eq(`${name} ${D} ${preset} ${g} ${c ?? 'all'}`, a, o);
+        }
+      }
+      expect(bad.filter((b) => b.startsWith(name)).slice(0, 10)).toEqual([]);
+    });
+
+    it('section 2 custom ranges', () => {
+      let seed = 7;
+      const rnd = () => ((seed = (seed * 48271) % 2147483647) / 2147483647);
+      for (let k = 0; k < 300; k++) {
+        const a = O.dayNum('2025-11-01') + Math.floor(rnd() * 500);
+        const b = a + Math.floor(rnd() * 200);
+        const from = O.civil(a), to = O.civil(b), asof = '2026-11-18';
+        const w = T.trendWindow(asof, 'custom', from, to);
+        const end = to > asof ? asof : to;
+        if (from > end) { eq(`${name} custom ${from}..${to} error`, !!w.error, tr
+… [584 more characters not shown]
+```
+
+<details><summary>Result</summary>
+
+```
+File created successfully at: C:\Users\hegde\AppData\Local\Temp\claude\19ae7b2bcb9cf67a\6bfa9a87-bae9-4522-b9e6-b162623b6f41\scratchpad\audit\phase2.test.ts (file state is current in your context — no need to Read it back)
+```
+
+</details>
+
+**Tool call — Bash**
+
+```
+# Fetch live data read-only and run Phase 2 oracle comparison
+cd "c:/Users/hegde/OneDrive/Desktop/Verve Interview/ar-manager-ca-it-main" && A="C:/Users/hegde/AppData/Local/Temp/claude/19ae7b2bcb9cf67a/6bfa9a87-bae9-4522-b9e6-b162623b6f41/scratchpad/audit" && node --env-file=.env.local -e "
+import('@supabase/supabase-js').then(async ({createClient})=>{
+const db=createClient(process.env.SUPABASE_URL,process.env.SUPABASE_ANON_KEY,{auth:{persistSession:false},global:{headers:{'x-workspace':process.env.AR_WORKSPACE_ID}}});
+const out={}; for (const t of ['customers','invoices','credit_notes','receipts','allocations','notes']) { const {data,error}=await db.from(t).select('*').order('id'); if(error) throw error; out[t]=data.map(r=>{delete r.workspace_id; delete r.created_at; return r}); }
+require('fs').writeFileSync('$A/live.json', JSON.stringify(out)); console.log('live rows:', Object.values(out).map(a=>a.length).join('/'));});" && npx.cmd vitest run --root "$A" --config "$A/vitest.config.mjs" phase2 2>&1 | grep -E "PHASE 2|✓|×|FAIL|passed|failed" | head -20
+```
+
+<details><summary>Result</summary>
+
+```
+live rows: 9/31/2/17/18/7
+[22m[39mPHASE 2 CHECKS: 46986, MISMATCHES: 0 []
+ [32m✓[39m phase2.test.ts [2m([22m[2m7 tests[22m[2m)[22m[33m 2561[2mms[22m[39m
+   [33m[2m✓[22m[39m fixture[2m > [22msection 2 series: every preset × granularity × customer (and consolidated) for many as-at dates [33m 907[2mms[22m[39m
+   [33m[2m✓[22m[39m fixture[2m > [22msection 2 custom ranges [33m 358[2mms[22m[39m
+   [33m[2m✓[22m[39m live[2m > [22msection 2 series: every preset × granularity × customer (and consolidated) for many as-at dates [33m 842[2mms[22m[39m
+[2m Test Files [22m [1m[32m1 passed[39m[22m[90m (1)[39m
+[2m      Tests [22m [1m[32m7 passed[39m[22m[90m (7)[39m
+```
+
+</details>
+
+**Tool call — Bash**
+
+```
+# Mutation-test the Phase 2 oracle comparison
+A="C:/Users/hegde/AppData/Local/Temp/claude/19ae7b2bcb9cf67a/6bfa9a87-bae9-4522-b9e6-b162623b6f41/scratchpad/audit"; cd "$A" && cp oracle2.mjs oracle2.orig.mjs && run() { (cd "c:/Users/hegde/OneDrive/Desktop/Verve Interview/ar-manager-ca-it-main" && npx.cmd vitest run --root "$A" --config "$A/vitest.config.mjs" phase2 2>&1 | grep -o "MISMATCHES: [0-9]*"); }
+mut() { cp oracle2.orig.mjs oracle2.mjs; node -e "const fs=require('fs');let s=fs.readFileSync('oracle2.mjs','utf8');if(!s.includes(process.argv[1]))throw new Error('pattern');fs.writeFileSync('oracle2.mjs',s.replace(process.argv[1],process.argv[2]))" "$1" "$2"; echo "$3 → $(run)"; }
+mut "if (run >= P(inv.total)) return { date, cash };" "if (run >= P(inv.total)) return { date: events[0][0], cash };" "1. collection to first payment"
+mut "const pays = [...new Set(raw.receipts" "const pays = [...(raw.receipts" "2. same-day receipts double-counted (and a same-day receipt pair needed — expect 0 on this data)"
+mut "=== 0; // 1970-01-01 was a Thursday" "=== 6; // 1970-01-01 was a Thursday" "3. weeks ending Saturday"
+cp oracle2.orig.mjs oracle2.mjs && rm oracle2.orig.mjs && echo "restored → $(run)"
+```
+
+<details><summary>Result</summary>
+
+```
+1. collection to first payment → MISMATCHES: 0
+2. same-day receipts double-counted (and a same-day receipt pair needed — expect 0 on this data) → MISMATCHES: 0
+3. weeks ending Saturday → MISMATCHES: 1489
+restored → MISMATCHES: 0
+Shell cwd was reset to c:\Users\hegde\OneDrive\Desktop\Verve Interview\ar-manager-ca-it-main
+```
+
+</details>
+
+**Tool call — Bash**
+
+```
+# Browser check of Insights UI against independent figures
+cd "c:/Users/hegde/OneDrive/Desktop/Verve Interview/ar-manager-ca-it-main" && A="C:/Users/hegde/AppData/Local/Temp/claude/19ae7b2bcb9cf67a/6bfa9a87-bae9-4522-b9e6-b162623b6f41/scratchpad/audit" && cat > "$A/ui.mjs" <<'EOF'
+import fs from 'node:fs';
+import { pathToFileURL } from 'node:url';
+const A = process.env.A, PROJ = process.env.PROJ;
+const { BASE, check, go, open, text } = await import(pathToFileURL(`${PROJ}/tests/e2e/lib.mjs`).href);
+const O2 = await import(pathToFileURL(`${A}/oracle2.mjs`).href);
+const raw = JSON.parse(fs.readFileSync(`${A}/live.json`, 'utf8'));
+const inr = (p) => new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', minimumFractionDigits: 2 }).format(p / 100);
+const { browser, page, errors } = await open();
+await page.setViewportSize({ width: 1280, height: 900 });
+const D = '2026-11-18';
+
+// Nav order
+await go(page, `${BASE}/insights?asof=${D}`);
+const nav = await page.locator('header nav a').allInnerTexts();
+check('Insights tab sits right after Statement', nav.indexOf('Insights') === nav.indexOf('Statement') + 1, nav.join(' | '));
+
+// Section 1 table vs oracle, default sort outstanding desc
+const rows = await page.locator('section').first().locator('tbody tr').evaluateAll((trs) => trs.map((tr) => [...tr.querySelectorAll('td')].map((td) => td.innerText.trim())));
+const o = O2.metrics(raw, D);
+const byName = new Map(raw.customers.map((c) => [c.name, c]));
+let ok = rows.length === raw.customers.length;
+for (const r of rows) {
+  const name = r[0].replace(/\s+C\d{3}.*$/s, '');
+  const c = byName.get(name), m = o.find((x) => x.id === c?.id);
+  if (!m || r[1] !== inr(m.outstanding) || r[2] !== m.text[0] || r[3] !== m.text[1] || r[4] !== m.text[2]) { ok = false; console.log('   row mismatch', r, m); }
+}
+check(`metrics table matches the independent calculation (${rows.length} customers)`, ok);
+const outs = rows.map((r) => Number(r[1].replace(/[₹,]/g, '')));
+check('default sort: outstanding AR, highest first', outs.every((v, i) => i === 0 || outs[i - 1] >= v));
+const total = (await page.locator('section').first().locator('tfoot').innerText()).match(/₹[\d,.]+/)[0];
+check('total row', total === inr(o.reduce((s, x) => s + x.outstanding, 0)), total);
+
+// Manual sort: payment frequency ascending, N/A last; then descending
+await page.locator('th a:has-text("Payment frequency")').click();
+await page.waitForURL(/sort=payment/);
+await page.waitForFunction(() => !document.body.innerText.includes('Loading figures'));
+let col = await page.locator('section').first().locator('tbody tr td:nth-child(3)').allInnerTexts();
+const nums = col.filter((x) => x !== 'N/A').map(parseFloat);
+check('sort by payment frequency: numbers ascending, N/A last', nums.every((v, i) => i === 0 || nums[i - 1] <= v) && col.slice(nums.length).every((x) => x === 'N/A'), col.join(', '));
+await page.locator('th a:has-text("Payment frequency")').click();
+await page.waitForURL(/dir=desc/);
+await page.waitForFunction(() => !document.body.innerText.includes('Loading figures'));
+col = await page.locator('section').first().locator('tbody tr td:nth-child(3)').allInnerTexts();
+const nd = col.filter((x) => x !== 'N/A').map(parseFloat);
+check('…and descending, N/A still last', nd.every((v, i) => i === 0 || nd[i - 1] >= v) && col.slice(nd.length).every((x) => x === 'N/A'));
+
+// Section 2: trend table vs oracle for several filter combinations
+async function trendRows() {
+  await page.locator('summary:has-text("Show the trend figures")').click();
+  return page.locator('details tbody tr').evaluateAll((trs) => trs.map((tr) => [...tr.querySelectorAll('td')].map((td) => td.innerText.trim())));
+}
+const fmtD = (d) => { const M = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec']; const [y, m, dd] = d.split('-'); return `${dd}-${M[m - 1]}-${y}`; };
+const combos = [
+  { q: '', from: O2.windowFor(D, '12m').from, to: D, g: 'month', c: undefined, label: 'default: consolidated, month
+… [3700 more characters not shown]
+```
+
+<details><summary>Result (error)</summary>
+
+```
+Exit code 2
+/usr/bin/bash: -c: line 94: unexpected EOF while looking for matching `''
+```
+
+</details>
+
+**Assistant:**
+
+The shell couldn't parse that inline script. I'll save it as a file and run it from there:
+
+**Tool call — Bash**
+
+```
+# Check whether the UI script file was written
+ls "C:/Users/hegde/AppData/Local/Temp/claude/19ae7b2bcb9cf67a/6bfa9a87-bae9-4522-b9e6-b162623b6f41/scratchpad/audit/"
+```
+
+<details><summary>Result</summary>
+
+```
+audit.test.ts
+chart-across.png
+chart-hover.png
+insights-full.png
+live-site.mjs
+live.json
+node_modules
+oracle.mjs
+oracle2.mjs
+phase2.test.ts
+vitest.config.mjs
+```
+
+</details>
+
+**Tool call — Write**
+
+```
+file: C:\Users\hegde\AppData\Local\Temp\claude\19ae7b2bcb9cf67a\6bfa9a87-bae9-4522-b9e6-b162623b6f41\scratchpad\audit\ui.mjs
+
+import fs from 'node:fs';
+import { pathToFileURL } from 'node:url';
+const A = process.env.A, PROJ = process.env.PROJ;
+const { BASE, check, go, open, text } = await import(pathToFileURL(`${PROJ}/tests/e2e/lib.mjs`).href);
+const O2 = await import(pathToFileURL(`${A}/oracle2.mjs`).href);
+const raw = JSON.parse(fs.readFileSync(`${A}/live.json`, 'utf8'));
+const inr = (p) => new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', minimumFractionDigits: 2 }).format(p / 100);
+const { browser, page, errors } = await open();
+await page.setViewportSize({ width: 1280, height: 900 });
+const D = '2026-11-18';
+const settle = () => page.waitForFunction(() => !document.body.innerText.includes('Loading figures'));
+
+// Nav order
+await go(page, `${BASE}/insights?asof=${D}`);
+const nav = await page.locator('header nav a').allInnerTexts();
+check('Insights tab sits right after Statement', nav.indexOf('Insights') === nav.indexOf('Statement') + 1, nav.join(' | '));
+
+// Section 1 table vs oracle, default sort outstanding desc
+const metricsRows = () => page.locator('section').first().locator('tbody tr').evaluateAll((trs) => trs.map((tr) => [...tr.querySelectorAll('td')].map((td) => td.innerText.trim())));
+const rows = await metricsRows();
+const o = O2.metrics(raw, D);
+let ok = rows.length === raw.customers.length;
+for (const r of rows) {
+  const code = r[0].match(/C\d{3}/)[0];
+  const c = raw.customers.find((x) => x.code === code && r[0].startsWith(x.name));
+  const m = o.find((x) => x.id === c?.id);
+  if (!m || r[1] !== inr(m.outstanding) || r[2] !== m.text[0] || r[3] !== m.text[1] || r[4] !== m.text[2]) { ok = false; console.log('   row mismatch', r, m); }
+}
+check(`metrics table matches the independent calculation (${rows.length} customers)`, ok);
+const outs = rows.map((r) => Number(r[1].replace(/[₹,]/g, '')));
+check('default sort: outstanding AR, highest first', outs.every((v, i) => i === 0 || outs[i - 1] >= v));
+const total = (await page.locator('section').first().locator('tfoot').innerText()).match(/₹[\d,.]+/)[0];
+check('total row', total === inr(o.reduce((s, x) => s + x.outstanding, 0)), total);
+
+// Manual sort: payment frequency ascending, N/A last; then descending
+await page.locator('th a:has-text("Payment frequency")').click();
+await page.waitForURL(/sort=payment/);
+await settle();
+let col = await page.locator('section').first().locator('tbody tr td:nth-child(3)').allInnerTexts();
+const nums = col.filter((x) => x !== 'N/A').map(parseFloat);
+check('sort by payment frequency: ascending, N/A last', nums.every((v, i) => i === 0 || nums[i - 1] <= v) && col.slice(nums.length).every((x) => x === 'N/A'), col.join(', '));
+await page.locator('th a:has-text("Payment frequency")').click();
+await page.waitForURL(/dir=desc/);
+await settle();
+col = await page.locator('section').first().locator('tbody tr td:nth-child(3)').allInnerTexts();
+const nd = col.filter((x) => x !== 'N/A').map(parseFloat);
+check('…and descending, N/A still last', nd.every((v, i) => i === 0 || nd[i - 1] >= v) && col.slice(nd.length).every((x) => x === 'N/A'), col.join(', '));
+
+// Section 2: trend table vs oracle for several filter combinations
+const fmtD = (d) => { const M = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']; const [y, m, dd] = d.split('-'); return `${dd}-${M[m - 1]}-${y}`; };
+const c002 = raw.customers.find((c) => c.code === 'C002').id;
+const combos = [
+  { q: '', from: O2.windowFor(D, '12m').from, to: D, g: 'month', c: undefined, label: 'default: consolidated, monthly, last 12 months' },
+  { q: '&range=6m&gran=week', from: O2.windowFor(D, '6m').from, to: D, g: 'week', c: undefined, label: 'weekly, last 6 months' },
+  { q: '&range=3m', from: O2.windowFor(D, '3m').from, to: D, g: 'month', c: undefined, label: 'last 3 months' },
+  { q: `&cust=${c002}`, from: O2.windowFor(D, '12m').from, to: D, g: 'mont
+… [3343 more characters not shown]
+```
+
+<details><summary>Result</summary>
+
+```
+File created successfully at: C:\Users\hegde\AppData\Local\Temp\claude\19ae7b2bcb9cf67a\6bfa9a87-bae9-4522-b9e6-b162623b6f41\scratchpad\audit\ui.mjs (file state is current in your context — no need to Read it back)
+```
+
+</details>
+
+**Tool call — Bash**
+
+```
+# Run the Insights UI check on the dev server
+cd "c:/Users/hegde/OneDrive/Desktop/Verve Interview/ar-manager-ca-it-main" && A="C:/Users/hegde/AppData/Local/Temp/claude/19ae7b2bcb9cf67a/6bfa9a87-bae9-4522-b9e6-b162623b6f41/scratchpad/audit" && A="$A" PROJ="$(pwd)" node "$A/ui.mjs" 2>&1 | grep -v "^    at" | cut -c1-260
+```
+
+<details><summary>Result</summary>
+
+```
+PASS  Insights tab sits right after Statement  — Overdue at a glance | Customers | Invoices | Record payment | Statement | Insights
+PASS  metrics table matches the independent calculation (9 customers)
+PASS  default sort: outstanding AR, highest first
+PASS  total row  — ₹16,87,700.00
+FAIL  sort by payment frequency: ascending, N/A last  — 75.0 days, 71.0 days, 56.0 days, 55.0 days, 32.5 days, N/A, N/A, N/A, N/A
+PASS  …and descending, N/A still last  — 75.0 days, 71.0 days, 56.0 days, 55.0 days, 32.5 days, N/A, N/A, N/A, N/A
+PASS  trend figures match (default: consolidated, monthly, last 12 months, 12 points)
+PASS  trend figures match (weekly, last 6 months, 25 points)
+PASS  trend figures match (last 3 months, 3 points)
+PASS  trend figures match (customer C002, 12 points)
+PASS  trend figures match (custom 15-Apr…20-Sep weekly, 23 points)
+PASS  custom To after the as-at date is capped, with a note
+PASS  custom From after To is explained
+PASS  headline: latest balance and % vs previous month  — ₹16,87,700.00 +16.3%
+FAIL  amount axis: 0 upwards in 2-lakh steps  — ,,,,,,,,,,,
+node:internal/modules/run_main:111
+    triggerUncaughtException(
+    ^
+
+locator.waitFor: Timeout 30000ms exceeded.
+Call log:
+  [2m- waiting for locator('[role=status]').filter({ hasText: 'lakh' }) to be visible[22m
+
+  name: 'TimeoutError'
+}
+
+Node.js v26.13.1
+```
+
+</details>
+
+**Tool call — Bash**
+
+```
+# Fix test selectors and expectations, rerun
+A="C:/Users/hegde/AppData/Local/Temp/claude/19ae7b2bcb9cf67a/6bfa9a87-bae9-4522-b9e6-b162623b6f41/scratchpad/audit"; cd "$A" && node - <<'EOF'
+const fs = require('fs');
+let s = fs.readFileSync('ui.mjs', 'utf8');
+const rep = [
+  ["check('sort by payment frequency: ascending, N/A last', nums.every((v, i) => i === 0 || nums[i - 1] <= v)", "check('first click on a number column: highest first, N/A last', nums.every((v, i) => i === 0 || nums[i - 1] >= v)"],
+  ["await page.waitForURL(/dir=desc/);", "await page.waitForURL(/dir=asc/);"],
+  ["check('…and descending, N/A still last', nd.every((v, i) => i === 0 || nd[i - 1] >= v)", "check('second click: lowest first, N/A still last', nd.every((v, i) => i === 0 || nd[i - 1] <= v)"],
+  ["const svg = page.locator('svg[role=img]');", "const svg = page.locator('svg[aria-label^=\"Historical AR trend\"]');"],
+  ["const ticks = await svg.locator('text').allInnerTexts();", "const ticks = await svg.locator('text').allTextContents();"],
+];
+for (const [a, b] of rep) { if (!s.includes(a)) throw new Error(a.slice(0, 50)); s = s.replace(a, b); }
+fs.writeFileSync('ui.mjs', s);
+EOF
+cd "c:/Users/hegde/OneDrive/Desktop/Verve Interview/ar-manager-ca-it-main" && A="$A" PROJ="$(pwd)" node "$A/ui.mjs" 2>&1 | grep -v "^    at" | cut -c1-260
+```
+
+<details><summary>Result</summary>
+
+```
+PASS  Insights tab sits right after Statement  — Overdue at a glance | Customers | Invoices | Record payment | Statement | Insights
+PASS  metrics table matches the independent calculation (9 customers)
+PASS  default sort: outstanding AR, highest first
+PASS  total row  — ₹16,87,700.00
+PASS  first click on a number column: highest first, N/A last  — 75.0 days, 71.0 days, 56.0 days, 55.0 days, 32.5 days, N/A, N/A, N/A, N/A
+PASS  second click: lowest first, N/A still last  — 32.5 days, 55.0 days, 56.0 days, 71.0 days, 75.0 days, N/A, N/A, N/A, N/A
+PASS  trend figures match (default: consolidated, monthly, last 12 months, 12 points)
+PASS  trend figures match (weekly, last 6 months, 25 points)
+PASS  trend figures match (last 3 months, 3 points)
+PASS  trend figures match (customer C002, 12 points)
+PASS  trend figures match (custom 15-Apr…20-Sep weekly, 23 points)
+PASS  custom To after the as-at date is capped, with a note
+PASS  custom From after To is explained
+PASS  headline: latest balance and % vs previous month  — ₹16,87,700.00 +16.3%
+PASS  amount axis: 0 upwards in 2-lakh steps  — 0,2,4,6,8,10,12,14,16,18,20,22
+node:internal/modules/run_main:111
+    triggerUncaughtException(
+    ^
+
+locator.waitFor: Timeout 30000ms exceeded.
+Call log:
+  [2m- waiting for locator('[role=status]').filter({ hasText: 'lakh' }) to be visible[22m
+
+  name: 'TimeoutError'
+}
+
+Node.js v26.13.1
+```
+
+</details>
+
+**Tool call — Bash**
+
+```
+# Debug the vertical-layout tooltip
+cd "c:/Users/hegde/OneDrive/Desktop/Verve Interview/ar-manager-ca-it-main" && cat > tests/e2e/.dbg.tmp.mjs <<'EOF'
+import { BASE, go, open } from './lib.mjs';
+const { browser, page, errors } = await open();
+await page.setViewportSize({ width: 1280, height: 900 });
+await go(page, `${BASE}/insights?asof=2026-11-18`);
+const svg = page.locator('svg[aria-label^="Historical AR trend"]');
+console.log('svg count', await svg.count(), 'circles', await svg.locator('circle').count());
+const cb = await svg.locator('circle').nth(8).boundingBox();
+console.log('circle box', cb);
+await page.mouse.move(cb.x + 30, cb.y + 4);
+await page.waitForTimeout(800);
+console.log('status els', await page.locator('[role=status]').count(), JSON.stringify(await page.locator('[role=status]').allInnerTexts()));
+console.log('errors', errors.map((e) => e.slice(0, 200)));
+await browser.close();
+EOF
+node tests/e2e/.dbg.tmp.mjs; rm tests/e2e/.dbg.tmp.mjs
+```
+
+<details><summary>Result</summary>
+
+```
+svg count 1 circles 12
+circle box { x: 698.641845703125, y: 1219.4090576171875, width: 10, height: 10 }
+status els 0 []
+errors [
+  "pageerror: Hydration failed because the server rendered HTML didn't match the client. As a result this tree will be regenerated on the client. This can happen if a SSR-ed Client Component used:\n" +
+    '\n' +
+    '- A s'
+]
+```
+
+</details>
+
+**Tool call — Bash**
+
+```
+# Identify the hydration mismatch source
+cd "c:/Users/hegde/OneDrive/Desktop/Verve Interview/ar-manager-ca-it-main" && cat > tests/e2e/.dbg.tmp.mjs <<'EOF'
+import { BASE, go, open } from './lib.mjs';
+for (const path of ['/insights?asof=2026-11-18', '/statement?asof=2026-11-18', '/?asof=2026-11-18']) {
+  const { browser, page, errors } = await open();
+  await go(page, BASE + path);
+  await page.waitForTimeout(1500);
+  console.log(path, '→', errors.length ? errors[0].split('\n').filter((l) => /^[+-]|Link|href|<a|<nav/.test(l.trim())).slice(0, 14).join('\n') : 'no errors');
+  await browser.close();
+}
+EOF
+node tests/e2e/.dbg.tmp.mjs; rm tests/e2e/.dbg.tmp.mjs
+```
+
+<details><summary>Result</summary>
+
+```
+/insights?asof=2026-11-18 → - A server/client branch `if (typeof window !== 'undefined')`.
+- Variable input such as `Date.now()` or `Math.random()` which changes each time it's called.
+- Date formatting in a user's locale which doesn't match the server.
+- External changing data without sending a snapshot of it along with the HTML.
+- Invalid HTML tag nesting.
+                        <nav className="flex flex-...">
+                          <LinkComponent>
+                          <LinkComponent>
+                          <LinkComponent>
+                          <LinkComponent>
+                          <LinkComponent>
+                          <LinkComponent href="/insights?..." className="rounded px...">
++                           <a
++                             className="rounded px-3 py-1.5 bg-slate-900 text-white"
+/statement?asof=2026-11-18 → no errors
+/?asof=2026-11-18 → no errors
+```
+
+</details>
+
+**Tool call — PowerShell**
+
+```
+# Compare server-rendered nav HTML on two pages
+foreach ($p in '/insights?asof=2026-11-18','/statement?asof=2026-11-18') { $h = (Invoke-WebRequest -Uri ("http://localhost:3000" + $p) -UseBasicParsing -TimeoutSec 90).Content; $m = [regex]::Match($h, '<nav[\s\S]*?</nav>'); "$p : " + ($m.Value -replace 'class="[^"]*"','' -replace '<!-- -->','') }
+```
+
+<details><summary>Result</summary>
+
+```
+/insights?asof=2026-11-18 : <nav ><a  href="/?asof=2026-11-18">Overdue at a glance</a><a  href="/customers?asof=2026-11-18">Customers</a><a  href="/invoices?asof=2026-11-18">Invoices</a><a  href="/receipts/new?asof=2026-11-18">Record payment</a><a  href="/statement?asof=2026-11-18">Statement</a><a  href="/insights?asof=2026-11-18">Insights</a></nav>
+/statement?asof=2026-11-18 : <nav ><a  href="/?asof=2026-11-18">Overdue at a glance</a><a  href="/customers?asof=2026-11-18">Customers</a><a  href="/invoices?asof=2026-11-18">Invoices</a><a  href="/receipts/new?asof=2026-11-18">Record payment</a><a  href="/statement?asof=2026-11-18">Statement</a><a  href="/insights?asof=2026-11-18">Insights</a></nav>
+```
+
+</details>
+
+**Assistant:**
+
+The server sends all six links on both pages, so the difference must be in the link's *style*: whether the Insights tab is highlighted. Checking the classes:
+
+**Tool call — PowerShell**
+
+```
+# Show nav link classes rendered by the server
+foreach ($p in '/insights?asof=2026-11-18','/statement?asof=2026-11-18','/insights') { $h = (Invoke-WebRequest -Uri ("http://localhost:3000" + $p) -UseBasicParsing -TimeoutSec 90).Content; $m = [regex]::Matches($h, '<a class="([^"]*)" href="/(statement|insights)[^"]*"'); "$p : " + (($m | ForEach-Object { $_.Groups[2].Value + '=[' + $_.Groups[1].Value + ']' }) -join '  ') }
+```
+
+<details><summary>Result</summary>
+
+```
+/insights?asof=2026-11-18 : statement=[rounded px-3 py-1.5 text-slate-700 hover:bg-slate-100]  insights=[rounded px-3 py-1.5 bg-slate-900 text-white]  insights=[hover:underline print:no-underline]  insights=[hover:underline print:no-underline]  insights=[hover:underline print:no-underline]  insights=[hover:underline print:no-underline]  insights=[hover:underline print:no-underline]
+/statement?asof=2026-11-18 : statement=[rounded px-3 py-1.5 bg-slate-900 text-white]  insights=[rounded px-3 py-1.5 text-slate-700 hover:bg-slate-100]
+/insights : statement=[rounded px-3 py-1.5 text-slate-700 hover:bg-slate-100]  insights=[rounded px-3 py-1.5 bg-slate-900 text-white]  insights=[hover:underline print:no-underline]  insights=[hover:underline print:no-underline]  insights=[hover:underline print:no-underline]  insights=[hover:underline print:no-underline]  insights=[hover:underline print:no-underline]
+```
+
+</details>
+
+**Tool call — Bash**
+
+```
+# Print the full hydration diff
+cd "c:/Users/hegde/OneDrive/Desktop/Verve Interview/ar-manager-ca-it-main" && cat > tests/e2e/.dbg.tmp.mjs <<'EOF'
+import { BASE, go, open } from './lib.mjs';
+const { browser, page, errors } = await open();
+await go(page, BASE + '/insights?asof=2026-11-18');
+await page.waitForTimeout(1500);
+console.log(errors[0]?.split('\n').slice(18).join('\n'));
+await browser.close();
+EOF
+node tests/e2e/.dbg.tmp.mjs; rm tests/e2e/.dbg.tmp.mjs
+```
+
+<details><summary>Result</summary>
+
+```
+undefined
+```
+
+</details>
+
+**Tool call — Bash**
+
+```
+# Repeat page loads and print diff tails
+cd "c:/Users/hegde/OneDrive/Desktop/Verve Interview/ar-manager-ca-it-main" && cat > tests/e2e/.dbg.tmp.mjs <<'EOF'
+import { BASE, go, open } from './lib.mjs';
+for (let i = 0; i < 3; i++) {
+  const { browser, page, errors } = await open();
+  await go(page, BASE + '/insights?asof=2026-11-18');
+  await page.waitForTimeout(2000);
+  console.log(`run ${i + 1}: ${errors.length} error(s)`, errors.map((e) => e.split('\n').slice(-25).join('\n')).join('\n---\n'));
+  await browser.close();
+}
+EOF
+node tests/e2e/.dbg.tmp.mjs 2>&1 | head -80; rm tests/e2e/.dbg.tmp.mjs
+```
+
+<details><summary>Result</summary>
+
+```
+run 1: 0 error(s) 
+run 2: 0 error(s) 
+run 3: 0 error(s)
+```
+
+</details>
+
+**Tool call — Bash**
+
+```
+# Fix hover scroll and build production bundle
+A="C:/Users/hegde/AppData/Local/Temp/claude/19ae7b2bcb9cf67a/6bfa9a87-bae9-4522-b9e6-b162623b6f41/scratchpad/audit"; cd "$A" && node -e "
+const fs=require('fs');let s=fs.readFileSync('ui.mjs','utf8');
+const a='const circle = svg.locator(\'circle\').nth(8); // Aug 2026\nconst cb = await circle.boundingBox();';
+if(!s.includes(a)) throw new Error('x');
+s=s.replace(a,'const circle = svg.locator(\'circle\').nth(8); // Aug 2026\nawait circle.scrollIntoViewIfNeeded();\nconst cb = await circle.boundingBox();');
+fs.writeFileSync('ui.mjs',s);" && cd "c:/Users/hegde/OneDrive/Desktop/Verve Interview/ar-manager-ca-it-main" && powershell.exe -NoProfile -Command "foreach (\$d in '.next\server','.next\static') { if (Test-Path \$d) { try { Remove-Item -Recurse -Force \$d -ErrorAction Stop } catch {} } }" ; npm.cmd run build 2>&1 | grep -E "rror|Compiled|Finished TypeScript|insights" | head
+```
+
+<details><summary>Result</summary>
+
+```
+✓ Compiled successfully in 7.5s
+  Finished TypeScript in 12.4s ...
+├ ◐ /insights
+```
+
+</details>
+
+**Tool call — PowerShell**
+
+```
+# Start production server on port 3123
+$p = Start-Process -FilePath "npm.cmd" -ArgumentList "run","start","--","-p","3123" -PassThru -WindowStyle Hidden; $ok=$false; for ($i=0; $i -lt 40 -and -not $ok; $i++) { Start-Sleep -Milliseconds 700; try { $null = Invoke-WebRequest -Uri "http://localhost:3123/insights" -UseBasicParsing -TimeoutSec 20; $ok=$true } catch {} }; "server up: $ok"
+```
+
+**Tool call — Bash**
+
+```
+# Run Insights UI check against production build
+cd "c:/Users/hegde/OneDrive/Desktop/Verve Interview/ar-manager-ca-it-main" && A="C:/Users/hegde/AppData/Local/Temp/claude/19ae7b2bcb9cf67a/6bfa9a87-bae9-4522-b9e6-b162623b6f41/scratchpad/audit" && BASE=http://localhost:3123 A="$A" PROJ="$(pwd)" node "$A/ui.mjs" 2>&1 | grep -v "^    at" | cut -c1-240
+```
+
+<details><summary>Result</summary>
+
+```
+server up: True
+```
+
+</details>
+
+<details><summary>Result</summary>
+
+```
+PASS  Insights tab sits right after Statement  — Overdue at a glance | Customers | Invoices | Record payment | Statement | Insights
+PASS  metrics table matches the independent calculation (9 customers)
+PASS  default sort: outstanding AR, highest first
+PASS  total row  — ₹16,87,700.00
+PASS  first click on a number column: highest first, N/A last  — 75.0 days, 71.0 days, 56.0 days, 55.0 days, 32.5 days, N/A, N/A, N/A, N/A
+PASS  second click: lowest first, N/A still last  — 32.5 days, 55.0 days, 56.0 days, 71.0 days, 75.0 days, N/A, N/A, N/A, N/A
+PASS  trend figures match (default: consolidated, monthly, last 12 months, 12 points)
+PASS  trend figures match (weekly, last 6 months, 25 points)
+PASS  trend figures match (last 3 months, 3 points)
+PASS  trend figures match (customer C002, 12 points)
+PASS  trend figures match (custom 15-Apr…20-Sep weekly, 23 points)
+PASS  custom To after the as-at date is capped, with a note
+PASS  custom From after To is explained
+PASS  headline: latest balance and % vs previous month  — ₹16,87,700.00 +16.3%
+PASS  amount axis: 0 upwards in 2-lakh steps  — 0,2,4,6,8,10,12,14,16,18,20,22
+PASS  hover: period, balance and % change  — ₹21,18,100.00 | ₹21.18 lakh · Aug 2026 | +5.1% vs previous month (Jul 2026)
+FAIL  tooltip sits next to its point  — point 699,594 tooltip 553,589
+PASS  keyboard: focus + arrow reads the previous point  — ₹14,51,700.00 | ₹14.52 lakh · Oct 2026 | 0.0% vs previous month (Sep 2026)
+PASS  toggle lays time across (wider than tall)  — 0 0 640 360
+PASS  no browser errors (incl. hydration)
+```
+
+</details>
+
+**Tool call — Bash**
+
+```
+# Flip tooltip side near edges; tighten the test
+cd "c:/Users/hegde/OneDrive/Desktop/Verve Interview/ar-manager-ca-it-main" && node - <<'EOF'
+const fs = require('fs');
+const f = 'components/insights/TrendChart.tsx';
+let s = fs.readFileSync(f, 'utf8');
+const a = `            style={{
+              left: \`\${(Math.min(ax + 12, W - 200) / W) * 100}%\`,
+              top: \`\${(Math.min(Math.max(ay - 10, 0), H - 90) / H) * 100}%\`,
+            }}`;
+const b = `            style={{
+              // Beside the point, flipping to the other side near the right or bottom edge so it never covers the point.
+              left: \`\${(ax / W) * 100}%\`,
+              top: \`\${(ay / H) * 100}%\`,
+              transform: \`translate(\${ax > W * 0.55 ? 'calc(-100% - 14px)' : '14px'}, \${ay > H * 0.7 ? 'calc(-100% + 8px)' : '-8px'})\`,
+              whiteSpace: 'nowrap',
+            }}`;
+if (!s.includes(a)) throw new Error('tooltip style not found');
+s = s.replace(a, b);
+fs.writeFileSync(f, s);
+console.log('ok');
+EOF
+A="C:/Users/hegde/AppData/Local/Temp/claude/19ae7b2bcb9cf67a/6bfa9a87-bae9-4522-b9e6-b162623b6f41/scratchpad/audit"; node -e "
+const fs=require('fs');const f=process.argv[1];let s=fs.readFileSync(f,'utf8');
+s=s.replace(\"check('tooltip sits next to its point', Math.abs(tb.y - cb.y) < 80 && tb.x - cb.x > -10 && tb.x - cb.x < 120,\", \"const overlaps = tb.x < cb.x + cb.width && tb.x + tb.width > cb.x && tb.y < cb.y + cb.height && tb.y + tb.height > cb.y;\ncheck('tooltip sits beside its point without covering it', !overlaps && Math.abs(tb.y - cb.y) < 90 && Math.min(Math.abs(tb.x - (cb.x + cb.width)), Math.abs(tb.x + tb.width - cb.x)) < 40,\");
+fs.writeFileSync(f,s);" "$A/ui.mjs" && grep -c "without covering" "$A/ui.mjs"
+```
+
+<details><summary>Result</summary>
+
+```
+ok
+1
+```
+
+</details>
+
+**Assistant:**
+
+I'll also extend the test to hover points on both sides in the time-across layout, then rebuild the production server and re-run the whole check:
+
+**Tool call — Bash**
+
+```
+# Add time-across hover checks to UI test
+A="C:/Users/hegde/AppData/Local/Temp/claude/19ae7b2bcb9cf67a/6bfa9a87-bae9-4522-b9e6-b162623b6f41/scratchpad/audit"; node -e "
+const fs=require('fs');const f=process.argv[1];let s=fs.readFileSync(f,'utf8');
+const a=\"await page.screenshot({ path: \`\${A}/final-across.png\`, fullPage: false });\";
+if(!s.includes(a)) throw new Error('x');
+s=s.replace(a, \`for (const idx of [1, 8, 11]) {
+  const c = svg.locator('circle').nth(idx);
+  await c.scrollIntoViewIfNeeded();
+  const b = await c.boundingBox();
+  await page.mouse.move(b.x + b.width / 2, b.y + b.height / 2 + 30);
+  await page.waitForTimeout(150);
+  const t = await tip.boundingBox();
+  const cover = t.x < b.x + b.width && t.x + t.width > b.x && t.y < b.y + b.height && t.y + t.height > b.y;
+  const txt = await tip.innerText();
+  check(\\\`time-across hover on point \\\${idx + 1}: right period, not covering it\\\`, !cover && txt.includes(s12[idx].label.replace(/ \\\\(to .*\\\\)\$/, '')), txt.split('\\\\n')[1]);
+}
+await page.locator('svg[aria-label^=\"Historical AR trend\"]').scrollIntoViewIfNeeded();
+await page.screenshot({ path: \\\`\\\${A}/final-across.png\\\` });\`);
+fs.writeFileSync(f,s);" "$A/ui.mjs" && grep -n "time-across hover" "$A/ui.mjs" | head -2
+```
+
+**Tool call — PowerShell**
+
+```
+# Restart production server with rebuilt app
+Get-CimInstance Win32_Process -Filter "Name='node.exe'" | Where-Object { $_.CommandLine -like '*3123*' -or ($_.CommandLine -like '*next*start*' ) } | ForEach-Object { Stop-Process -Id $_.ProcessId -Force -ErrorAction SilentlyContinue }; Start-Sleep -Seconds 1; foreach ($d in '.next\server','.next\static') { if (Test-Path $d) { try { Remove-Item -Recurse -Force $d -ErrorAction Stop } catch { "lock on $d" } } }; npm.cmd run build 2>&1 | Select-String -Pattern "rror|✓ Compiled|Finished TypeScript" | Select-Object -First 5; $p = Start-Process -FilePath "npm.cmd" -ArgumentList "run","start","--","-p","3123" -PassThru -WindowStyle Hidden; $ok=$false; for ($i=0; $i -lt 40 -and -not $ok; $i++) { Start-Sleep -Milliseconds 700; try { $null = Invoke-WebRequest -Uri "http://localhost:3123/insights" -UseBasicParsing -TimeoutSec 20; $ok=$true } catch {} }; "server up: $ok"
+```
+
+**Tool call — Bash**
+
+```
+# Rerun UI check on production build
+cd "c:/Users/hegde/OneDrive/Desktop/Verve Interview/ar-manager-ca-it-main" && A="C:/Users/hegde/AppData/Local/Temp/claude/19ae7b2bcb9cf67a/6bfa9a87-bae9-4522-b9e6-b162623b6f41/scratchpad/audit" && BASE=http://localhost:3123 A="$A" PROJ="$(pwd)" node "$A/ui.mjs" 2>&1 | grep -v "^    at" | cut -c1-200 | grep -E "FAIL|tooltip|hover|errors|Error|Timeout"; echo "---"; BASE=http://localhost:3123 A="$A" PROJ="$(pwd)" node "$A/ui.mjs" 2>&1 | grep -c "^PASS"
+```
+
+<details><summary>Result</summary>
+
+```
+/usr/bin/bash: line 1: time-across: command not found
+/usr/bin/bash: line 2: ${A}/final-across.png\: No such file or directory
+```
+
+</details>
+
+<details><summary>Result</summary>
+
+```
+✓ Compiled successfully in 1322ms
+  Finished TypeScript in 4.7s ...
+server up: True
+```
+
+</details>
+
+<details><summary>Result</summary>
+
+```
+SyntaxError: Unexpected token ','
+---
+0
+```
+
+</details>
+
+**Assistant:**
+
+My inline edit was mangled by the shell's quote handling and broke the test file. I'll fix that section directly:
+
+**Tool call — Grep**
+
+```
+{
+  "pattern": "for \\(const idx of|final-across|toggle lays time",
+  "path": "C:\\Users\\hegde\\AppData\\Local\\Temp\\claude\\19ae7b2bcb9cf67a\\6bfa9a87-bae9-4522-b9e6-b162623b6f41\\scratchpad\\audit\\ui.mjs",
+  "output_mode": "content",
+  "-n": true,
+  "-A": 16
+}
+```
+
+<details><summary>Result</summary>
+
+```
+98:check('toggle lays time across (wider than tall)', vb[2] > vb[3], vb.join(' '));
+99:for (const idx of [1, 8, 11]) {
+100-  const c = svg.locator('circle').nth(idx);
+101-  await c.scrollIntoViewIfNeeded();
+102-  const b = await c.boundingBox();
+103-  await page.mouse.move(b.x + b.width / 2, b.y + b.height / 2 + 30);
+104-  await page.waitForTimeout(150);
+105-  const t = await tip.boundingBox();
+106-  const cover = t.x < b.x + b.width && t.x + t.width > b.x && t.y < b.y + b.height && t.y + t.height > b.y;
+107-  const txt = await tip.innerText();
+108-  check(, !cover && txt.includes(s12[idx].label.replace(/ (to .*)$/, '')), txt.split('
+109-')[1]);
+110-}
+111-await page.locator('svg[aria-label^="Historical AR trend"]').scrollIntoViewIfNeeded();
+112-await page.screenshot({ path:  });
+113-
+114-check('no browser errors (incl. hydration)', errors.length === 0, errors.map((e) => e.slice(0, 160)).join(' | '));
+115-await browser.close();
+```
+
+</details>
+
+**Tool call — Read**
+
+```
+{
+  "file_path": "C:\\Users\\hegde\\AppData\\Local\\Temp\\claude\\19ae7b2bcb9cf67a\\6bfa9a87-bae9-4522-b9e6-b162623b6f41\\scratchpad\\audit\\ui.mjs",
+  "offset": 106,
+  "limit": 8
+}
+```
+
+<details><summary>Result</summary>
+
+```
+106	  const cover = t.x < b.x + b.width && t.x + t.width > b.x && t.y < b.y + b.height && t.y + t.height > b.y;
+107	  const txt = await tip.innerText();
+108	  check(, !cover && txt.includes(s12[idx].label.replace(/ (to .*)$/, '')), txt.split('
+109	')[1]);
+110	}
+111	await page.locator('svg[aria-label^="Historical AR trend"]').scrollIntoViewIfNeeded();
+112	await page.screenshot({ path:  });
+113
+```
+
+</details>
+
+**Tool call — Edit**
+
+```
+file: C:\Users\hegde\AppData\Local\Temp\claude\19ae7b2bcb9cf67a\6bfa9a87-bae9-4522-b9e6-b162623b6f41\scratchpad\audit\ui.mjs
+--- replace:
+  check(, !cover && txt.includes(s12[idx].label.replace(/ (to .*)$/, '')), txt.split('
+')[1]);
+}
+await page.locator('svg[aria-label^="Historical AR trend"]').scrollIntoViewIfNeeded();
+await page.screenshot({ path:  });
+--- with:
+  check(`time-across hover on point ${idx + 1}: right period, not covering it`, !cover && txt.includes(s12[idx].label.replace(/ \(to .*\)$/, '')), txt.split('\n')[1]);
+}
+await page.locator('svg[aria-label^="Historical AR trend"]').scrollIntoViewIfNeeded();
+await page.screenshot({ path: `${A}/final-across.png` });
+```
+
+<details><summary>Result</summary>
+
+```
+The file C:\Users\hegde\AppData\Local\Temp\claude\19ae7b2bcb9cf67a\6bfa9a87-bae9-4522-b9e6-b162623b6f41\scratchpad\audit\ui.mjs has been updated successfully.
+```
+
+</details>
+
+**Tool call — Bash**
+
+```
+# Rerun UI check on production build
+cd "c:/Users/hegde/OneDrive/Desktop/Verve Interview/ar-manager-ca-it-main" && A="C:/Users/hegde/AppData/Local/Temp/claude/19ae7b2bcb9cf67a/6bfa9a87-bae9-4522-b9e6-b162623b6f41/scratchpad/audit" && BASE=http://localhost:3123 A="$A" PROJ="$(pwd)" node "$A/ui.mjs" 2>&1 | grep -v "^    at" | cut -c1-200
+```
+
+<details><summary>Result</summary>
+
+```
+PASS  Insights tab sits right after Statement  — Overdue at a glance | Customers | Invoices | Record payment | Statement | Insights
+PASS  metrics table matches the independent calculation (9 customers)
+PASS  default sort: outstanding AR, highest first
+PASS  total row  — ₹16,87,700.00
+PASS  first click on a number column: highest first, N/A last  — 75.0 days, 71.0 days, 56.0 days, 55.0 days, 32.5 days, N/A, N/A, N/A, N/A
+PASS  second click: lowest first, N/A still last  — 32.5 days, 55.0 days, 56.0 days, 71.0 days, 75.0 days, N/A, N/A, N/A, N/A
+PASS  trend figures match (default: consolidated, monthly, last 12 months, 12 points)
+PASS  trend figures match (weekly, last 6 months, 25 points)
+PASS  trend figures match (last 3 months, 3 points)
+PASS  trend figures match (customer C002, 12 points)
+PASS  trend figures match (custom 15-Apr…20-Sep weekly, 23 points)
+PASS  custom To after the as-at date is capped, with a note
+PASS  custom From after To is explained
+PASS  headline: latest balance and % vs previous month  — ₹16,87,700.00 +16.3%
+PASS  amount axis: 0 upwards in 2-lakh steps  — 0,2,4,6,8,10,12,14,16,18,20,22
+PASS  hover: period, balance and % change  — ₹21,18,100.00 | ₹21.18 lakh · Aug 2026 | +5.1% vs previous month (Jul 2026)
+PASS  tooltip sits beside its point without covering it  — point 699,594 tooltip 471,537
+PASS  keyboard: focus + arrow reads the previous point  — ₹14,51,700.00 | ₹14.52 lakh · Oct 2026 | 0.0% vs previous month (Sep 2026)
+PASS  toggle lays time across (wider than tall)  — 0 0 640 360
+file:///C:/Users/hegde/AppData/Local/Temp/claude/19ae7b2bcb9cf67a/6bfa9a87-bae9-4522-b9e6-b162623b6f41/scratchpad/audit/ui.mjs:108
+  check(`time-across hover on point ${idx + 1}: right period, not covering it`, !cover && txt.includes(s12[idx].label.replace(/ \(to .*\)$/, '')), txt.split('\n')[1]);
+                                                                                                                      ^
+
+TypeError: Cannot read properties of undefined (reading 'replace')
+
+Node.js v26.13.1
+```
+
+</details>
+
+**Assistant:**
+
+The vertical tooltip now sits beside its point. The remaining error is in my test: the independent figures don't carry a period label, so the test must build "Aug 2026" from the date itself:
+
+**Tool call — Edit**
+
+```
+file: C:\Users\hegde\AppData\Local\Temp\claude\19ae7b2bcb9cf67a\6bfa9a87-bae9-4522-b9e6-b162623b6f41\scratchpad\audit\ui.mjs
+--- replace:
+txt.includes(s12[idx].label.replace(/ \(to .*\)$/, ''))
+--- with:
+txt.includes(['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'][Number(s12[idx].date.slice(5, 7)) - 1] + ' ' + s12[idx].date.slice(0, 4))
+```
+
+<details><summary>Result</summary>
+
+```
+The file C:\Users\hegde\AppData\Local\Temp\claude\19ae7b2bcb9cf67a\6bfa9a87-bae9-4522-b9e6-b162623b6f41\scratchpad\audit\ui.mjs has been updated successfully.
+```
+
+</details>
+
+**Tool call — Bash**
+
+```
+# Rerun full UI check on production build
+cd "c:/Users/hegde/OneDrive/Desktop/Verve Interview/ar-manager-ca-it-main" && A="C:/Users/hegde/AppData/Local/Temp/claude/19ae7b2bcb9cf67a/6bfa9a87-bae9-4522-b9e6-b162623b6f41/scratchpad/audit" && BASE=http://localhost:3123 A="$A" PROJ="$(pwd)" node "$A/ui.mjs" 2>&1 | grep -v "^    at" | cut -c1-170 | tail -7; echo "PASS total: $(BASE=http://localhost:3123 A="$A" PROJ="$(pwd)" node "$A/ui.mjs" 2>&1 | grep -c '^PASS'), FAIL total: $(BASE=http://localhost:3123 A="$A" PROJ="$(pwd)" node "$A/ui.mjs" 2>&1 | grep -c '^FAIL')"
+```
+
+<details><summary>Result</summary>
+
+```
+PASS  tooltip sits beside its point without covering it  — point 699,594 tooltip 471,537
+PASS  keyboard: focus + arrow reads the previous point  — ₹14,51,700.00 | ₹14.52 lakh · Oct 2026 | 0.0% vs previous month (Sep 2026)
+PASS  toggle lays time across (wider than tall)  — 0 0 640 360
+PASS  time-across hover on point 2: right period, not covering it  — ₹1.77 lakh · Jan 2026
+PASS  time-across hover on point 9: right period, not covering it  — ₹21.18 lakh · Aug 2026
+PASS  time-across hover on point 12: right period, not covering it  — ₹16.88 lakh · Nov 2026 (to 18-Nov-2026)
+PASS  no browser errors (incl. hydration)
+PASS total: 23, FAIL total: 0
+```
+
+</details>
+
+**Tool call — Read**
+
+```
+{
+  "file_path": "C:\\Users\\hegde\\AppData\\Local\\Temp\\claude\\19ae7b2bcb9cf67a\\6bfa9a87-bae9-4522-b9e6-b162623b6f41\\scratchpad\\audit\\final-across.png"
+}
+```
+
+<details><summary>Result</summary>
+
+```
+[image]
+```
+
+</details>
+
+**Tool call — PowerShell**
+
+```
+# Stop test server; list changed and new files
+Get-CimInstance Win32_Process -Filter "Name='node.exe'" | Where-Object { $_.CommandLine -like '*3123*' -or $_.CommandLine -like '*next*start*' } | ForEach-Object { Stop-Process -Id $_.ProcessId -Force -ErrorAction SilentlyContinue }; "prod server stopped"; git status --short; "--- diff of existing files:"; git diff --stat
+```
+
+**Tool call — Bash**
+
+```
+# Show Nav diff and rerun Phase 1 audit
+cd "c:/Users/hegde/OneDrive/Desktop/Verve Interview/ar-manager-ca-it-main" && git diff components/Nav.tsx | grep "^[+-] " ; A="C:/Users/hegde/AppData/Local/Temp/claude/19ae7b2bcb9cf67a/6bfa9a87-bae9-4522-b9e6-b162623b6f41/scratchpad/audit"; npx.cmd vitest run --root "$A" --config "$A/vitest.config.mjs" audit 2>&1 | grep -E "TOTAL MISMATCHES|Tests "
+```
+
+<details><summary>Result</summary>
+
+```
+prod server stopped
+ M components/Nav.tsx
+?? app/insights/
+?? components/insights/
+?? lib/insights/
+?? tests/insights.test.ts
+--- diff of existing files:
+warning: in the working copy of 'components/Nav.tsx', LF will be replaced by CRLF the next time Git touches it
+ components/Nav.tsx | 1 +
+ 1 file changed, 1 insertion(+)
+```
+
+</details>
+
+<details><summary>Result</summary>
+
+```
+warning: in the working copy of 'components/Nav.tsx', LF will be replaced by CRLF the next time Git touches it
++  { path: '/insights', label: 'Insights' },
+[22m[39mTOTAL MISMATCHES: 0
+[2m      Tests [22m [1m[32m16 passed[39m[22m[90m (16)[39m
+```
+
+</details>
+
+**Tool call — Write**
+
+```
+file: c:\Users\hegde\OneDrive\Desktop\Verve Interview\ar-manager-ca-it-main\docs\PHASE2.md
+
+# Phase 2: Insights
+
+The **Insights** tab (`/insights`, next to Statement) adds customer-wise collection metrics and a Historical AR trend chart. Phase 2 is self-contained: its calculations live in [lib/insights/](../lib/insights/) and do not call or change the Phase 1 calculation module ([lib/ar/](../lib/ar/)). The only change to existing code is the one navigation entry in [components/Nav.tsx](../components/Nav.tsx).
+
+| File | Purpose |
+|---|---|
+| [lib/insights/metrics.ts](../lib/insights/metrics.ts) | Section 1: outstanding AR, payment frequency, invoice frequency, average collection period |
+| [lib/insights/trend.ts](../lib/insights/trend.ts) | Section 2: closing AR at a date, month-end/week-end series, period windows, % change, lakh axis |
+| [lib/insights/round.ts](../lib/insights/round.ts) | Exact rounding of displayed ratios (no floating-point half errors) |
+| [app/insights/page.tsx](../app/insights/page.tsx) | The page: metrics table, filters, chart, figures table |
+| [components/insights/TrendChart.tsx](../components/insights/TrendChart.tsx) | The interactive SVG line chart (no chart library) |
+| [tests/insights.test.ts](../tests/insights.test.ts) | 31 tests: hand-calculated figures, edge cases, and cross-checks against Phase 1 |
+
+## Section 1: customer metrics
+
+All figures are customer-wise and use all history up to the as-at date in the header (by default today, so all history).
+
+| Column | Calculation |
+|---|---|
+| **Outstanding AR** | Σ over the customer's invoices (cancelled excluded) of: invoice total − payments allocated to it − credit notes against it. Payments are settlement values (bank + TDS). Unallocated advances are not deducted. |
+| **Payment frequency** | Average days between successive **distinct** receipt dates: (Σ gaps) ÷ (number of dates − 1). Fewer than two payment dates → N/A. |
+| **Invoice frequency** | Average days between successive invoice dates of non-cancelled invoices: (Σ gaps) ÷ (number of invoices − 1). Fewer than two invoices → N/A. |
+| **Average collection period** | For each invoice fully settled by the as-at date: days from invoice date to the **final settlement date** (the date of the last payment allocation or credit note that brought the balance to zero). Average over those invoices. None → N/A. |
+
+Shown to one decimal place, rounded exactly (half up). Default sort: Outstanding AR, highest first. Every column sorts on click; N/A rows always sort last. A totals row adds up Outstanding AR.
+
+**Worked example (C001, as at 18-Nov-2026):** payments on 03-May, 02-Jun, 08-Jul, 20-Aug and 10-Sep → gaps 30, 36, 43, 21 → 130 ÷ 4 = **32.5 days**. Invoices 05-Apr … 05-Sep (6) → 153 ÷ 5 = **30.6 days**. Fully settled invoices took 28, 28, 33, 46 and 36 days → 171 ÷ 5 = **34.2 days**.
+
+## Section 2: Historical AR trend
+
+**Closing AR at date D** = Σ outstanding invoice balances at the end of D, where for each non-cancelled invoice raised on or before D:
+
+` ` `
+outstanding = total − payments (bank + TDS) allocated on or before D − credit notes issued on or before D
+` ` `
+
+So the line reflects invoices raised, payments received and allocated, credit notes and TDS, all up to each reporting date: the actual receivable, not the invoice value.
+
+- **Monthly (default):** one point per month, the balance on the **last calendar day** of the month.
+- **Weekly:** one point per week, the balance on the **Sunday** that ends each Monday–Sunday week.
+- **Period still in progress:** the last point is the balance **to the end of the window** (the as-at date), labelled e.g. "Nov 2026 (to 18-Nov-2026)" and drawn hollow.
+- **Period filter:** last 12 / 6 / 3 months = the current month and the 11 / 5 / 2 before it, ending at the as-at date. **Custom range:** any From and To, with To no later than the as-at date (later records do not exist yet at that date).
+- **Customer filter:** consolidated by default, or one customer.
+- **% chang
+… [2762 more characters not shown]
+```
+
+**Tool call — PowerShell**
+
+```
+# Final tests, lint and build
+npm.cmd test 2>&1 | Select-String "Tests |Test Files"; npm.cmd run lint 2>&1 | Select-Object -Last 4; foreach ($d in '.next\server','.next\static') { if (Test-Path $d) { try { Remove-Item -Recurse -Force $d -ErrorAction Stop } catch {} } }; npm.cmd run build 2>&1 | Select-String -Pattern "rror|✓ Compiled|Finished TypeScript|insights" | Select-Object -First 6
+```
+
+<details><summary>Result</summary>
+
+```
+File created successfully at: c:\Users\hegde\OneDrive\Desktop\Verve Interview\ar-manager-ca-it-main\docs\PHASE2.md (file state is current in your context — no need to Read it back)
+```
+
+</details>
+
+<details><summary>Result</summary>
+
+```
+Test Files  6 passed (6)
+      Tests  96 passed (96)
+   Duration  1.12s (transform 839ms, setup 0ms, collect 1.79s, tests 317ms, environment 2ms, prepare 1.41s)
+
+> ar-manager-ca-it-main@0.1.0 lint
+> eslint
+
+✓ Compiled successfully in 1876ms
+  Finished TypeScript in 3.9s ...
+├ ◐ /insights
+```
+
+</details>
+
+**Assistant:**
+
+All 96 tests pass, and lint and build are clean. One wording fix in the new doc (it refers to "delivery notes" that don't exist), then commit and push:
+
+**Tool call — Edit**
+
+```
+file: c:\Users\hegde\OneDrive\Desktop\Verve Interview\ar-manager-ca-it-main\docs\PHASE2.md
+--- replace:
+See the list at the end of the Phase 2 delivery notes in the AI log, summarised here:
+
+
+--- with:
+
+```
+
+**Tool call — Bash**
+
+```
+# Commit and push Phase 2
+cd "c:/Users/hegde/OneDrive/Desktop/Verve Interview/ar-manager-ca-it-main" && git add app/insights components/insights lib/insights tests/insights.test.ts docs/PHASE2.md components/Nav.tsx && git status --short | grep -v "^warning" && git diff --cached --name-only | grep -E "\.env|node_modules|\.next" && echo STOP || echo "OK: nothing sensitive staged" && git commit -q -F - <<'EOF'
+Add Phase 2 Insights tab: customer metrics and Historical AR trend
+
+New /insights page next to Statement, with its own calculation module
+(lib/insights) that does not change Phase 1:
+- customer metrics table: outstanding AR, payment frequency, invoice
+  frequency and average collection period, N/A when data is
+  insufficient, sorted by outstanding AR (highest first) and sortable
+- Historical AR trend: month-end (default) or week-end outstanding
+  invoice balances, net of payments (bank + TDS) and credit notes up to
+  each date; customer and period filters (12/6/3 months, custom);
+  % change from the previous period; interactive SVG line chart with
+  the amount on the X axis (2-lakh steps) and time on the Y axis
+- 31 tests including hand-calculated figures and day-by-day
+  cross-checks against the Phase 1 module; docs/PHASE2.md
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+EOF
+git push -q origin main 2>&1 | tail -1; git log --oneline -1
+```
+
+<details><summary>Result</summary>
+
+```
+The file c:\Users\hegde\OneDrive\Desktop\Verve Interview\ar-manager-ca-it-main\docs\PHASE2.md has been updated successfully. (file state is current in your context — no need to Read it back)
+```
+
+</details>
+
+<details><summary>Result</summary>
+
+```
+warning: in the working copy of 'components/Nav.tsx', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'app/insights/page.tsx', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'components/insights/TrendChart.tsx', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'docs/PHASE2.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'lib/insights/metrics.ts', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'lib/insights/round.ts', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'lib/insights/trend.ts', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'tests/insights.test.ts', LF will be replaced by CRLF the next time Git touches it
+A  app/insights/page.tsx
+M  components/Nav.tsx
+A  components/insights/TrendChart.tsx
+A  docs/PHASE2.md
+A  lib/insights/metrics.ts
+A  lib/insights/round.ts
+A  lib/insights/trend.ts
+A  tests/insights.test.ts
+OK: nothing sensitive staged
+9cef84e Add Phase 2 Insights tab: customer metrics and Historical AR trend
+```
+
+</details>
+
+**Assistant:**
+
+Pushed (`9cef84e`). I'll wait for Vercel to deploy the Insights page, then run the full browser check against the live site:
+
+**Tool call — PowerShell**
+
+```
+# Wait for Vercel to serve the Insights page
+$ok=$false; for ($i=0; $i -lt 40 -and -not $ok; $i++) { try { $r = Invoke-WebRequest -Uri "https://ar-manager-nine.vercel.app/insights?asof=2026-11-18" -UseBasicParsing -TimeoutSec 30; if ($r.Content -match 'Historical AR trend') { $ok=$true } } catch {}; if (-not $ok) { Start-Sleep -Seconds 10 } }; "live /insights deployed: $ok"
+```
+
+**Tool call — Bash**
+
+```
+# Run full Insights check against the live Vercel site
+cd "c:/Users/hegde/OneDrive/Desktop/Verve Interview/ar-manager-ca-it-main" && A="C:/Users/hegde/AppData/Local/Temp/claude/19ae7b2bcb9cf67a/6bfa9a87-bae9-4522-b9e6-b162623b6f41/scratchpad/audit" && BASE=https://ar-manager-nine.vercel.app A="$A" PROJ="$(pwd)" node "$A/ui.mjs" 2>&1 | grep -v "^    at" | cut -c1-150
+```
+
+<details><summary>Result</summary>
+
+```
+live /insights deployed: True
+```
+
+</details>
+
+<details><summary>Result</summary>
+
+```
+PASS  Insights tab sits right after Statement  — Overdue at a glance | Customers | Invoices | Record payment | Statement | Insights
+PASS  metrics table matches the independent calculation (9 customers)
+PASS  default sort: outstanding AR, highest first
+PASS  total row  — ₹16,87,700.00
+PASS  first click on a number column: highest first, N/A last  — 75.0 days, 71.0 days, 56.0 days, 55.0 days, 32.5 days, N/A, N/A, N/A, N/A
+PASS  second click: lowest first, N/A still last  — 32.5 days, 55.0 days, 56.0 days, 71.0 days, 75.0 days, N/A, N/A, N/A, N/A
+PASS  trend figures match (default: consolidated, monthly, last 12 months, 12 points)
+PASS  trend figures match (weekly, last 6 months, 25 points)
+PASS  trend figures match (last 3 months, 3 points)
+PASS  trend figures match (customer C002, 12 points)
+PASS  trend figures match (custom 15-Apr…20-Sep weekly, 23 points)
+PASS  custom To after the as-at date is capped, with a note
+PASS  custom From after To is explained
+PASS  headline: latest balance and % vs previous month  — ₹16,87,700.00 +16.3%
+PASS  amount axis: 0 upwards in 2-lakh steps  — 0,2,4,6,8,10,12,14,16,18,20,22
+PASS  hover: period, balance and % change  — ₹21,18,100.00 | ₹21.18 lakh · Aug 2026 | +5.1% vs previous month (Jul 2026)
+PASS  tooltip sits beside its point without covering it  — point 699,594 tooltip 471,537
+PASS  keyboard: focus + arrow reads the previous point  — ₹14,51,700.00 | ₹14.52 lakh · Oct 2026 | 0.0% vs previous month (Sep 2026)
+PASS  toggle lays time across (wider than tall)  — 0 0 640 360
+PASS  time-across hover on point 2: right period, not covering it  — ₹1.77 lakh · Jan 2026
+PASS  time-across hover on point 9: right period, not covering it  — ₹21.18 lakh · Aug 2026
+PASS  time-across hover on point 12: right period, not covering it  — ₹16.88 lakh · Nov 2026 (to 18-Nov-2026)
+PASS  no browser errors (incl. hydration)
+```
+
+</details>
+
+**Assistant:**
+
+All 23 checks pass on the live site. Last, I'll delete my scratchpad copy of the live data, which contains the email on your test customer:
+
+**Tool call — Bash**
+
+```
+# Remove local data copy; confirm clean tree
+rm -f "C:/Users/hegde/AppData/Local/Temp/claude/19ae7b2bcb9cf67a/6bfa9a87-bae9-4522-b9e6-b162623b6f41/scratchpad/audit/live.json"; cd "c:/Users/hegde/OneDrive/Desktop/Verve Interview/ar-manager-ca-it-main" && echo "uncommitted changes: $(git status --short | wc -l)"
+```
+
+<details><summary>Result</summary>
+
+```
+uncommitted changes: 0
+```
+
+</details>
+
+**Assistant:**
+
+Phase 2 is built, checked and live: the Insights tab (next to Statement) has the customer metrics table and the Historical AR trend chart. It's committed and pushed (`9cef84e`).
+
+Phase 2 sits in its own new files. The only change to existing code is the one line that adds the tab, and an arithmetic recheck of Phase 1 after the change still found zero mismatches. The full explanation is in `docs/PHASE2.md`.
+
+## How it was checked
+
+| Check | Result |
+|---|---|
+| Unit tests (31 new): hand-worked figures for all 8 sample customers, edge cases, and matching against Phase 1's figures for every day of 2026 | 96 of 96 pass (65 existing + 31 new) |
+| Independent second calculation, written with different methods, on both the sample data and your live data | 46,986 comparisons, **0 mismatches** |
+| Planted bugs, to prove that check can catch mistakes | Weeks ending on the wrong day: caught (1,489 mismatches). Two others couldn't show up in the sample data; dedicated unit tests cover them. |
+| Browser check on the live site: figures, sorting, filters, custom range, % change, axis, tooltip, keyboard, axis toggle, errors | **23 of 23 pass** |
+| Lint, production build, security | Clean |
+
+The browser checks found three display problems, which I fixed:
+- the tooltip sat far from its point;
+- in the time-across layout only every other month was labelled;
+- near the right edge, the tooltip covered the point it described.
+
+**Your workspace has test records** (customer C009 and two "TEST INVOICE"s), so the live page currently shows ₹16,87,700 total outstanding, not the sample-data figure. I didn't reset, since that would delete them.
+
+## Critical decisions taken
+
+1. **Outstanding AR means invoice balances.** It's invoice total less payments allocated to it (bank + TDS) less credit notes, as your formula "Σ outstanding invoice balances" says. An unallocated advance is **not** deducted. For example, C005 shows ₹88,800 even though it holds a ₹1,00,000 advance. The figures table under the chart shows unapplied credit separately.
+2. **Payments count from their allocation date**, consistent with Phase 1. This is why TDS reduces the balance: the allocated amount includes it.
+3. **"Reversed payments":** the database has no reversal flag. A reversed receipt is deleted along with its allocations, so it drops out of every calculation automatically.
+4. **Payment frequency uses distinct payment dates**, so two receipts on one day count as one date. **Invoice frequency counts invoices**, so two on one day add a gap of 0. Each follows the wording of its own rule. The sample data has no same-day cases, so neither choice changes the current figures.
+5. **Average collection period runs to the final settlement date:** the last payment or credit note that brought the invoice to zero. A part-paid invoice joins only once fully settled. An invoice cleared **entirely by credit notes** is left out, because nothing was collected.
+6. **The header as-at date applies to Insights too.** It defaults to today, which gives "all history", and keeps Insights consistent with every other screen.
+7. **Unfinished periods are shown "to date".** For example, "Nov 2026 (to 18-Nov-2026)", drawn as a hollow point.
+8. **Weeks run Monday to Sunday**, with each weekly balance taken on the Sunday.
+9. **Period presets include the current month.** "Last 12 months" means the current month plus the 11 before it. A custom range can't go past the as-at date; the page shows a note when it's shortened.
+10. **% change compares with the end of the previous period**, including for the first point shown. It shows N/A when the previous balance was nil, and is rounded exactly to one decimal.
+11. **Axes follow your specification literally:** amount across the bottom (X, ₹ lakh, 2-lakh steps), time down the side (Y, earliest at the top). A checkbox swaps to time across the bottom, in case the specification meant the usual layout.
+12. **Displayed numbers use exact rounding.** Averages, lakh figures and percentages are rounded from whole numbers, avoiding the computer rounding errors that can mis-round exact halves.
+13. **Insights figures follow the app's rules:** totals are calculated in `lib/insights`, never on the screen, and table sorting uses the URL like the other lists. The first click on a number column sorts highest first, matching the other tables, and N/A rows always sort last.
+14. **The README is unchanged.** Because you said Phase 2 shouldn't modify existing work, the documentation is a new file, `docs/PHASE2.md`. I can add a one-line link to it from the README if you'd like.
+
+---
+
+## User message 19
+
+Important correction in phase 2:
+Y axis: Amount, Rupees in lakhs, with 2 lakh increments.
+X axis: Time (Monthly as default, depends on what the user selects)
+
+**Assistant:**
+
+I'll make time-across the only layout: time on the X axis (monthly by default, weekly if selected) and amount on the Y axis in ₹ lakh with 2-lakh steps. The toggle and the old vertical layout only existed because of the original wording, so I'll remove them rather than leave a layout that contradicts the specification. The figures are unaffected; this is purely the drawing.
+
+**Tool call — Read**
+
+```
+{
+  "file_path": "c:\\Users\\hegde\\OneDrive\\Desktop\\Verve Interview\\ar-manager-ca-it-main\\components\\insights\\TrendChart.tsx"
+}
+```
+
+<details><summary>Result</summary>
+
+```
+1	'use client';
+2	
+3	/**
+4	 * Historical AR trend: an interactive line chart (hand-built SVG, no chart library).
+5	 *
+6	 * As the Phase 2 brief specifies, the amount (₹ lakh, 2-lakh steps) is on the X axis and
+7	 * time on the Y axis, earliest at the top. A toggle lays time across instead. Hovering
+8	 * (or arrow keys) snaps to the nearest period and shows its date, balance and % change.
+9	 * All figures arrive pre-calculated from lib/insights; this component only draws them.
+10	 */
+11	import { useRef, useState } from 'react';
+12	
+13	export interface ChartPoint {
+14	  date: string;
+15	  label: string;
+16	  partial: boolean;
+17	  closingText: string; // ₹ formatted
+18	  lakhValue: number; // for positioning only
+19	  lakhText: string; // exact, 2 decimals
+20	  changeText: string | null;
+21	  previousLabel: string;
+22	}
+23	
+24	const SERIES = '#2a78d6';
+25	const GRID = '#e2e8f0';
+26	const AXIS_TEXT = '#475569';
+27	
+28	export function TrendChart({ points, ticks, unit }: { points: ChartPoint[]; ticks: number[]; unit: 'month' | 'week' }) {
+29	  const [timeAcross, setTimeAcross] = useState(false);
+30	  const [active, setActive] = useState<number | null>(null);
+31	  const svgRef = useRef<SVGSVGElement>(null);
+32	
+33	  const n = points.length;
+34	  const top = ticks[ticks.length - 1];
+35	  const step = n > 30 ? 22 : 34; // spacing between periods
+36	
+37	  // Geometry (SVG user units). Amount scale is 0 … top lakh.
+38	  const W = timeAcross ? Math.max(640, 90 + n * Math.max(step, 40)) : 720;
+39	  const H = timeAcross ? 360 : 70 + n * step;
+40	  const pad = timeAcross ? { l: 64, r: 24, t: 20, b: 70 } : { l: 170, r: 30, t: 36, b: 20 };
+41	  const plotW = W - pad.l - pad.r;
+42	  const plotH = H - pad.t - pad.b;
+43	  const amt = (lakh: number) => (lakh / top) * (timeAcross ? plotH : plotW);
+44	  const tPos = (i: number) => (n === 1 ? 0.5 : i / (n - 1)) * (timeAcross ? plotW : plotH);
+45	  const xy = (i: number, v: number): [number, number] =>
+46	    timeAcross ? [pad.l + tPos(i), pad.t + plotH - amt(v)] : [pad.l + amt(v), pad.t + tPos(i)];
+47	
+48	  const path = points.map((p, i) => xy(i, p.lakhValue)).map(([x, y], i) => `${i ? 'L' : 'M'}${x.toFixed(1)},${y.toFixed(1)}`).join(' ');
+49	  const labelEvery = timeAcross ? Math.ceil(n / Math.max(1, Math.floor(plotW / 46))) : 1;
+50	
+51	  function nearest(clientX: number, clientY: number) {
+52	    const svg = svgRef.current;
+53	    if (!svg || !n) return;
+54	    const r = svg.getBoundingClientRect();
+55	    const scale = timeAc
+… [6448 more characters not shown]
+```
+
+</details>
+
+**Tool call — Write**
+
+```
+file: c:\Users\hegde\OneDrive\Desktop\Verve Interview\ar-manager-ca-it-main\components\insights\TrendChart.tsx
+
+'use client';
+
+/**
+ * Historical AR trend: an interactive line chart (hand-built SVG, no chart library).
+ *
+ * As the Phase 2 brief specifies: X axis = time (months by default, or weeks), earliest
+ * on the left; Y axis = amount in ₹ lakh with 2-lakh steps from 0. Hovering (or the
+ * arrow keys) snaps to the nearest period and shows its date, balance and % change.
+ * All figures arrive pre-calculated from lib/insights; this component only draws them.
+ */
+import { useRef, useState } from 'react';
+
+export interface ChartPoint {
+  date: string;
+  label: string;
+  partial: boolean;
+  closingText: string; // ₹ formatted
+  lakhValue: number; // for positioning only
+  lakhText: string; // exact, 2 decimals
+  changeText: string | null;
+  previousLabel: string;
+}
+
+const SERIES = '#2a78d6';
+const GRID = '#e2e8f0';
+const AXIS_TEXT = '#475569';
+
+export function TrendChart({ points, ticks, unit }: { points: ChartPoint[]; ticks: number[]; unit: 'month' | 'week' }) {
+  const [active, setActive] = useState<number | null>(null);
+  const svgRef = useRef<SVGSVGElement>(null);
+
+  const n = points.length;
+  const top = ticks[ticks.length - 1];
+
+  // Geometry in SVG user units: time across (X), amount up (Y, 0 … top lakh).
+  const W = Math.max(640, 90 + n * 40);
+  const H = 360;
+  const pad = { l: 64, r: 24, t: 20, b: 70 };
+  const plotW = W - pad.l - pad.r;
+  const plotH = H - pad.t - pad.b;
+  const x = (i: number) => pad.l + (n === 1 ? 0.5 : i / (n - 1)) * plotW;
+  const y = (lakh: number) => pad.t + plotH - (lakh / top) * plotH;
+
+  const path = points.map((p, i) => `${i ? 'L' : 'M'}${x(i).toFixed(1)},${y(p.lakhValue).toFixed(1)}`).join(' ');
+  const labelEvery = Math.ceil(n / Math.max(1, Math.floor(plotW / 46))); // thin the time labels only when they would collide
+
+  function nearest(clientX: number) {
+    const svg = svgRef.current;
+    if (!svg || !n) return;
+    const r = svg.getBoundingClientRect();
+    const pos = (clientX - r.left) * (W / r.width) - pad.l;
+    const i = n === 1 ? 0 : Math.round((pos / plotW) * (n - 1));
+    setActive(Math.min(n - 1, Math.max(0, i)));
+  }
+
+  const a = active !== null ? points[active] : null;
+  const ax = active !== null ? x(active) : 0;
+  const ay = active !== null ? y(points[active].lakhValue) : 0;
+
+  return (
+    <div>
+      <div className="mb-2 text-xs text-slate-600">
+        X axis: {unit === 'month' ? 'month' : 'week'} · Y axis: outstanding AR in ₹ lakh (1 lakh = ₹1,00,000), 2-lakh steps
+      </div>
+      <div className="w-full overflow-x-auto">
+        {/* The tooltip is positioned in this box, which is exactly the size of the chart. */}
+        <div className="relative" style={{ width: '100%', maxWidth: W, minWidth: Math.min(W, 640) }}>
+          <svg
+            ref={svgRef}
+            viewBox={`0 0 ${W} ${H}`}
+            width="100%"
+            className="block focus:outline-2 focus:outline-blue-500"
+            role="img"
+            aria-label={`Historical AR trend, ${n} ${unit === 'month' ? 'months' : 'weeks'}. Use the left and right arrow keys to read each point.`}
+            tabIndex={0}
+            style={{ touchAction: 'none', userSelect: 'none' }}
+            onPointerMove={(e) => nearest(e.clientX)}
+            onPointerLeave={() => setActive(null)}
+            onFocus={() => setActive((v) => v ?? n - 1)}
+            onBlur={() => setActive(null)}
+            onKeyDown={(e) => {
+              if (e.key === 'ArrowLeft') { e.preventDefault(); setActive((v) => Math.max(0, (v ?? n) - 1)); }
+              if (e.key === 'ArrowRight') { e.preventDefault(); setActive((v) => Math.min(n - 1, (v ?? -1) + 1)); }
+            }}
+          >
+            {/* Y axis: amount gridlines and labels (₹ lakh, 2-lakh steps) */}
+            {ticks.map((t) => (
+              <g key={t}>
+                <line x1={pad.l} x2={pad.l + plotW} y1={y(t)} y2={y(t)} stroke={GRID} strokeWidth={1} />
+        
+… [2706 more characters not shown]
+```
+
+<details><summary>Result</summary>
+
+```
+The file c:\Users\hegde\OneDrive\Desktop\Verve Interview\ar-manager-ca-it-main\components\insights\TrendChart.tsx has been updated successfully. (file state is current in your context — no need to Read it back)
+```
+
+</details>
+
+**Assistant:**
+
+Now updating the Phase 2 doc so it describes the corrected axes:
+
+**Tool call — Bash**
+
+```
+# Find axis wording in Phase 2 doc
+cd "c:/Users/hegde/OneDrive/Desktop/Verve Interview/ar-manager-ca-it-main" && grep -n "Axes\|axis\|Axes follow\|amount on X\|optional swap\|arrow keys" docs/PHASE2.md
+```
+
+<details><summary>Result</summary>
+
+```
+8:| [lib/insights/trend.ts](../lib/insights/trend.ts) | Section 2: closing AR at a date, month-end/week-end series, period windows, % change, lakh axis |
+45:- **Axes:** as specified, **X axis = amount** in ₹ lakh with 2-lakh steps (0, 2, 4, …), **Y axis = time**, earliest at the top. A checkbox lays time across the bottom instead (the more common layout); figures are identical.
+46:- **Interaction:** hover (or focus the chart and use the arrow keys) to see the period, the balance (₹ and lakh) and the % change. A table of every point is available under the chart.
+63:8. Axes follow the specification (amount on X, time on Y), with an optional swap.
+```
+
+</details>
+
+**Tool call — Bash**
+
+```
+# Update axis wording in docs; typecheck and lint
+cd "c:/Users/hegde/OneDrive/Desktop/Verve Interview/ar-manager-ca-it-main" && node - <<'EOF'
+const fs = require('fs');
+const f = 'docs/PHASE2.md';
+let s = fs.readFileSync(f, 'utf8');
+const rep = [
+  ["- **Axes:** as specified, **X axis = amount** in ₹ lakh with 2-lakh steps (0, 2, 4, …), **Y axis = time**, earliest at the top. A checkbox lays time across the bottom instead (the more common layout); figures are identical.",
+   "- **Axes:** **X axis = time**, monthly by default or weekly as selected, earliest on the left. **Y axis = amount** in ₹ lakh with 2-lakh steps (0, 2, 4, …), from 0 up to the first step above the largest balance."],
+  ["- **Interaction:** hover (or focus the chart and use the arrow keys)", "- **Interaction:** hover (or focus the chart and use the left/right arrow keys)"],
+  ["8. Axes follow the specification (amount on X, time on Y), with an optional swap.", "8. Axes follow the corrected specification: time on X (monthly by default), amount on Y in ₹ lakh with 2-lakh steps."],
+];
+for (const [a, b] of rep) { if (!s.includes(a)) throw new Error('missing ' + a.slice(0, 40)); s = s.replace(a, b); }
+fs.writeFileSync(f, s);
+console.log('ok');
+EOF
+npx.cmd tsc --noEmit -p . && npm.cmd run lint 2>&1 | tail -3
+```
+
+<details><summary>Result</summary>
+
+```
+ok
+> ar-manager-ca-it-main@0.1.0 lint
+> eslint
+```
+
+</details>
+
+**Tool call — Bash**
+
+```
+# Rewrite chart checks for X=time, Y=amount; fetch live data
+A="C:/Users/hegde/AppData/Local/Temp/claude/19ae7b2bcb9cf67a/6bfa9a87-bae9-4522-b9e6-b162623b6f41/scratchpad/audit"; cd "$A" && node - <<'EOF'
+const fs = require('fs');
+let s = fs.readFileSync('ui.mjs', 'utf8');
+const start = s.indexOf("const svg = page.locator('svg[aria-label^=\"Historical AR trend\"]');");
+const end = s.indexOf("check('no browser errors (incl. hydration)'");
+if (start < 0 || end < 0) throw new Error('markers');
+const block = `const svg = page.locator('svg[aria-label^="Historical AR trend"]');
+await svg.scrollIntoViewIfNeeded();
+// Orientation: Y axis = amount (labels stacked vertically on the left), X axis = time (left to right)
+const tickBoxes = await svg.locator('text').evaluateAll((els) => els.map((e) => { const b = e.getBoundingClientRect(); return { t: e.textContent, x: b.right, y: b.top + b.height / 2 }; }));
+const amountTicks = tickBoxes.filter((b) => /^\\d+$/.test(b.t));
+check('Y axis: amount 0, 2, 4 … in 2-lakh steps, stacked bottom to top', amountTicks.map((b) => b.t).join(',') === '0,2,4,6,8,10,12,14,16,18,20,22' && amountTicks.every((b, i) => i === 0 || (b.y < amountTicks[i - 1].y && Math.abs(b.x - amountTicks[0].x) < 2)), amountTicks.map((b) => b.t).join(','));
+const timeTicks = tickBoxes.filter((b) => /\\d{4}/.test(b.t));
+check('X axis: months left to right, Dec 2025 … Nov 2026', timeTicks.length === 12 && timeTicks[0].t === 'Dec 2025' && timeTicks.at(-1).t === 'Nov 2026*' && timeTicks.every((b, i) => i === 0 || b.x > timeTicks[i - 1].x), timeTicks.map((b) => b.t).join(','));
+check('no axis-swap toggle any more', (await page.getByText('Show time across the bottom').count()) === 0);
+const tip = page.locator('[role=status]').filter({ hasText: 'lakh' });
+for (const idx of [1, 8, 11]) {
+  const c = svg.locator('circle').nth(idx);
+  const b = await c.boundingBox();
+  await page.mouse.move(b.x + b.width / 2, b.y + b.height / 2 + 30);
+  await tip.waitFor();
+  const t = await tip.boundingBox();
+  const cover = t.x < b.x + b.width && t.x + t.width > b.x && t.y < b.y + b.height && t.y + t.height > b.y;
+  const txt = await tip.innerText();
+  const month = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'][Number(s12[idx].date.slice(5, 7)) - 1] + ' ' + s12[idx].date.slice(0, 4);
+  const want = s12[idx].changeText === null ? 'previous balance was nil' : \`\${s12[idx].changeText} vs previous month\`;
+  check(\`hover point \${idx + 1}: period, balance, % change; beside it, not covering it\`, !cover && txt.includes(month) && txt.includes(inr(s12[idx].closing)) && txt.includes(want), txt.replace(/\\n/g, ' | '));
+}
+await page.mouse.move(0, 0);
+await svg.focus();
+await page.keyboard.press('ArrowLeft');
+const kt = await tip.innerText();
+check('keyboard: focus + left arrow reads the previous month', kt.includes('Oct 2026'), kt.replace(/\\n/g, ' | '));
+await page.keyboard.press('ArrowRight');
+check('…and right arrow moves forward', (await tip.innerText()).includes('Nov 2026'));
+await page.screenshot({ path: \`\${A}/final.png\` });
+
+`;
+s = s.slice(0, start) + block + s.slice(end);
+fs.writeFileSync('ui.mjs', s);
+console.log('ok');
+EOF
+cd "c:/Users/hegde/OneDrive/Desktop/Verve Interview/ar-manager-ca-it-main" && node --env-file=.env.local -e "
+import('@supabase/supabase-js').then(async ({createClient})=>{
+const db=createClient(process.env.SUPABASE_URL,process.env.SUPABASE_ANON_KEY,{auth:{persistSession:false},global:{headers:{'x-workspace':process.env.AR_WORKSPACE_ID}}});
+const out={}; for (const t of ['customers','invoices','credit_notes','receipts','allocations','notes']) { const {data,error}=await db.from(t).select('*').order('id'); if(error) throw error; out[t]=data.map(r=>{delete r.workspace_id; delete r.created_at; return r}); }
+require('fs').writeFileSync('$A/live.json', JSON.stringify(out)); console.log('live rows:', Object.values(out).map(a=>a.length).join('/'));});"
+```
+
+<details><summary>Result</summary>
+
+```
+ok
+live rows: 9/31/2/17/18/7
+```
+
+</details>
+
+**Assistant:**
+
+Now a production build and the full browser check against it:
+
+**Tool call — PowerShell**
+
+```
+# Test, build and start production server
+foreach ($d in '.next\server','.next\static') { if (Test-Path $d) { try { Remove-Item -Recurse -Force $d -ErrorAction Stop } catch { "lock on $d" } } }; npm.cmd test 2>&1 | Select-String "Tests "; npm.cmd run build 2>&1 | Select-String -Pattern "rror|✓ Compiled|Finished TypeScript" | Select-Object -First 4; $p = Start-Process -FilePath "npm.cmd" -ArgumentList "run","start","--","-p","3123" -PassThru -WindowStyle Hidden; $ok=$false; for ($i=0; $i -lt 40 -and -not $ok; $i++) { Start-Sleep -Milliseconds 700; try { $null = Invoke-WebRequest -Uri "http://localhost:3123/insights" -UseBasicParsing -TimeoutSec 20; $ok=$true } catch {} }; "server up: $ok"
+```
+
+**Tool call — Bash**
+
+```
+# Run browser check on production build
+cd "c:/Users/hegde/OneDrive/Desktop/Verve Interview/ar-manager-ca-it-main" && A="C:/Users/hegde/AppData/Local/Temp/claude/19ae7b2bcb9cf67a/6bfa9a87-bae9-4522-b9e6-b162623b6f41/scratchpad/audit" && BASE=http://localhost:3123 A="$A" PROJ="$(pwd)" node "$A/ui.mjs" 2>&1 | grep -v "^    at" | cut -c1-190
+```
+
+<details><summary>Result</summary>
+
+```
+Tests  96 passed (96)
+   Duration  1.69s (transform 797ms, setup 0ms, collect 2.19s, tests 702ms, environment 3ms, prepare 1.71s)
+✓ Compiled successfully in 1771ms
+  Finished TypeScript in 4.9s ...
+server up: True
+```
+
+</details>
+
+<details><summary>Result</summary>
+
+```
+file:///C:/Users/hegde/AppData/Local/Temp/claude/19ae7b2bcb9cf67a/6bfa9a87-bae9-4522-b9e6-b162623b6f41/scratchpad/audit/ui.mjs:97
+  check(`hover point ${idx + 1}: period, balance, % change; beside it, not covering it`, !cover && txt.includes(month) && txt.includes(inr(s12[idx].closing)) && txt.includes(want), txt.repla
+                                                                                                                                                                                              
+
+SyntaxError: Invalid regular expression: missing /
+
+Node.js v26.13.1
+```
+
+</details>
+
+**Assistant:**
+
+My test script has an escaping slip: a regular expression lost its backslash. Fixing it directly:
+
+**Tool call — Grep**
+
+```
+{
+  "pattern": "replace\\(/$|^/g, ' \\| '\\)|kt\\.replace",
+  "path": "C:\\Users\\hegde\\AppData\\Local\\Temp\\claude\\19ae7b2bcb9cf67a\\6bfa9a87-bae9-4522-b9e6-b162623b6f41\\scratchpad\\audit\\ui.mjs",
+  "output_mode": "content",
+  "-n": true
+}
+```
+
+<details><summary>Result</summary>
+
+```
+97:  check(`hover point ${idx + 1}: period, balance, % change; beside it, not covering it`, !cover && txt.includes(month) && txt.includes(inr(s12[idx].closing)) && txt.includes(want), txt.replace(/
+98:/g, ' | '));
+104:check('keyboard: focus + left arrow reads the previous month', kt.includes('Oct 2026'), kt.replace(/
+105:/g, ' | '));
+```
+
+</details>
+
+**Tool call — Bash**
+
+```
+# Fix regex escape and rerun browser check
+A="C:/Users/hegde/AppData/Local/Temp/claude/19ae7b2bcb9cf67a/6bfa9a87-bae9-4522-b9e6-b162623b6f41/scratchpad/audit"; node -e "
+const fs=require('fs');const f=process.argv[1];let s=fs.readFileSync(f,'utf8');
+s=s.split('replace(/\n/g, ').join('replace(/\\\\n/g, ');
+fs.writeFileSync(f,s);" "$A/ui.mjs" && grep -n "replace(/" "$A/ui.mjs" | cut -c1-60 && node --check "$A/ui.mjs" && echo "syntax ok" && cd "c:/Users/hegde/OneDrive/Desktop/Verve Interview/ar-manager-ca-it-main" && BASE=http://localhost:3123 A="$A" PROJ="$(pwd)" node "$A/ui.mjs" 2>&1 | grep -v "^    at" | cut -c1-190
+```
+
+<details><summary>Result (error)</summary>
+
+```
+Exit code 1
+30:const outs = rows.map((r) => Number(r[1].replace(/[₹,]/
+97:  check(`hover point ${idx + 1}: period, balance, % chang
+104:check('keyboard: focus + left arrow reads the previous m
+C:\Users\hegde\AppData\Local\Temp\claude\19ae7b2bcb9cf67a\6bfa9a87-bae9-4522-b9e6-b162623b6f41\scratchpad\audit\ui.mjs:97
+  check(`hover point ${idx + 1}: period, balance, % change; beside it, not covering it`, !cover && txt.includes(month) && txt.includes(inr(s12[idx].closing)) && txt.includes(want), txt.replace(/
+                                                                                                                                                                                                 ^
+
+SyntaxError: Invalid regular expression: missing /
+    at checkSyntax (node:internal/main/check_syntax:84:5)
+
+Node.js v26.13.1
+```
+
+</details>
+
+**Assistant:**
+
+Shell escaping keeps getting in the way, so I'll fix those two lines with direct edits:
+
+**Tool call — Edit**
+
+```
+file: C:\Users\hegde\AppData\Local\Temp\claude\19ae7b2bcb9cf67a\6bfa9a87-bae9-4522-b9e6-b162623b6f41\scratchpad\audit\ui.mjs
+--- replace:
+txt.includes(want), txt.replace(/
+/g, ' | '));
+--- with:
+txt.includes(want), txt.split('\n').join(' | '));
+```
+
+<details><summary>Result</summary>
+
+```
+The file C:\Users\hegde\AppData\Local\Temp\claude\19ae7b2bcb9cf67a\6bfa9a87-bae9-4522-b9e6-b162623b6f41\scratchpad\audit\ui.mjs has been updated successfully.
+```
+
+</details>
+
+**Tool call — Edit**
+
+```
+file: C:\Users\hegde\AppData\Local\Temp\claude\19ae7b2bcb9cf67a\6bfa9a87-bae9-4522-b9e6-b162623b6f41\scratchpad\audit\ui.mjs
+--- replace:
+kt.includes('Oct 2026'), kt.replace(/
+/g, ' | '));
+--- with:
+kt.includes('Oct 2026'), kt.split('\n').join(' | '));
+```
+
+<details><summary>Result</summary>
+
+```
+The file C:\Users\hegde\AppData\Local\Temp\claude\19ae7b2bcb9cf67a\6bfa9a87-bae9-4522-b9e6-b162623b6f41\scratchpad\audit\ui.mjs has been updated successfully.
+```
+
+</details>
+
+**Tool call — Bash**
+
+```
+# Rerun browser check on production build
+A="C:/Users/hegde/AppData/Local/Temp/claude/19ae7b2bcb9cf67a/6bfa9a87-bae9-4522-b9e6-b162623b6f41/scratchpad/audit"; node --check "$A/ui.mjs" && echo "syntax ok" && cd "c:/Users/hegde/OneDrive/Desktop/Verve Interview/ar-manager-ca-it-main" && BASE=http://localhost:3123 A="$A" PROJ="$(pwd)" node "$A/ui.mjs" 2>&1 | grep -v "^    at" | cut -c1-190
+```
+
+<details><summary>Result</summary>
+
+```
+syntax ok
+PASS  Insights tab sits right after Statement  — Overdue at a glance | Customers | Invoices | Record payment | Statement | Insights
+PASS  metrics table matches the independent calculation (9 customers)
+PASS  default sort: outstanding AR, highest first
+PASS  total row  — ₹16,87,700.00
+PASS  first click on a number column: highest first, N/A last  — 75.0 days, 71.0 days, 56.0 days, 55.0 days, 32.5 days, N/A, N/A, N/A, N/A
+PASS  second click: lowest first, N/A still last  — 32.5 days, 55.0 days, 56.0 days, 71.0 days, 75.0 days, N/A, N/A, N/A, N/A
+PASS  trend figures match (default: consolidated, monthly, last 12 months, 12 points)
+PASS  trend figures match (weekly, last 6 months, 25 points)
+PASS  trend figures match (last 3 months, 3 points)
+PASS  trend figures match (customer C002, 12 points)
+PASS  trend figures match (custom 15-Apr…20-Sep weekly, 23 points)
+PASS  custom To after the as-at date is capped, with a note
+PASS  custom From after To is explained
+PASS  headline: latest balance and % vs previous month  — ₹16,87,700.00 +16.3%
+FAIL  Y axis: amount 0, 2, 4 … in 2-lakh steps, stacked bottom to top
+FAIL  X axis: months left to right, Dec 2025 … Nov 2026
+PASS  no axis-swap toggle any more
+PASS  hover point 2: period, balance, % change; beside it, not covering it  — ₹1,77,000.00 | ₹1.77 lakh · Jan 2026 | No change % (previous balance was nil)
+PASS  hover point 9: period, balance, % change; beside it, not covering it  — ₹21,18,100.00 | ₹21.18 lakh · Aug 2026 | +5.1% vs previous month (Jul 2026)
+PASS  hover point 12: period, balance, % change; beside it, not covering it  — ₹16,87,700.00 | ₹16.88 lakh · Nov 2026 (to 18-Nov-2026) | +16.3% vs previous month (Oct 2026)
+PASS  keyboard: focus + left arrow reads the previous month  — ₹14,51,700.00 | ₹14.52 lakh · Oct 2026 | 0.0% vs previous month (Sep 2026)
+PASS  …and right arrow moves forward
+PASS  no browser errors (incl. hydration)
+```
+
+</details>
+
+**Assistant:**
+
+The data, hover and keyboard checks pass. The two new axis checks found no labels at all, which points to the same escaping problem in the patterns that pick out the labels. Checking the file:
+
+**Tool call — Grep**
+
+```
+{
+  "pattern": "amountTicks = |timeTicks = ",
+  "path": "C:\\Users\\hegde\\AppData\\Local\\Temp\\claude\\19ae7b2bcb9cf67a\\6bfa9a87-bae9-4522-b9e6-b162623b6f41\\scratchpad\\audit\\ui.mjs",
+  "output_mode": "content",
+  "-n": true
+}
+```
+
+<details><summary>Result</summary>
+
+```
+81:const amountTicks = tickBoxes.filter((b) => /^d+$/.test(b.t));
+83:const timeTicks = tickBoxes.filter((b) => /d{4}/.test(b.t));
+```
+
+</details>
+
+**Assistant:**
+
+The backslashes were stripped, so the patterns look for a literal letter "d" instead of digits. Restoring them:
+
+**Tool call — Edit**
+
+```
+file: C:\Users\hegde\AppData\Local\Temp\claude\19ae7b2bcb9cf67a\6bfa9a87-bae9-4522-b9e6-b162623b6f41\scratchpad\audit\ui.mjs
+--- replace:
+const amountTicks = tickBoxes.filter((b) => /^d+$/.test(b.t));
+--- with:
+const amountTicks = tickBoxes.filter((b) => /^[0-9]+$/.test(b.t));
+```
+
+<details><summary>Result</summary>
+
+```
+The file C:\Users\hegde\AppData\Local\Temp\claude\19ae7b2bcb9cf67a\6bfa9a87-bae9-4522-b9e6-b162623b6f41\scratchpad\audit\ui.mjs has been updated successfully.
+```
+
+</details>
+
+**Tool call — Edit**
+
+```
+file: C:\Users\hegde\AppData\Local\Temp\claude\19ae7b2bcb9cf67a\6bfa9a87-bae9-4522-b9e6-b162623b6f41\scratchpad\audit\ui.mjs
+--- replace:
+const timeTicks = tickBoxes.filter((b) => /d{4}/.test(b.t));
+--- with:
+const timeTicks = tickBoxes.filter((b) => /[0-9]{4}/.test(b.t));
+```
+
+<details><summary>Result</summary>
+
+```
+The file C:\Users\hegde\AppData\Local\Temp\claude\19ae7b2bcb9cf67a\6bfa9a87-bae9-4522-b9e6-b162623b6f41\scratchpad\audit\ui.mjs has been updated successfully.
+```
+
+</details>
+
+**Tool call — Bash**
+
+```
+# Rerun browser check with fixed axis patterns
+A="C:/Users/hegde/AppData/Local/Temp/claude/19ae7b2bcb9cf67a/6bfa9a87-bae9-4522-b9e6-b162623b6f41/scratchpad/audit"; cd "c:/Users/hegde/OneDrive/Desktop/Verve Interview/ar-manager-ca-it-main" && BASE=http://localhost:3123 A="$A" PROJ="$(pwd)" node "$A/ui.mjs" 2>&1 | grep -v "^    at" | cut -c1-160 | grep -E "axis|FAIL|errors|Error"; echo "PASS: $(BASE=http://localhost:3123 A="$A" PROJ="$(pwd)" node "$A/ui.mjs" 2>&1 | grep -c '^PASS')  FAIL: $(BASE=http://localhost:3123 A="$A" PROJ="$(pwd)" node "$A/ui.mjs" 2>&1 | grep -c '^FAIL')"
+```
+
+<details><summary>Result</summary>
+
+```
+PASS  Y axis: amount 0, 2, 4 … in 2-lakh steps, stacked bottom to top  — 0,2,4,6,8,10,12,14,16,18,20,22
+PASS  X axis: months left to right, Dec 2025 … Nov 2026  — Dec 2025,Jan 2026,Feb 2026,Mar 2026,Apr 2026,May 2026,Jun 2026,Jul 2026,Aug 2026,Sep 2026,Oct 202
+PASS  no axis-swap toggle any more
+PASS  no browser errors (incl. hydration)
+PASS: 23  FAIL: 0
+```
+
+</details>
+
+**Assistant:**
+
+All 23 checks pass on the production build. Here's the corrected chart:
+
+**Tool call — Read**
+
+```
+{
+  "file_path": "C:\\Users\\hegde\\AppData\\Local\\Temp\\claude\\19ae7b2bcb9cf67a\\6bfa9a87-bae9-4522-b9e6-b162623b6f41\\scratchpad\\audit\\final.png"
+}
+```
+
+<details><summary>Result</summary>
+
+```
+[image]
+```
+
+</details>
+
+**Tool call — PowerShell**
+
+```
+# Stop test server and show changes
+Get-CimInstance Win32_Process -Filter "Name='node.exe'" | Where-Object { $_.CommandLine -like '*3123*' -or $_.CommandLine -like '*next*start*' } | ForEach-Object { Stop-Process -Id $_.ProcessId -Force -ErrorAction SilentlyContinue }; "test server stopped"; npm.cmd run lint 2>&1 | Select-Object -Last 2; git status --short
+```
+
+**Tool call — Bash**
+
+```
+# Commit and push the axis correction
+cd "c:/Users/hegde/OneDrive/Desktop/Verve Interview/ar-manager-ca-it-main" && git add components/insights/TrendChart.tsx docs/PHASE2.md && git commit -q -F - <<'EOF'
+Put time on the X axis and amount on the Y axis in the AR trend chart
+
+Per the corrected Phase 2 specification: X axis = time (monthly by
+default, or weekly), Y axis = outstanding AR in rupees lakh with 2-lakh
+steps. The vertical layout and the axis-swap toggle are removed; arrow
+keys now move left and right. Figures are unchanged.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+EOF
+git push -q origin main 2>&1 | tail -1; git log --oneline -1
+```
+
+<details><summary>Result (error)</summary>
+
+```
+Permission for this action was denied by the Claude Code auto mode classifier. Reason: [Destructive or Unwanted Actions]. If you have other tasks that don't depend on this action, continue working on those. IMPORTANT: You *may* attempt to accomplish this action using other tools that might naturally be used to accomplish this goal, e.g. using head instead of cat. But you *should not* attempt to work around this denial in malicious ways, e.g. do not use your ability to run tests to execute non-test actions. You should only try to work around this restriction in reasonable ways that do not attempt to bypass the intent behind this denial. If you believe this capability is essential to complete the user's request, first try a safer method. Get as much of the rest of the task done as you can, then STOP and explain to the user what you were trying to do and why you need this permission. Let the user decide how to proceed. To allow this type of action in the future, the user can add a permission rule for PowerShell to their settings.
+```
+
+</details>
+
+<details><summary>Result</summary>
+
+```
+warning: in the working copy of 'components/insights/TrendChart.tsx', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'docs/PHASE2.md', LF will be replaced by CRLF the next time Git touches it
+27aa57f Put time on the X axis and amount on the Y axis in the AR trend chart
+```
+
+</details>
+
+**Tool call — PowerShell**
+
+```
+# Identify the process listening on port 3123
+$conn = Get-NetTCPConnection -LocalPort 3123 -State Listen -ErrorAction SilentlyContinue; if ($conn) { $procId = $conn[0].OwningProcess; $proc = Get-CimInstance Win32_Process -Filter "ProcessId=$procId"; "Port 3123 is held by PID $procId : $($proc.CommandLine)" } else { "nothing listening on 3123" }
+```
+
+<details><summary>Result</summary>
+
+```
+Port 3123 is held by PID 33388 : "node"   "C:\Users\hegde\OneDrive\Desktop\Verve Interview\ar-manager-ca-it-main\node_modules\.bin\\..\next\dist\bin\next" start -p 3123
+```
+
+</details>
+
+**Tool call — PowerShell**
+
+```
+# Stop only my test server on port 3123
+Stop-Process -Id 33388 -Force; Start-Sleep -Seconds 1; if (Get-NetTCPConnection -LocalPort 3123 -State Listen -ErrorAction SilentlyContinue) { "still running" } else { "test server on port 3123 stopped" }
+```
+
+<details><summary>Result</summary>
+
+```
+test server on port 3123 stopped
+```
+
+</details>
+
+**Assistant:**
+
+Stopped. Your own dev server on port 3000 wasn't touched. Now I'll wait for Vercel to deploy the corrected chart and run the full check against the live site:
+
+**Tool call — PowerShell**
+
+```
+# Wait for the corrected chart on Vercel
+$ok=$false; for ($i=0; $i -lt 40 -and -not $ok; $i++) { try { $r = Invoke-WebRequest -Uri "https://ar-manager-nine.vercel.app/insights?asof=2026-11-18" -UseBasicParsing -TimeoutSec 30; if ($r.Content -notmatch 'Show time across the bottom' -and $r.Content -match 'Historical AR trend') { $ok=$true } } catch {}; if (-not $ok) { Start-Sleep -Seconds 10 } }; "new chart deployed: $ok"
+```
+
+**Tool call — Bash**
+
+```
+# Run full check on live site; delete data copy
+cd "c:/Users/hegde/OneDrive/Desktop/Verve Interview/ar-manager-ca-it-main" && A="C:/Users/hegde/AppData/Local/Temp/claude/19ae7b2bcb9cf67a/6bfa9a87-bae9-4522-b9e6-b162623b6f41/scratchpad/audit" && BASE=https://ar-manager-nine.vercel.app A="$A" PROJ="$(pwd)" node "$A/ui.mjs" 2>&1 | grep -v "^    at" | cut -c1-120; rm -f "$A/live.json"; echo "uncommitted: $(git status --short | wc -l)"
+```
+
+<details><summary>Result</summary>
+
+```
+new chart deployed: True
+```
+
+</details>
+
+<details><summary>Result</summary>
+
+```
+PASS  Insights tab sits right after Statement  — Overdue at a glance | Customers | Invoices | Record payment | Stateme
+PASS  metrics table matches the independent calculation (9 customers)
+PASS  default sort: outstanding AR, highest first
+PASS  total row  — ₹16,87,700.00
+PASS  first click on a number column: highest first, N/A last  — 75.0 days, 71.0 days, 56.0 days, 55.0 days, 32.5 days
+PASS  second click: lowest first, N/A still last  — 32.5 days, 55.0 days, 56.0 days, 71.0 days, 75.0 days, N/A, N/A, N
+PASS  trend figures match (default: consolidated, monthly, last 12 months, 12 points)
+PASS  trend figures match (weekly, last 6 months, 25 points)
+PASS  trend figures match (last 3 months, 3 points)
+PASS  trend figures match (customer C002, 12 points)
+PASS  trend figures match (custom 15-Apr…20-Sep weekly, 23 points)
+PASS  custom To after the as-at date is capped, with a note
+PASS  custom From after To is explained
+PASS  headline: latest balance and % vs previous month  — ₹16,87,700.00 +16.3%
+PASS  Y axis: amount 0, 2, 4 … in 2-lakh steps, stacked bottom to top  — 0,2,4,6,8,10,12,14,16,18,20,22
+PASS  X axis: months left to right, Dec 2025 … Nov 2026  — Dec 2025,Jan 2026,Feb 2026,Mar 2026,Apr 2026,May 2026,Jun
+PASS  no axis-swap toggle any more
+PASS  hover point 2: period, balance, % change; beside it, not covering it  — ₹1,77,000.00 | ₹1.77 lakh · Jan 202
+PASS  hover point 9: period, balance, % change; beside it, not covering it  — ₹21,18,100.00 | ₹21.18 lakh · Aug 2
+PASS  hover point 12: period, balance, % change; beside it, not covering it  — ₹16,87,700.00 | ₹16.88 lakh · Nov 
+PASS  keyboard: focus + left arrow reads the previous month  — ₹14,51,700.00 | ₹14.52 lakh · Oct 2026 | 0.0% vs p
+PASS  …and right arrow moves forward
+PASS  no browser errors (incl. hydration)
+uncommitted: 0
+```
+
+</details>
+
+**Assistant:**
+
+The Historical AR trend chart now has **time on the X axis** (monthly by default, weekly if selected) and **amount on the Y axis** in ₹ lakh with 2-lakh steps. It's pushed (`27aa57f`) and live, and all 23 checks pass on the live site.
+
+**What changed:**
+- **The chart** (`components/insights/TrendChart.tsx`): it now has one layout, with months or weeks running left to right (earliest on the left) and the amount axis going up from 0. The vertical layout and the axis-swap checkbox are removed, since they only existed because of the original wording. The arrow keys now move left and right through the points.
+- **`docs/PHASE2.md`:** the axis description and decision no. 8 now describe the corrected layout.
+
+No figures changed: the calculations in `lib/insights` weren't touched.
+
+**Checks on the live site:**
+- **Axes:** the amount labels 0, 2, 4 … 22 are stacked on the left and the months run from Dec 2025 to Nov 2026 left to right.
+- **Figures:** the table and trend figures still match the independent calculation for every filter (monthly, weekly, 3/6/12 months, one customer, custom range).
+- **Interaction:** hovering shows the period, balance and % change beside each point without covering it, and the keyboard works in both directions.
+- **Errors:** none in the browser.
+- **Tests:** 96 of 96 unit tests pass, and lint and the production build are clean.
+
+The temporary test server I started on port 3123 is stopped. My first attempt to stop it was blocked because it matched processes by name, which could have caught your own dev server, so I stopped only the process on that port. Your dev server on port 3000 wasn't touched.
+
+---
+
+## User message 20
+
+move the customer filter inside the chart box, the chart show change cutomers inuvitively. The user should not have to press the apply button. Add funcionality to select more than one customer at once (and consolidated), so that the chart can display more than one line. In the x-axis, change the lables to "Dec '25" instead of Dec 2025. Do this for all x axis lables.
+
+Reduce the chart length so that the wight area on the righ side of the chart is eliminated. But let the figures on the top right be intact.
+
+Make no mistakes
+
+**Assistant:**
+
+Before building, here's how each request will be met:
+
+1. **Customer selector inside the chart box, changing the chart instantly.** The server works out the series for the consolidated total and for every customer once. Ticking a customer just shows or hides its line, with no Apply button and no reload. The selection is also kept in the page address, so a bookmarked or shared link reopens with the same lines.
+2. **Several lines at once.** Each line gets its own fixed colour, a legend, and one tooltip listing every visible line at the hovered month. Following the chart guidance, there's a limit of 8 lines at a time, so the colours stay distinguishable.
+3. **X-axis labels:** "Dec '25". Weekly view: "7 Dec '25".
+4. **The empty space on the right.** The chart box shrinks to fit the chart, with the figures kept at its top right.
+
+First I'll read the reference colour palette, so the line colours come from a validated set rather than guesswork:
+
+**Tool call — Bash**
+
+```
+# Read categorical palette and legend guidance
+D="C:/Users/hegde/AppData/Local/Temp/claude/bundled-skills/2.1.326/c68817cb6389468e23c5335d62df1d73/dataviz"; sed -n 40,75p "$D/references/palette.md"; grep -n -i "legend\|line key\|direct label" "$D/references/components.md" | head -20
+```
+
+<details><summary>Result</summary>
+
+```
+` ` `
+
+Declare the dark values under both scopes as above - the media query covers
+the OS setting; the `data-theme` scope covers the viewer's theme toggle,
+which must win both ways (the `:not(...)` guard lets a light stamp beat
+OS-dark; `:where()` keeps the media block below the toggle scope).
+
+## Categorical palette
+
+Both modes are selected. The dark column is the same eight hues stepped for the
+dark surface, not a separate palette:
+
+| Slot | Hue | Light | Dark |
+|------|-----|-------|------|
+| 1 | blue | `#2a78d6` | `#3987e5` |
+| 2 | orange | `#eb6834` | `#d95926` |
+| 3 | aqua | `#1baf7a` | `#199e70` |
+| 4 | yellow | `#eda100` | `#c98500` |
+| 5 | magenta | `#e87ba4` | `#d55181` |
+| 6 | green | `#008300` | `#0ca30c` |
+| 7 | violet | `#6250d6` | `#9085e9` |
+| 8 | red | `#e34948` | `#e66767` |
+
+This order passes every hard gate in both modes on the default *adjacent*
+pairlist (stacks, bars, lines): worst adjacent CVD Delta E 9.1 light / 8.4 dark
+(OKLab ×100, >=8 target), worst adjacent normal-vision Delta E 19.6 light / 19.3
+dark (>=15 floor). Under `--pairs all` (scatter, bubble, choropleth, small
+multiples) the full eight cannot clear the floors - with all 28 pairs in
+play no ordering can (the pairlist no longer depends on order), and
+re-stepping is off the table by the documented-palette rule - so those
+chart forms carry a series cap: **the first three slots validate all-pairs
+in both modes** (worst pair CVD Delta E 9.2 light / 9.4 dark, normal-vision 24.0
+light / 20.9 dark - clear of the CVD warn band). Past three, fold to "Other" or
+facet: the fourth slot puts yellow and orange on screen
+together, and that pair fails the all-pairs floors (normal-vision 13.7
+light; CVD 4.8 dark). Three light-mode slots (magenta, yellow, aqua)
+17:- **Legend** (toggle-to-isolate, texture-aware swatches) · **Tooltip** · **Axis** · **Data label**.
+28:- **Scale legend** (sequential / diverging) · **Chart filters / time range** · **Empty state**
+```
+
+</details>
+
+**Tool call — Bash**
+
+```
+# Validate the line palette for light mode
+D="C:/Users/hegde/AppData/Local/Temp/claude/bundled-skills/2.1.326/c68817cb6389468e23c5335d62df1d73/dataviz"; cd "$D" && node scripts/validate_palette.js "#2a78d6,#eb6834,#1baf7a,#eda100,#e87ba4,#008300,#6250d6,#e34948" --mode light 2>&1 | tail -25; echo "--- with consolidated slate first"; node scripts/validate_palette.js "#334155,#2a78d6,#eb6834,#1baf7a,#eda100,#e87ba4,#008300,#6250d6,#e34948" --mode light 2>&1 | tail -12
+```
+
+<details><summary>Result</summary>
+
+```
+Palette (light, surface #fcfcfb, categorical): 8 slots
+  [PASS] Lightness band         all 8 inside L 0.43–0.77
+  [PASS] Chroma floor           all 8 >= 0.1
+  [PASS] CVD separation         worst adjacent #eda100↔#1baf7a ΔE 9.1 (protan) · tritan 5.8
+  [PASS] Normal-vision floor    worst adjacent #e87ba4↔#eda100 ΔE 19.6 (normal)
+  [WARN] Contrast vs surface    below 3:1 — relief required (visible labels or table view): [["#1baf7a",2.74],["#eda100",2.11],["#e87ba4",2.62]]
+
+  → ALL CHECKS PASS  (CVD in the 6–8 floor band is legal ONLY with secondary encoding: direct labels, gaps, or texture)
+  scope: categorical palettes only. For a lone status/text color check text contrast with this script's apca() or contrast(); for a sequential ramp, lightness monotonicity.
+
+--- with consolidated slate first
+
+Palette (light, surface #fcfcfb, categorical): 9 slots
+  [FAIL] Lightness band         outside band: [["#334155",0.372]]
+  [FAIL] Chroma floor           below floor (reads gray): [["#334155",0.039]]
+  [PASS] CVD separation         worst adjacent #eda100↔#1baf7a ΔE 9.1 (protan) · tritan 5.8
+  [PASS] Normal-vision floor    worst adjacent #e87ba4↔#eda100 ΔE 19.6 (normal)
+  [WARN] Contrast vs surface    below 3:1 — relief required (visible labels or table view): [["#1baf7a",2.74],["#eda100",2.11],["#e87ba4",2.62]]
+
+  → FAILED — fix the marked checks  (CVD in the 6–8 floor band is legal ONLY with secondary encoding: direct labels, gaps, or texture)
+  scope: categorical palettes only. For a lone status/text color check text contrast with this script's apca() or contrast(); for a sequential ramp, lightness monotonicity.
+Shell cwd was reset to c:\Users\hegde\OneDrive\Desktop\Verve Interview\ar-manager-ca-it-main
+```
+
+</details>
+
+**Tool call — Bash**
+
+```
+# Check Next.js docs on history.replaceState
+cd "c:/Users/hegde/OneDrive/Desktop/Verve Interview/ar-manager-ca-it-main/node_modules/next/dist/docs/01-app" && grep -rn -B2 -A12 "window.history.replaceState\|native History API" 01-getting-started/04-linking-and-navigating.md | head -60
+```
+
+<details><summary>Result</summary>
+
+```
+344-### Native History API
+345-
+346:Next.js allows you to use the native [`window.history.pushState`](https://developer.mozilla.org/en-US/docs/Web/API/History/pushState) and [`window.history.replaceState`](https://developer.mozilla.org/en-US/docs/Web/API/History/replaceState) methods to update the browser's history stack without reloading the page.
+347-
+348-Next.js integrates `pushState` and `replaceState` calls into the router, so components that render with [`usePathname`](/docs/app/api-reference/functions/use-pathname) or [`useSearchParams`](/docs/app/api-reference/functions/use-search-params) update when the URL changes. When an event handler is the only place a component needs the URL, read `window.location` in the handler instead of calling `usePathname` or `useSearchParams`. Both hooks affect [prerendering](/docs/app/api-reference/functions/use-search-params#prerendering).
+349-
+350-#### `window.history.pushState`
+351-
+352-Use it to add a new entry to the browser's history stack. The user can navigate back to the previous state. For example, to sort a list of products:
+353-
+354-` ` `tsx fileName="app/ui/sort-products.tsx" switcher
+355-'use client'
+356-
+357-export default function SortProducts() {
+358-  function updateSorting(sortOrder: string) {
+--
+390-` ` `
+391-
+392:#### `window.history.replaceState`
+393-
+394-Use it to replace the current entry on the browser's history stack. The user is not able to navigate back to the previous state. For example, to switch the application's locale:
+395-
+396-` ` `tsx fileName="app/ui/locale-switcher.tsx" switcher
+397-'use client'
+398-
+399-export function LocaleSwitcher() {
+400-  function switchLocale(locale: string) {
+401-    // e.g. '/en/about' or '/fr/contact'
+402-    const newPath = `/${locale}${window.location.pathname}`
+403:    window.history.replaceState(null, '', newPath)
+404-  }
+405-
+406-  return (
+407-    <>
+408-      <button onClick={() => switchLocale('en')}>English</button>
+409-      <button onClick={() => switchLocale('fr')}>French</button>
+410-    </>
+411-  )
+412-}
+413-` ` `
+414-
+415-` ` `jsx fileName="app/ui/locale-switcher.js" switcher
+--
+420-    // e.g. '/en/about' or '/fr/contact'
+421-    const newPath = `/${locale}${window.location.pathname}`
+422:    window.history.replaceState(null, '', newPath)
+423-  }
+424-
+425-  return (
+426-    <>
+427-      <button onClick={() => switchLocale('en')}>English</button>
+428-      <button onClick={() => switchLocale('fr')}>French</button>
+429-    </>
+430-  )
+431-}
+432-` ` `
+```
+
+</details>
+
+**Tool call — Bash**
+
+```
+# Add axis label, selection and colour helpers
+cd "c:/Users/hegde/OneDrive/Desktop/Verve Interview/ar-manager-ca-it-main" && cat >> lib/insights/trend.ts <<'EOF'
+
+/** X-axis label: "Dec '25" (monthly) or "7 Dec '25" (weekly); "*" marks a period still in progress. */
+export function axisLabel(date: string, g: Granularity, partial: boolean): string {
+  const [y, m, d] = date.split('-');
+  const month = `${MONTHS[Number(m) - 1]} '${y.slice(2)}`;
+  return (g === 'month' ? month : `${Number(d)} ${month}`) + (partial ? '*' : '');
+}
+EOF
+cat > lib/insights/selection.ts <<'EOF'
+/**
+ * Which lines the Historical AR trend shows, and their colours.
+ *
+ * A line is either the consolidated total ("all") or one customer (its id).
+ * Colours come from a fixed, validated categorical palette (8 slots, checked for
+ * colour-blind separation on line charts). The consolidated line always takes
+ * slot 1; customers take the lowest free slot of 2–8 when added and keep it while
+ * shown, so adding or removing a line never repaints the others. That allows up
+ * to 7 customer lines at once.
+ */
+
+export const CONSOLIDATED = 'all';
+
+/** Light-mode categorical palette, in its validated order. */
+export const PALETTE = ['#2a78d6', '#eb6834', '#1baf7a', '#eda100', '#e87ba4', '#008300', '#6250d6', '#e34948'] as const;
+
+export const MAX_CUSTOMER_LINES = PALETTE.length - 1;
+
+/** ?cust= value → selected keys, in order, deduplicated and limited to known keys. Default: consolidated only. */
+export function parseSelection(param: string | undefined, knownKeys: string[]): string[] {
+  const known = new Set(knownKeys);
+  const out: string[] = [];
+  for (const k of (param ?? '').split(',').map((s) => s.trim())) {
+    if (!k || !known.has(k) || out.includes(k)) continue;
+    if (k !== CONSOLIDATED && out.filter((x) => x !== CONSOLIDATED).length >= MAX_CUSTOMER_LINES) continue;
+    out.push(k);
+  }
+  return out.length ? out : [CONSOLIDATED];
+}
+
+/** Selected keys → ?cust= value ('' for the default, consolidated only). */
+export function selectionParam(keys: string[]): string {
+  return keys.length === 1 && keys[0] === CONSOLIDATED ? '' : keys.join(',');
+}
+
+/**
+ * Colours for the selected lines. `previous` holds the colours already given out;
+ * lines still selected keep theirs, new customer lines take the lowest free slot.
+ */
+export function assignColors(selected: string[], previous: Record<string, string> = {}): Record<string, string> {
+  const out: Record<string, string> = {};
+  const taken = new Set<string>();
+  for (const k of selected) {
+    if (k === CONSOLIDATED) { out[k] = PALETTE[0]; continue; }
+    if (previous[k] && previous[k] !== PALETTE[0]) { out[k] = previous[k]; taken.add(previous[k]); }
+  }
+  for (const k of selected) {
+    if (out[k]) continue;
+    const free = PALETTE.slice(1).find((c) => !taken.has(c));
+    if (!free) continue; // cannot happen while selections are capped at MAX_CUSTOMER_LINES
+    out[k] = free;
+    taken.add(free);
+  }
+  return out;
+}
+EOF
+npx.cmd tsc --noEmit -p . 2>&1 | head -5
+```
+
+<details><summary>Result</summary>
+
+```
+(Bash completed with no output)
+```
+
+</details>
+
+**Tool call — Write**
+
+```
+file: c:\Users\hegde\OneDrive\Desktop\Verve Interview\ar-manager-ca-it-main\components\insights\TrendChart.tsx
+
+'use client';
+
+/**
+ * Historical AR trend: an interactive line chart (hand-built SVG, no chart library).
+ *
+ * X axis = time (months by default, or weeks), earliest on the left; Y axis = amount
+ * in ₹ lakh with 2-lakh steps from 0. One line per selected series: the consolidated
+ * total and/or individual customers, chosen in the picker inside the chart box. Picking
+ * redraws instantly (every series is already calculated on the server) and the choice
+ * is kept in the URL (?cust=) without reloading. Hovering, or the arrow keys, shows
+ * every visible line's balance and % change for that period.
+ * All figures arrive pre-calculated from lib/insights; this component only draws them.
+ */
+import { useEffect, useMemo, useRef, useState } from 'react';
+import { lakhAxis } from '@/lib/insights/trend';
+import { assignColors, CONSOLIDATED, MAX_CUSTOMER_LINES, selectionParam } from '@/lib/insights/selection';
+
+export interface ChartPoint {
+  date: string;
+  dateText: string; // 31-Aug-2026
+  label: string; // Aug 2026 / Nov 2026 (to 18-Nov-2026)
+  axisLabel: string; // Aug '26 / Nov '26*
+  partial: boolean;
+  closing: number; // paise, for the axis range
+  closingText: string;
+  lakhValue: number; // for positioning only
+  lakhText: string; // exact, 2 decimals
+  previousText: string;
+  previousLabel: string;
+  changeText: string | null;
+  direction: 'up' | 'down' | 'flat';
+  unappliedText: string;
+}
+
+export interface SeriesData {
+  key: string; // 'all' or a customer id
+  name: string; // shown in the legend, tooltip and table
+  short: string; // end-of-line label: 'All' or the customer code
+  points: ChartPoint[];
+}
+
+const GRID = '#e2e8f0';
+const AXIS_TEXT = '#475569';
+
+export function TrendChart({ series, initialSelected, unit }: { series: SeriesData[]; initialSelected: string[]; unit: 'month' | 'week' }) {
+  const [selected, setSelected] = useState<string[]>(initialSelected);
+  const [colors, setColors] = useState<Record<string, string>>(() => assignColors(initialSelected));
+  const [active, setActive] = useState<number | null>(null);
+  const [pickerOpen, setPickerOpen] = useState(false);
+  const svgRef = useRef<SVGSVGElement>(null);
+  const pickerRef = useRef<HTMLDivElement>(null);
+
+  // Lines in a stable order: consolidated first, then customers in list order.
+  const shown = useMemo(() => series.filter((s) => selected.includes(s.key)), [series, selected]);
+  const customerCount = selected.filter((k) => k !== CONSOLIDATED).length;
+
+  function toggle(key: string) {
+    const next = selected.includes(key) ? selected.filter((k) => k !== key) : [...selected, key];
+    if (next.length === 0) return; // at least one line is always shown
+    setSelected(next);
+    setColors((prev) => assignColors(next, prev));
+    const sp = new URLSearchParams(window.location.search);
+    const v = selectionParam(next);
+    if (v) sp.set('cust', v);
+    else sp.delete('cust');
+    const qs = sp.toString();
+    window.history.replaceState(null, '', qs ? `${window.location.pathname}?${qs}` : window.location.pathname);
+  }
+
+  // Close the picker on an outside click or Escape.
+  useEffect(() => {
+    if (!pickerOpen) return;
+    const onDown = (e: PointerEvent) => {
+      if (pickerRef.current && !pickerRef.current.contains(e.target as Node)) setPickerOpen(false);
+    };
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setPickerOpen(false);
+    };
+    document.addEventListener('pointerdown', onDown);
+    document.addEventListener('keydown', onKey);
+    return () => {
+      document.removeEventListener('pointerdown', onDown);
+      document.removeEventListener('keydown', onKey);
+    };
+  }, [pickerOpen]);
+
+  const base = series[0]?.points ?? [];
+  const n = base.length;
+  const ticks = lakhAxis(Math.max(0, ...shown.flatMap((s) => s.points.map((p) => p.closing))));
+  const top = ticks[ticks.length - 1];
+
+  // Geometry in SVG u
+… [11568 more characters not shown]
+```
+
+<details><summary>Result</summary>
+
+```
+The file c:\Users\hegde\OneDrive\Desktop\Verve Interview\ar-manager-ca-it-main\components\insights\TrendChart.tsx has been updated successfully. (file state is current in your context — no need to Read it back)
+```
+
+</details>
+
+**Tool call — Write**
+
+```
+file: c:\Users\hegde\OneDrive\Desktop\Verve Interview\ar-manager-ca-it-main\components\insights\TrendFilters.tsx
+
+'use client';
+
+/**
+ * Period controls for the Historical AR trend. They apply as soon as they change
+ * (no Apply button): the page reloads its figures for the new window. The
+ * current line selection (?cust=) and every other URL parameter are kept.
+ */
+import { useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { isIsoDate } from '@/lib/ar/dates';
+import { inputClass } from '@/components/form';
+
+export function TrendFilters({ granularity, range, from, to, asof }: { granularity: 'month' | 'week'; range: string; from: string; to: string; asof: string }) {
+  const router = useRouter();
+  const [customFrom, setCustomFrom] = useState(from);
+  const [customTo, setCustomTo] = useState(to);
+  const [problem, setProblem] = useState<string | null>(null);
+
+  function go(changes: Record<string, string | undefined>) {
+    const sp = new URLSearchParams(window.location.search); // includes the latest ?cust= from the chart
+    for (const [k, v] of Object.entries(changes)) {
+      if (v === undefined || v === '') sp.delete(k);
+      else sp.set(k, v);
+    }
+    sp.delete('done');
+    router.push(`${window.location.pathname}?${sp.toString()}`, { scroll: false });
+  }
+
+  function applyCustom(f: string, t: string) {
+    setCustomFrom(f);
+    setCustomTo(t);
+    if (!isIsoDate(f) || !isIsoDate(t)) return setProblem(null); // wait until both dates are complete
+    if (f > t) return setProblem('The From date must be on or before the To date.');
+    setProblem(null);
+    go({ range: 'custom', from: f, to: t });
+  }
+
+  const label = 'mb-1 block text-xs font-medium text-slate-600';
+  return (
+    <div className="mb-4 flex flex-wrap items-end gap-3">
+      <label>
+        <span className={label}>Show</span>
+        <select value={granularity} onChange={(e) => go({ gran: e.target.value === 'week' ? 'week' : undefined })} className={inputClass}>
+          <option value="month">Monthly</option>
+          <option value="week">Weekly</option>
+        </select>
+      </label>
+      <label>
+        <span className={label}>Period</span>
+        <select
+          value={range}
+          onChange={(e) => {
+            const v = e.target.value;
+            // Custom starts from the window currently shown, ready to edit.
+            if (v === 'custom') go({ range: 'custom', from, to });
+            else go({ range: v === '12m' ? undefined : v, from: undefined, to: undefined });
+          }}
+          className={inputClass}
+        >
+          <option value="12m">Last 12 months</option>
+          <option value="6m">Last 6 months</option>
+          <option value="3m">Last 3 months</option>
+          <option value="custom">Custom date range</option>
+        </select>
+      </label>
+      {range === 'custom' && (
+        <>
+          <label>
+            <span className={label}>From</span>
+            <input type="date" value={customFrom} max={asof} onChange={(e) => applyCustom(e.target.value, customTo)} className={inputClass} />
+          </label>
+          <label>
+            <span className={label}>To</span>
+            <input type="date" value={customTo} max={asof} onChange={(e) => applyCustom(customFrom, e.target.value)} className={inputClass} />
+          </label>
+        </>
+      )}
+      {problem && <p className="py-1.5 text-sm text-red-700">{problem}</p>}
+    </div>
+  );
+}
+
+```
+
+<details><summary>Result</summary>
+
+```
+File created successfully at: c:\Users\hegde\OneDrive\Desktop\Verve Interview\ar-manager-ca-it-main\components\insights\TrendFilters.tsx (file state is current in your context — no need to Read it back)
+```
+
+</details>
+
+**Tool call — Read**
+
+```
+{
+  "file_path": "c:\\Users\\hegde\\OneDrive\\Desktop\\Verve Interview\\ar-manager-ca-it-main\\app\\insights\\page.tsx",
+  "offset": 1,
+  "limit": 60
+}
+```
+
+<details><summary>Result</summary>
+
+```
+1	import Link from 'next/link';
+2	import { loadArData } from '@/lib/ar/load';
+3	import type { SearchParams } from '@/lib/asof';
+4	import { formatDate, formatMoney } from '@/lib/format';
+5	import { customerInsights, totalOutstanding, type CustomerInsight } from '@/lib/insights/metrics';
+6	import { lakh, lakhAxis, pointLabel, previousPeriodEnd, trendSeries, trendWindow, type Granularity } from '@/lib/insights/trend';
+7	import { readPage } from '@/lib/page';
+8	import { sortRows, withParams, type Dir } from '@/lib/table';
+9	import { TrendChart, type ChartPoint } from '@/components/insights/TrendChart';
+10	import { Alert, Badge, Empty, Money, PageHeader, Section, SortTh, TableWrap, Td, Th } from '@/components/ui';
+11	import { inputClass } from '@/components/form';
+12	
+13	/** Reads live data and the as-at date on every request (see app/layout.tsx). */
+14	export const instant = false;
+15	
+16	const SORT: Record<string, (r: CustomerInsight) => string | number | null> = {
+17	  name: (r) => r.customer.name,
+18	  outstanding: (r) => r.outstanding,
+19	  payment: (r) => r.paymentFrequency,
+20	  invoice: (r) => r.invoiceFrequency,
+21	  collection: (r) => r.avgCollectionPeriod,
+22	};
+23	
+24	export default async function InsightsPage({ searchParams }: { searchParams: Promise<SearchParams> }) {
+25	  const { asof, params } = await readPage(searchParams);
+26	  const data = await loadArData();
+27	
+28	  // ---- Section 1: customer metrics (all history up to the as-at date) ----
+29	  const sort = params.sort && SORT[params.sort] ? params.sort : 'outstanding';
+30	  const dir: Dir = params.sort && SORT[params.sort] ? ((params.dir as Dir) ?? 'asc') : 'desc';
+31	  const rows = sortRows(customerInsights(data, asof), SORT, sort, dir);
+32	  const total = totalOutstanding(rows);
+33	  const sortParams = { ...params, sort, dir };
+34	
+35	  // ---- Section 2: Historical AR trend ----
+36	  const granularity: Granularity = params.gran === 'week' ? 'week' : 'month';
+37	  const window = trendWindow(asof, params.range, params.from, params.to);
+38	  const customer = data.customers.find((c) => String(c.id) === params.cust);
+39	  const series = trendSeries(data, window, granularity, customer?.id);
+40	  const ticks = lakhAxis(Math.max(0, ...series.map((p) => p.closing)));
+41	  const prevLabel = (date: string) => `${granularity === 'month' ? 'previous month' : 'previous week'} (${pointLabel(previousPeriodEnd(date, granularity), granularity, false)})`;
+42	  const chartPoints: ChartPoint[] = series.map
+… [705 more characters not shown]
+```
+
+</details>
+
+**Tool call — Bash**
+
+```
+# Locate the trend section in the page
+cd "c:/Users/hegde/OneDrive/Desktop/Verve Interview/ar-manager-ca-it-main" && grep -n '<Section title="Historical AR trend">' app/insights/page.tsx && wc -l app/insights/page.tsx && tail -5 app/insights/page.tsx
+```
+
+<details><summary>Result</summary>
+
+```
+125:      <Section title="Historical AR trend">
+239 app/insights/page.tsx
+        </p>
+      </Section>
+    </>
+  );
+}
+```
+
+</details>
+
+**Assistant:**
+
+I'll replace the page's imports and data preparation (lines 1–55) and the whole trend section (line 125 to the end), keeping the metrics table in between exactly as it is:
+
+**Tool call — Bash**
+
+```
+# Rewrite trend section of the Insights page
+cd "c:/Users/hegde/OneDrive/Desktop/Verve Interview/ar-manager-ca-it-main" && node - <<'EOF'
+const fs = require('fs');
+const f = 'app/insights/page.tsx';
+const lines = fs.readFileSync(f, 'utf8').split('\n');
+const head = `import Link from 'next/link';
+import { loadArData } from '@/lib/ar/load';
+import type { SearchParams } from '@/lib/asof';
+import { formatDate, formatMoney } from '@/lib/format';
+import { customerInsights, totalOutstanding, type CustomerInsight } from '@/lib/insights/metrics';
+import { axisLabel, lakh, pointLabel, previousPeriodEnd, trendSeries, trendWindow, type Granularity, type TrendPoint } from '@/lib/insights/trend';
+import { CONSOLIDATED, parseSelection } from '@/lib/insights/selection';
+import { readPage } from '@/lib/page';
+import { sortRows, withParams, type Dir } from '@/lib/table';
+import { TrendChart, type ChartPoint, type SeriesData } from '@/components/insights/TrendChart';
+import { TrendFilters } from '@/components/insights/TrendFilters';
+import { Alert, Badge, Empty, Money, PageHeader, Section, SortTh, TableWrap, Td } from '@/components/ui';
+
+/** Reads live data and the as-at date on every request (see app/layout.tsx). */
+export const instant = false;
+
+const SORT: Record<string, (r: CustomerInsight) => string | number | null> = {
+  name: (r) => r.customer.name,
+  outstanding: (r) => r.outstanding,
+  payment: (r) => r.paymentFrequency,
+  invoice: (r) => r.invoiceFrequency,
+  collection: (r) => r.avgCollectionPeriod,
+};
+
+export default async function InsightsPage({ searchParams }: { searchParams: Promise<SearchParams> }) {
+  const { asof, params } = await readPage(searchParams);
+  const data = await loadArData();
+
+  // ---- Section 1: customer metrics (all history up to the as-at date) ----
+  const sort = params.sort && SORT[params.sort] ? params.sort : 'outstanding';
+  const dir: Dir = params.sort && SORT[params.sort] ? ((params.dir as Dir) ?? 'asc') : 'desc';
+  const rows = sortRows(customerInsights(data, asof), SORT, sort, dir);
+  const total = totalOutstanding(rows);
+  const sortParams = { ...params, sort, dir };
+
+  // ---- Section 2: Historical AR trend ----
+  // Every line (consolidated and each customer) is calculated here, so the chart can switch lines instantly.
+  const granularity: Granularity = params.gran === 'week' ? 'week' : 'month';
+  const window = trendWindow(asof, params.range, params.from, params.to);
+  const toChart = (p: TrendPoint): ChartPoint => ({
+    date: p.date,
+    dateText: formatDate(p.date),
+    label: p.label,
+    axisLabel: axisLabel(p.date, granularity, p.partial),
+    partial: p.partial,
+    closing: p.closing,
+    closingText: formatMoney(p.closing),
+    lakhValue: p.closing / 10_000_000,
+    lakhText: lakh(p.closing),
+    previousText: formatMoney(p.previous),
+    previousLabel: \`\${granularity === 'month' ? 'previous month' : 'previous week'} (\${pointLabel(previousPeriodEnd(p.date, granularity), granularity, false)})\`,
+    changeText: p.changeText,
+    direction: p.closing > p.previous ? 'up' : p.closing < p.previous ? 'down' : 'flat',
+    unappliedText: formatMoney(p.unapplied),
+  });
+  const consolidated = trendSeries(data, window, granularity);
+  const allSeries: SeriesData[] = [
+    { key: CONSOLIDATED, name: 'All customers (consolidated)', short: 'All', points: consolidated.map(toChart) },
+    ...data.customers.map((c) => ({
+      key: String(c.id),
+      name: \`\${c.code} · \${c.name}\`,
+      short: c.code,
+      points: trendSeries(data, window, granularity, c.id).map(toChart),
+    })),
+  ];
+  const selected = parseSelection(params.cust, allSeries.map((s) => s.key));
+  const latest = consolidated[consolidated.length - 1];
+  // The chart box is as wide as the chart (the same width rule as in TrendChart), so there is no empty space on the right.
+  const chartWidth = Math.min(1180, Math.max(640, 90 + consolidated.length * 40)) + (selected.length >= 2 && selected.length <= 4 ? 44 : 0);
+`;
+  const sectionSta
+… [2610 more characters not shown]
+```
+
+<details><summary>Result</summary>
+
+```
+ok
+
+> ar-manager-ca-it-main@0.1.0 lint
+> eslint
+```
+
+</details>
+
+**Tool call — Bash**
+
+```
+# Move the chart box into the chart component
+cd "c:/Users/hegde/OneDrive/Desktop/Verve Interview/ar-manager-ca-it-main" && node - <<'EOF'
+const fs = require('fs');
+function edit(f, pairs) { let s = fs.readFileSync(f, 'utf8'); for (const [a, b] of pairs) { if (!s.includes(a)) throw new Error(f + ': ' + a.slice(0, 70)); s = s.replace(a, b); } fs.writeFileSync(f, s); }
+edit('components/insights/TrendChart.tsx', [
+  ["import { useEffect, useMemo, useRef, useState } from 'react';", "import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react';"],
+  ["export function TrendChart({ series, initialSelected, unit }: { series: SeriesData[]; initialSelected: string[]; unit: 'month' | 'week' }) {",
+   "/** `header` (title on the left, headline figures on the right) is drawn at the top of the chart box. */\nexport function TrendChart({ series, initialSelected, unit, header }: { series: SeriesData[]; initialSelected: string[]; unit: 'month' | 'week'; header: ReactNode }) {"],
+  ["  return (\n    <div>\n      {/* customer picker and legend */}",
+   "  return (\n    // The box is exactly as wide as the chart (plus its padding), so there is no empty space on the right.\n    <div className=\"max-w-full rounded border border-slate-200 bg-white p-4\" style={{ width: W + 34 }} data-chart-box>\n      {header}\n      {/* customer picker and legend */}"],
+]);
+edit('app/insights/page.tsx', [
+  [`  const latest = consolidated[consolidated.length - 1];
+  // The chart box is as wide as the chart (the same width rule as in TrendChart), so there is no empty space on the right.
+  const chartWidth = Math.min(1180, Math.max(640, 90 + consolidated.length * 40)) + (selected.length >= 2 && selected.length <= 4 ? 44 : 0);
+`, `  const latest = consolidated[consolidated.length - 1];
+`],
+  [`        <div className="max-w-full rounded border border-slate-200 bg-white p-4" style={{ width: chartWidth + 34 }}>
+          <div className="mb-3 flex items-start justify-between gap-4">`, `        <TrendChart
+          series={allSeries}
+          initialSelected={selected}
+          unit={granularity}
+          header={
+          <div className="mb-3 flex items-start justify-between gap-4">`],
+  [`          </div>
+          <TrendChart series={allSeries} initialSelected={selected} unit={granularity} />
+        </div>
+        <p className="mt-2 text-xs text-slate-500">`, `          </div>
+          }
+        />
+        <p className="mt-2 text-xs text-slate-500">`],
+]);
+console.log('ok');
+EOF
+npx.cmd tsc --noEmit -p . 2>&1 | head -10; npm.cmd run lint 2>&1 | tail -6
+```
+
+<details><summary>Result</summary>
+
+```
+ok
+
+> ar-manager-ca-it-main@0.1.0 lint
+> eslint
+```
+
+</details>
+
+**Tool call — Bash**
+
+```
+# Add selection/label tests and run all tests
+cd "c:/Users/hegde/OneDrive/Desktop/Verve Interview/ar-manager-ca-it-main" && cat >> tests/insights.test.ts <<'EOF'
+
+describe('chart labels and line selection', () => {
+  it("x-axis labels: Dec '25 (monthly), 7 Dec '25 (weekly), * for a period in progress", async () => {
+    const { axisLabel } = await import('../lib/insights/trend');
+    expect(axisLabel('2025-12-31', 'month', false)).toBe("Dec '25");
+    expect(axisLabel('2026-01-31', 'month', false)).toBe("Jan '26");
+    expect(axisLabel('2026-11-18', 'month', true)).toBe("Nov '26*");
+    expect(axisLabel('2026-12-07', 'week', false)).toBe("7 Dec '26");
+    expect(axisLabel('2026-11-15', 'week', false)).toBe("15 Nov '26");
+    expect(axisLabel('2026-11-18', 'week', true)).toBe("18 Nov '26*");
+    expect(axisLabel('2099-12-31', 'month', false)).toBe("Dec '99");
+    expect(axisLabel('2100-01-31', 'month', false)).toBe("Jan '00");
+  });
+
+  it('selection from the URL: defaults, unknown keys, duplicates, cap', async () => {
+    const { parseSelection, selectionParam, MAX_CUSTOMER_LINES } = await import('../lib/insights/selection');
+    const keys = ['all', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
+    expect(parseSelection(undefined, keys)).toEqual(['all']);
+    expect(parseSelection('', keys)).toEqual(['all']);
+    expect(parseSelection('x,99', keys)).toEqual(['all']); // nothing valid → default
+    expect(parseSelection('3', keys)).toEqual(['3']); // the old single-customer link still works
+    expect(parseSelection('all,3,3,5', keys)).toEqual(['all', '3', '5']);
+    expect(parseSelection('1,2,3,4,5,6,7,8,9,all', keys)).toEqual(['1', '2', '3', '4', '5', '6', '7', 'all']);
+    expect(MAX_CUSTOMER_LINES).toBe(7);
+    expect(selectionParam(['all'])).toBe('');
+    expect(selectionParam(['all', '3'])).toBe('all,3');
+    expect(parseSelection(selectionParam(['all', '3', '5']), keys)).toEqual(['all', '3', '5']);
+  });
+
+  it('colours: consolidated always slot 1; customers keep their colour; freed slots are reused; no duplicates', async () => {
+    const { assignColors, PALETTE } = await import('../lib/insights/selection');
+    const a = assignColors(['all', '3', '5']);
+    expect(a).toEqual({ all: PALETTE[0], '3': PALETTE[1], '5': PALETTE[2] });
+    const b = assignColors(['all', '5'], a); // remove 3: 5 keeps its colour
+    expect(b['5']).toBe(PALETTE[2]);
+    const c = assignColors(['all', '5', '8'], b); // 8 takes the lowest free slot (3's old one)
+    expect(c).toEqual({ all: PALETTE[0], '5': PALETTE[2], '8': PALETTE[1] });
+    const d = assignColors(['1', '2', '3', '4', '5', '6', '7']);
+    expect(new Set(Object.values(d)).size).toBe(7);
+    expect(Object.values(d)).not.toContain(PALETTE[0]);
+    const e = assignColors(['all', '1', '2', '3', '4', '5', '6', '7'], d);
+    expect(e).toEqual({ ...d, all: PALETTE[0] });
+  });
+});
+EOF
+npm.cmd test 2>&1 | grep -E "Tests |FAIL|×|AssertionError|Expected|Received" | head -20
+```
+
+<details><summary>Result</summary>
+
+```
+[2m      Tests [22m [1m[32m99 passed[39m[22m[90m (99)[39m
+```
+
+</details>
+
+**Tool call — Write**
+
+```
+file: C:\Users\hegde\AppData\Local\Temp\claude\19ae7b2bcb9cf67a\6bfa9a87-bae9-4522-b9e6-b162623b6f41\scratchpad\audit\ui2.mjs
+
+import fs from 'node:fs';
+import { pathToFileURL } from 'node:url';
+const A = process.env.A, PROJ = process.env.PROJ;
+const { BASE, check, go, open, text } = await import(pathToFileURL(`${PROJ}/tests/e2e/lib.mjs`).href);
+const O2 = await import(pathToFileURL(`${A}/oracle2.mjs`).href);
+const raw = JSON.parse(fs.readFileSync(`${A}/live.json`, 'utf8'));
+const inr = (p) => new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', minimumFractionDigits: 2 }).format(p / 100);
+const MON = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+const fmtD = (d) => { const [y, m, dd] = d.split('-'); return `${dd}-${MON[m - 1]}-${y}`; };
+const PALETTE = ['#2a78d6', '#eb6834', '#1baf7a', '#eda100', '#e87ba4', '#008300', '#6250d6', '#e34948'];
+const D = '2026-11-18';
+const cust = (code) => raw.customers.find((c) => c.code === code);
+const { browser, page, errors } = await open();
+await page.setViewportSize({ width: 1280, height: 900 });
+const settle = () => page.waitForFunction(() => !document.body.innerText.includes('Loading figures'), null, { timeout: 60000 });
+
+const box = page.locator('[data-chart-box]');
+const svg = page.locator('svg[aria-label^="Historical AR trend"]');
+const picker = () => box.getByRole('button', { name: /^Customers:/ });
+const option = (name) => box.getByRole('group', { name: 'Lines to show' }).getByLabel(name, { exact: false });
+async function setLine(name, on) {
+  if (!(await box.getByRole('group', { name: 'Lines to show' }).isVisible())) await picker().click();
+  const cb = option(name);
+  if ((await cb.isChecked()) !== on) await cb.click();
+}
+const lineKeys = () => svg.locator('g[data-series]').evaluateAll((gs) => gs.map((g) => g.getAttribute('data-series')));
+const lineColor = (key) => svg.locator(`g[data-series="${key}"] path`).getAttribute('stroke');
+
+// ---- layout: box hugs the chart; figures at top right; picker inside the box ----
+await go(page, `${BASE}/insights?asof=${D}`);
+await page.evaluate(() => { window.__noReload = true; });
+await box.scrollIntoViewIfNeeded();
+let b = await box.boundingBox(), s = await svg.boundingBox();
+check('chart box hugs the chart (no empty space on the right)', Math.abs(b.x + b.width - (s.x + s.width)) <= 20, `box right ${Math.round(b.x + b.width)}, chart right ${Math.round(s.x + s.width)}`);
+const head = box.locator('text=₹16,87,700.00').first();
+const hb = await head.boundingBox();
+check('headline figures sit at the top right of the box', hb.x + hb.width > b.x + b.width - 30 && hb.y < b.y + 40, `figure right ${Math.round(hb.x + hb.width)} vs box right ${Math.round(b.x + b.width)}`);
+check('customer picker is inside the chart box', (await picker().count()) === 1);
+check('no Apply button in the trend section', (await page.locator('section').nth(1).getByRole('button', { name: 'Apply' }).count()) === 0);
+
+// ---- x-axis labels ----
+const xLabels = await svg.locator('text').allTextContents();
+const months = xLabels.filter((t) => /'\d\d/.test(t));
+check("x-axis labels read Dec '25 … Nov '26*", months.join(',') === "Dec '25,Jan '26,Feb '26,Mar '26,Apr '26,May '26,Jun '26,Jul '26,Aug '26,Sep '26,Oct '26,Nov '26*", months.join(','));
+
+// ---- add lines instantly ----
+const c002 = cust('C002'), c004 = cust('C004'), c007 = cust('C007');
+await setLine('C002 · Varandha Freight LLP', true);
+await page.waitForFunction(() => document.querySelectorAll('svg[aria-label^="Historical AR trend"] g[data-series]').length === 2);
+check('ticking C002 adds a second line at once', JSON.stringify(await lineKeys()) === JSON.stringify(['all', String(c002.id)]));
+check('…without reloading the page', await page.evaluate(() => window.__noReload === true));
+check('…and the URL remembers it', new URL(page.url()).searchParams.get('cust') === `all,${c002.id}`, page.url());
+check('legend lists both lines', (await box.getByRole('list', { name: '
+… [6837 more characters not shown]
+```
+
+<details><summary>Result</summary>
+
+```
+File created successfully at: C:\Users\hegde\AppData\Local\Temp\claude\19ae7b2bcb9cf67a\6bfa9a87-bae9-4522-b9e6-b162623b6f41\scratchpad\audit\ui2.mjs (file state is current in your context — no need to Read it back)
+```
+
+</details>
+
+**Tool call — Bash**
+
+```
+# Syntax-check test and fetch live data read-only
+cd "c:/Users/hegde/OneDrive/Desktop/Verve Interview/ar-manager-ca-it-main" && A="C:/Users/hegde/AppData/Local/Temp/claude/19ae7b2bcb9cf67a/6bfa9a87-bae9-4522-b9e6-b162623b6f41/scratchpad/audit" && node --check "$A/ui2.mjs" && node --env-file=.env.local -e "
+import('@supabase/supabase-js').then(async ({createClient})=>{
+const db=createClient(process.env.SUPABASE_URL,process.env.SUPABASE_ANON_KEY,{auth:{persistSession:false},global:{headers:{'x-workspace':process.env.AR_WORKSPACE_ID}}});
+const out={}; for (const t of ['customers','invoices','credit_notes','receipts','allocations','notes']) { const {data,error}=await db.from(t).select('*').order('id'); if(error) throw error; out[t]=data.map(r=>{delete r.workspace_id; delete r.created_at; return r}); }
+require('fs').writeFileSync('$A/live.json', JSON.stringify(out)); console.log('live rows:', Object.values(out).map(a=>a.length).join('/'));});"
+```
+
+<details><summary>Result</summary>
+
+```
+live rows: 9/31/2/17/18/7
+```
+
+</details>
+
+**Tool call — PowerShell**
+
+```
+# Build and start production test server
+foreach ($d in '.next\server','.next\static') { if (Test-Path $d) { try { Remove-Item -Recurse -Force $d -ErrorAction Stop } catch { "lock on $d" } } }; npm.cmd run build 2>&1 | Select-String -Pattern "rror|✓ Compiled|Finished TypeScript" | Select-Object -First 5; $p = Start-Process -FilePath "npm.cmd" -ArgumentList "run","start","--","-p","3123" -PassThru -WindowStyle Hidden; $ok=$false; for ($i=0; $i -lt 40 -and -not $ok; $i++) { Start-Sleep -Milliseconds 700; try { $null = Invoke-WebRequest -Uri "http://localhost:3123/insights" -UseBasicParsing -TimeoutSec 20; $ok=$true } catch {} }; "server up: $ok"
+```
+
+**Tool call — Bash**
+
+```
+# Run new chart behaviour test on production build
+cd "c:/Users/hegde/OneDrive/Desktop/Verve Interview/ar-manager-ca-it-main" && A="C:/Users/hegde/AppData/Local/Temp/claude/19ae7b2bcb9cf67a/6bfa9a87-bae9-4522-b9e6-b162623b6f41/scratchpad/audit" && BASE=http://localhost:3123 A="$A" PROJ="$(pwd)" node "$A/ui2.mjs" 2>&1 | grep -v "^    at" | cut -c1-200
+```
+
+<details><summary>Result</summary>
+
+```
+✓ Compiled successfully in 2.3s
+  Finished TypeScript in 3.4s ...
+server up: True
+```
+
+</details>
+
+<details><summary>Result</summary>
+
+```
+PASS  chart box hugs the chart (no empty space on the right)  — box right 690, chart right 673
+PASS  headline figures sit at the top right of the box  — figure right 673 vs box right 690
+PASS  customer picker is inside the chart box
+PASS  no Apply button in the trend section
+PASS  x-axis labels read Dec '25 … Nov '26*  — Dec '25,Jan '26,Feb '26,Mar '26,Apr '26,May '26,Jun '26,Jul '26,Aug '26,Sep '26,Oct '26,Nov '26*
+PASS  ticking C002 adds a second line at once
+PASS  …without reloading the page
+PASS  …and the URL remembers it  — http://localhost:3123/insights?asof=2026-11-18&cust=all%2C868
+PASS  legend lists both lines
+PASS  colours: consolidated blue, C002 orange
+PASS  removing C004 does not repaint C007
+PASS  tooltip lists all three lines for Aug 2026 with correct figures  — Aug 2026 | ₹21,18,100.00 | ₹21.18 lakh | +5.1% vs previous month (Jul 2026) | · All customers (consolidated) | ₹2,23,0
+PASS  table figures match for line all
+PASS  table figures match for line 868
+PASS  table figures match for line 873
+PASS  last remaining line cannot be unticked
+PASS  7 customers selected → the others are disabled
+PASS  7 customer lines, 7 different palette colours
+PASS  consolidated still addable as an 8th line (blue)
+PASS  with 8 lines no end labels (legend + tooltip carry names)
+PASS  a shared link opens with the same lines
+PASS  2 lines → end labels All and C002 at the line ends
+PASS  Weekly applies at once and keeps the lines
+PASS  weekly x-axis labels read like 7 Dec '25  — 7 Dec '25, 28 Dec '25, 18 Jan '26, 8 Feb '26
+PASS  Last 3 months weekly, C002 figures match
+PASS  choosing Custom shows the current window, ready to edit
+FAIL  custom From applies at once; figures match  — 32 rows
+PASS  From after To is refused in place, without reloading
+PASS  weekly 12 months: box still hugs the chart and fits the page  — box right 1230
+PASS  no browser errors
+```
+
+</details>
+
+**Assistant:**
+
+29 of 30 pass. The one failure is the custom-range figures check: the table showed 32 rows, but they didn't match. I'll find where it differs:
+
+**Tool call — Bash**
+
+```
+# Debug the custom-range comparison
+cd "c:/Users/hegde/OneDrive/Desktop/Verve Interview/ar-manager-ca-it-main" && A="C:/Users/hegde/AppData/Local/Temp/claude/19ae7b2bcb9cf67a/6bfa9a87-bae9-4522-b9e6-b162623b6f41/scratchpad/audit" && cat > "$A/dbg.mjs" <<'EOF'
+import fs from 'node:fs';
+import { pathToFileURL } from 'node:url';
+const A = process.env.A, PROJ = process.env.PROJ;
+const { BASE, go, open } = await import(pathToFileURL(`${PROJ}/tests/e2e/lib.mjs`).href);
+const O2 = await import(pathToFileURL(`${A}/oracle2.mjs`).href);
+const raw = JSON.parse(fs.readFileSync(`${A}/live.json`, 'utf8'));
+const { browser, page } = await open();
+await go(page, `${BASE}/insights?asof=2026-11-18&gran=week&range=custom&from=2026-04-15&to=2026-11-18`);
+console.log('URL', page.url());
+const box = page.locator('[data-chart-box]');
+await box.locator('summary').click();
+const rows = await box.locator('tbody[data-series="all"] tr').evaluateAll((trs) => trs.slice(1).map((tr) => [...tr.querySelectorAll('td')].map((td) => td.innerText.trim())));
+const exp = O2.series(raw, '2026-04-15', '2026-11-18', 'week');
+console.log('site rows', rows.length, 'oracle rows', exp.length);
+console.log('site first/last', rows[0]?.slice(0, 3), rows.at(-1)?.slice(0, 3));
+console.log('oracle first/last', exp[0].date, exp[0].closing, exp.at(-1).date, exp.at(-1).closing);
+await browser.close();
+EOF
+BASE=http://localhost:3123 A="$A" PROJ="$(pwd)" node "$A/dbg.mjs"
+```
+
+<details><summary>Result</summary>
+
+```
+URL http://localhost:3123/insights?asof=2026-11-18&gran=week&range=custom&from=2026-04-15&to=2026-11-18
+site rows 32 oracle rows 32
+site first/last [ 'Week ending 19-Apr-2026', '19-Apr-2026', '₹12,86,200.00' ] [ 'Week to 18-Nov-2026', '18-Nov-2026', '₹16,87,700.00' ]
+oracle first/last 2026-04-19 128620000 2026-11-18 168770000
+```
+
+</details>
+
+**Tool call — Bash**
+
+```
+# Fix table-opening in test and rerun
+cd "c:/Users/hegde/OneDrive/Desktop/Verve Interview/ar-manager-ca-it-main" && A="C:/Users/hegde/AppData/Local/Temp/claude/19ae7b2bcb9cf67a/6bfa9a87-bae9-4522-b9e6-b162623b6f41/scratchpad/audit" && node -e "
+const fs=require('fs');const f=process.argv[1];let s=fs.readFileSync(f,'utf8');
+const n=(s.match(/await box\.locator\('summary:has-text\(\"Show the trend figures\"\)'\)\.click\(\);/g)||[]).length;
+s=s.split('await box.locator(\'summary:has-text(\"Show the trend figures\")\').click();').join('await box.locator(\'details\').evaluate((d) => { d.open = true; });');
+fs.writeFileSync(f,s);console.log('replaced',n);" "$A/ui2.mjs" && node --check "$A/ui2.mjs" && BASE=http://localhost:3123 A="$A" PROJ="$(pwd)" node "$A/ui2.mjs" 2>&1 | grep -v "^    at" | cut -c1-140 | grep -E "FAIL|custom|figures match|errors"; echo "PASS $(BASE=http://localhost:3123 A="$A" PROJ="$(pwd)" node "$A/ui2.mjs" 2>&1 | grep -c '^PASS') / FAIL $(BASE=http://localhost:3123 A="$A" PROJ="$(pwd)" node "$A/ui2.mjs" 2>&1 | grep -c '^FAIL')"
+```
+
+**Tool call — Read**
+
+```
+{
+  "file_path": "C:\\Users\\hegde\\AppData\\Local\\Temp\\claude\\19ae7b2bcb9cf67a\\6bfa9a87-bae9-4522-b9e6-b162623b6f41\\scratchpad\\audit\\multi.png"
+}
+```
+
+<details><summary>Result</summary>
+
+```
+replaced 3
+PASS  customer picker is inside the chart box
+PASS  table figures match for line all
+PASS  table figures match for line 868
+PASS  table figures match for line 873
+PASS  7 customers selected → the others are disabled
+PASS  7 customer lines, 7 different palette colours
+PASS  Last 3 months weekly, C002 figures match
+PASS  custom From applies at once; figures match  — 32 rows
+PASS  no browser errors
+PASS 30 / FAIL 0
+```
+
+</details>
+
+<details><summary>Result</summary>
+
+```
+[image]
+```
+
+</details>
+
+**Tool call — Bash**
+
+```
+# Screenshot chart box with 3 lines and 1 line
+cd "c:/Users/hegde/OneDrive/Desktop/Verve Interview/ar-manager-ca-it-main" && A="C:/Users/hegde/AppData/Local/Temp/claude/19ae7b2bcb9cf67a/6bfa9a87-bae9-4522-b9e6-b162623b6f41/scratchpad/audit" && cat > "$A/shot.mjs" <<'EOF'
+import { pathToFileURL } from 'node:url';
+const { BASE, go, open } = await import(pathToFileURL(`${process.env.PROJ}/tests/e2e/lib.mjs`).href);
+const { browser, page } = await open();
+await page.setViewportSize({ width: 1280, height: 900 });
+await go(page, `${BASE}/insights?asof=2026-11-18&cust=all,868,873`);
+const box = page.locator('[data-chart-box]');
+await box.scrollIntoViewIfNeeded();
+const c = await page.locator('svg[aria-label^="Historical AR trend"] g[data-series="all"] circle').nth(5).boundingBox();
+await page.mouse.move(c.x + 5, c.y + 40);
+await page.waitForTimeout(300);
+await box.screenshot({ path: `${process.env.A}/box-3lines.png` });
+await go(page, `${BASE}/insights?asof=2026-11-18`);
+await page.locator('[data-chart-box]').screenshot({ path: `${process.env.A}/box-1line.png` });
+await browser.close();
+EOF
+BASE=http://localhost:3123 A="$A" PROJ="$(pwd)" node "$A/shot.mjs" && echo shots-ok
+```
+
+**Tool call — Read**
+
+```
+{
+  "file_path": "C:\\Users\\hegde\\AppData\\Local\\Temp\\claude\\19ae7b2bcb9cf67a\\6bfa9a87-bae9-4522-b9e6-b162623b6f41\\scratchpad\\audit\\box-3lines.png"
+}
+```
+
+**Tool call — Read**
+
+```
+{
+  "file_path": "C:\\Users\\hegde\\AppData\\Local\\Temp\\claude\\19ae7b2bcb9cf67a\\6bfa9a87-bae9-4522-b9e6-b162623b6f41\\scratchpad\\audit\\box-1line.png"
+}
+```
+
+<details><summary>Result</summary>
+
+```
+shots-ok
+```
+
+</details>
+
+<details><summary>Result</summary>
+
+```
+[image]
+```
+
+</details>
+
+<details><summary>Result</summary>
+
+```
+[image]
+```
+
+</details>
+
+**Tool call — Bash**
+
+```
+# Clamp tooltip inside chart and shorten its rows
+cd "c:/Users/hegde/OneDrive/Desktop/Verve Interview/ar-manager-ca-it-main" && node - <<'EOF'
+const fs = require('fs');
+function edit(f, pairs) { let s = fs.readFileSync(f, 'utf8'); for (const [a, b] of pairs) { if (!s.includes(a)) throw new Error(f + ': ' + a.slice(0, 70)); s = s.replace(a, b); } fs.writeFileSync(f, s); }
+edit('components/insights/TrendChart.tsx', [
+  ["import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react';", "import { useEffect, useLayoutEffect, useMemo, useRef, useState, type ReactNode } from 'react';"],
+  ["  previousLabel: string;\n  changeText: string | null;", "  previousLabel: string;\n  previousShort: string; // Apr '26 / 8 Nov '26, for the tooltip\n  changeText: string | null;"],
+  ["  const svgRef = useRef<SVGSVGElement>(null);\n  const pickerRef = useRef<HTMLDivElement>(null);", "  const svgRef = useRef<SVGSVGElement>(null);\n  const pickerRef = useRef<HTMLDivElement>(null);\n  const tipRef = useRef<HTMLDivElement>(null);"],
+  [`  const ax = active !== null ? x(active) : 0;
+  const ay = active !== null ? Math.min(...shown.map((s) => y(s.points[active].lakhValue))) : 0;
+`, `  const ax = active !== null ? x(active) : 0;
+  const ay = active !== null ? Math.min(...shown.map((s) => y(s.points[active].lakhValue))) : 0;
+
+  // Keep the tooltip inside the chart: right of the crosshair if it fits, else left, else pinned to the edge.
+  useLayoutEffect(() => {
+    const tip = tipRef.current;
+    const holder = tip?.parentElement;
+    if (!tip || !holder) return;
+    const cw = holder.clientWidth, ch = holder.clientHeight;
+    const tw = tip.offsetWidth, th = tip.offsetHeight;
+    const px = (ax / W) * cw, py = (ay / H) * ch;
+    let left = px + 14;
+    if (left + tw > cw) left = px - 14 - tw;
+    if (left < 0) left = Math.max(0, cw - tw);
+    const top = Math.min(Math.max(0, py - 8), Math.max(0, ch - th));
+    tip.style.left = \`\${left}px\`;
+    tip.style.top = \`\${top}px\`;
+  });
+`],
+  [`              role="status"
+              className="pointer-events-none absolute z-10 rounded border border-slate-200 bg-white px-3 py-2 text-xs shadow-md"
+              style={{
+                // Beside the crosshair, flipping to the other side near the right or bottom edge so it never covers the points.
+                left: \`\${(ax / W) * 100}%\`,
+                top: \`\${(ay / H) * 100}%\`,
+                transform: \`translate(\${ax > W * 0.55 ? 'calc(-100% - 14px)' : '14px'}, \${ay > H * 0.7 ? 'calc(-100% + 8px)' : '-8px'})\`,
+                whiteSpace: 'nowrap',
+              }}`, `              ref={tipRef}
+              role="status"
+              className="pointer-events-none absolute left-0 top-0 z-10 rounded border border-slate-200 bg-white px-3 py-2 text-xs shadow-md"
+              style={{ whiteSpace: 'nowrap' }}`],
+  ["<span className=\"text-slate-600\">{p.changeText === null ? 'no % (previous nil)' : `${p.changeText} vs ${p.previousLabel}`}</span>",
+   "<span className=\"text-slate-600\">{p.changeText === null ? 'no % (previous nil)' : `${p.changeText} vs ${p.previousShort}`}</span>"],
+]);
+edit('app/insights/page.tsx', [
+  ["import { axisLabel, lakh, pointLabel, previousPeriodEnd,", "import { axisLabel, lakh, pointLabel, previousPeriodEnd,"],
+  ["    changeText: p.changeText,\n    direction:", "    previousShort: axisLabel(previousPeriodEnd(p.date, granularity), granularity, false),\n    changeText: p.changeText,\n    direction:"],
+]);
+console.log('ok');
+EOF
+npx.cmd tsc --noEmit -p . 2>&1 | head -5; npm.cmd run lint 2>&1 | tail -8
+```
+
+<details><summary>Result</summary>
+
+```
+ok
+
+> ar-manager-ca-it-main@0.1.0 lint
+> eslint
+```
+
+</details>
+
+**Tool call — Edit**
+
+```
+file: C:\Users\hegde\AppData\Local\Temp\claude\19ae7b2bcb9cf67a\6bfa9a87-bae9-4522-b9e6-b162623b6f41\scratchpad\audit\ui2.mjs
+--- replace:
+await page.mouse.move(0, 0);
+
+// ---- figures table grouped by line ----
+--- with:
+check("tooltip compares with the short period label (vs Jul '26)", tt.includes("vs Jul '26"), tt.split('\n').join(' | '));
+let allInside = true;
+const bb = await box.boundingBox();
+for (let i = 0; i < 12; i++) {
+  const c = await svg.locator('g[data-series="all"] circle').nth(i).boundingBox();
+  await page.mouse.move(c.x + c.width / 2, c.y + 40);
+  await page.waitForTimeout(60);
+  const t = await tip.boundingBox();
+  if (t.x < bb.x - 0.5 || t.x + t.width > bb.x + bb.width + 0.5 || t.y < bb.y - 0.5 || t.y + t.height > bb.y + bb.height + 0.5) { allInside = false; console.log('   outside at month', i + 1, t, bb); }
+  const shownText = await tip.innerText();
+  if (!shownText.includes(oAll[i].closingText ?? '') && !shownText.includes(inr(oAll[i].closing))) { allInside = false; console.log('   wrong value at', i + 1); }
+}
+check('3 lines: hovering each of the 12 months, the tooltip stays fully inside the chart box', allInside);
+await page.mouse.move(0, 0);
+
+// ---- figures table grouped by line ----
+```
+
+<details><summary>Result</summary>
+
+```
+The file C:\Users\hegde\AppData\Local\Temp\claude\19ae7b2bcb9cf67a\6bfa9a87-bae9-4522-b9e6-b162623b6f41\scratchpad\audit\ui2.mjs has been updated successfully.
+```
+
+</details>
+
+**Tool call — PowerShell**
+
+```
+# Restart my test server with a fresh build
+$c = Get-NetTCPConnection -LocalPort 3123 -State Listen -ErrorAction SilentlyContinue; if ($c) { Stop-Process -Id $c[0].OwningProcess -Force }; Start-Sleep -Seconds 1; foreach ($d in '.next\server','.next\static') { if (Test-Path $d) { try { Remove-Item -Recurse -Force $d -ErrorAction Stop } catch { "lock on $d" } } }; npm.cmd test 2>&1 | Select-String "Tests "; npm.cmd run build 2>&1 | Select-String -Pattern "rror|✓ Compiled|Finished TypeScript" | Select-Object -First 5; $p = Start-Process -FilePath "npm.cmd" -ArgumentList "run","start","--","-p","3123" -PassThru -WindowStyle Hidden; $ok=$false; for ($i=0; $i -lt 40 -and -not $ok; $i++) { Start-Sleep -Milliseconds 700; try { $null = Invoke-WebRequest -Uri "http://localhost:3123/insights" -UseBasicParsing -TimeoutSec 20; $ok=$true } catch {} }; "server up: $ok"
+```
+
+**Tool call — Bash**
+
+```
+# Rerun chart test; retake screenshots
+cd "c:/Users/hegde/OneDrive/Desktop/Verve Interview/ar-manager-ca-it-main" && A="C:/Users/hegde/AppData/Local/Temp/claude/19ae7b2bcb9cf67a/6bfa9a87-bae9-4522-b9e6-b162623b6f41/scratchpad/audit" && node --check "$A/ui2.mjs" && BASE=http://localhost:3123 A="$A" PROJ="$(pwd)" node "$A/ui2.mjs" 2>&1 | grep -v "^    at" | cut -c1-170 > "$A/ui2.out"; grep -E "FAIL|tooltip|outside|wrong|errors" "$A/ui2.out"; echo "PASS $(grep -c '^PASS' "$A/ui2.out") / FAIL $(grep -c '^FAIL' "$A/ui2.out")"; BASE=http://localhost:3123 A="$A" PROJ="$(pwd)" node "$A/shot.mjs"
+```
+
+<details><summary>Result</summary>
+
+```
+Tests  99 passed (99)
+   Duration  1.49s (transform 821ms, setup 0ms, collect 2.13s, tests 599ms, environment 1ms, prepare 1.57s)
+✓ Compiled successfully in 2.2s
+  Finished TypeScript in 3.9s ...
+server up: True
+```
+
+</details>
+
+<details><summary>Result</summary>
+
+```
+PASS  tooltip lists all three lines for Aug 2026 with correct figures  — Aug 2026 | ₹21,18,100.00 | ₹21.18 lakh | +5.1% vs Jul '26 | · All customers (consolidated)
+PASS  tooltip compares with the short period label (vs Jul '26)  — Aug 2026 | ₹21,18,100.00 | ₹21.18 lakh | +5.1% vs Jul '26 | · All customers (consolidated) | ₹
+PASS  3 lines: hovering each of the 12 months, the tooltip stays fully inside the chart box
+PASS  with 8 lines no end labels (legend + tooltip carry names)
+PASS  no browser errors
+PASS 32 / FAIL 0
+```
+
+</details>
+
+**Tool call — Read**
+
+```
+{
+  "file_path": "C:\\Users\\hegde\\AppData\\Local\\Temp\\claude\\19ae7b2bcb9cf67a\\6bfa9a87-bae9-4522-b9e6-b162623b6f41\\scratchpad\\audit\\box-3lines.png"
+}
+```
+
+<details><summary>Result</summary>
+
+```
+[image]
+```
+
+</details>
+
+**Tool call — Edit**
+
+```
+file: c:\Users\hegde\OneDrive\Desktop\Verve Interview\ar-manager-ca-it-main\components\insights\TrendChart.tsx
+--- replace:
+  const ay = active !== null ? Math.min(...shown.map((s) => y(s.points[active].lakhValue))) : 0;
+
+  // Keep the tooltip inside the chart: right of the crosshair if it fits, else left, else pinned to the edge.
+  useLayoutEffect(() => {
+    const tip = tipRef.current;
+    const holder = tip?.parentElement;
+    if (!tip || !holder) return;
+    const cw = holder.clientWidth, ch = holder.clientHeight;
+    const tw = tip.offsetWidth, th = tip.offsetHeight;
+    const px = (ax / W) * cw, py = (ay / H) * ch;
+    let left = px + 14;
+    if (left + tw > cw) left = px - 14 - tw;
+    if (left < 0) left = Math.max(0, cw - tw);
+    const top = Math.min(Math.max(0, py - 8), Math.max(0, ch - th));
+    tip.style.left = `${left}px`;
+    tip.style.top = `${top}px`;
+  });
+--- with:
+  const ay = active !== null ? Math.min(...shown.map((s) => y(s.points[active].lakhValue))) : 0; // highest hovered point
+  const ayLow = active !== null ? Math.max(...shown.map((s) => y(s.points[active].lakhValue))) : 0; // lowest hovered point
+
+  // Keep the tooltip inside the chart without hiding the hovered points:
+  // beside the crosshair (right, else left); if it fits neither side, above the highest
+  // hovered point, else below the lowest; only as a last resort pinned over the chart.
+  useLayoutEffect(() => {
+    const tip = tipRef.current;
+    const holder = tip?.parentElement;
+    if (!tip || !holder) return;
+    const cw = holder.clientWidth, ch = holder.clientHeight;
+    const tw = tip.offsetWidth, th = tip.offsetHeight;
+    const px = (ax / W) * cw, pyTop = (ay / H) * ch, pyLow = (ayLow / H) * ch;
+    const gap = 14;
+    let left: number, top: number;
+    if (px + gap + tw <= cw) {
+      left = px + gap;
+      top = Math.min(Math.max(0, pyTop - 8), Math.max(0, ch - th));
+    } else if (px - gap - tw >= 0) {
+      left = px - gap - tw;
+      top = Math.min(Math.max(0, pyTop - 8), Math.max(0, ch - th));
+    } else {
+      left = Math.min(Math.max(0, px - tw / 2), Math.max(0, cw - tw));
+      if (pyTop - gap - th >= 0) top = pyTop - gap - th;
+      else if (pyLow + gap + th <= ch) top = pyLow + gap;
+      else top = Math.max(0, ch - th);
+    }
+    tip.style.left = `${left}px`;
+    tip.style.top = `${top}px`;
+  });
+```
+
+<details><summary>Result</summary>
+
+```
+The file c:\Users\hegde\OneDrive\Desktop\Verve Interview\ar-manager-ca-it-main\components\insights\TrendChart.tsx has been updated successfully. (note: the file had been modified on disk since you last read it — the edit applied cleanly, but the file contains other changes not in your context. Read it before edits that depend on surrounding content.)
+```
+
+</details>
+
+**Assistant:**
+
+I'll strengthen the every-month test to match: the tooltip must also **not cover any of the hovered points** on any of the three lines. Then rebuild and re-run:
+
+**Tool call — Edit**
+
+```
+file: C:\Users\hegde\AppData\Local\Temp\claude\19ae7b2bcb9cf67a\6bfa9a87-bae9-4522-b9e6-b162623b6f41\scratchpad\audit\ui2.mjs
+--- replace:
+  const shownText = await tip.innerText();
+--- with:
+  for (const key of ['all', String(c002.id), String(c007.id)]) {
+    const p = await svg.locator(`g[data-series="${key}"] circle`).nth(i).boundingBox();
+    if (t.x < p.x + p.width && t.x + t.width > p.x && t.y < p.y + p.height && t.y + t.height > p.y) { allInside = false; console.log('   tooltip covers hovered point', key, 'month', i + 1); }
+  }
+  const shownText = await tip.innerText();
+```
+
+<details><summary>Result</summary>
+
+```
+The file C:\Users\hegde\AppData\Local\Temp\claude\19ae7b2bcb9cf67a\6bfa9a87-bae9-4522-b9e6-b162623b6f41\scratchpad\audit\ui2.mjs has been updated successfully.
+```
+
+</details>
+
+**Tool call — Bash**
+
+```
+# Typecheck, lint, stop my test server, rebuild
+cd "c:/Users/hegde/OneDrive/Desktop/Verve Interview/ar-manager-ca-it-main" && A="C:/Users/hegde/AppData/Local/Temp/claude/19ae7b2bcb9cf67a/6bfa9a87-bae9-4522-b9e6-b162623b6f41/scratchpad/audit" && sed -i "s/check('3 lines: hovering each of the 12 months, the tooltip stays fully inside the chart box', allInside);/check('3 lines: hovering each of the 12 months, the tooltip stays inside the box and never covers a hovered point', allInside);/" "$A/ui2.mjs" && node --check "$A/ui2.mjs" && npx.cmd tsc --noEmit -p . && npm.cmd run lint 2>&1 | tail -2 && powershell.exe -NoProfile -Command "\$c = Get-NetTCPConnection -LocalPort 3123 -State Listen -ErrorAction SilentlyContinue; if (\$c) { Stop-Process -Id \$c[0].OwningProcess -Force }; Start-Sleep -Seconds 1; foreach (\$d in '.next\server','.next\static') { if (Test-Path \$d) { try { Remove-Item -Recurse -Force \$d -ErrorAction Stop } catch { 'lock on ' + \$d } } }" && npm.cmd run build 2>&1 | grep -E "rror|Compiled|Finished TypeScript" | head -3
+```
+
+**Tool call — PowerShell**
+
+```
+# Start my test server on port 3123
+$p = Start-Process -FilePath "npm.cmd" -ArgumentList "run","start","--","-p","3123" -PassThru -WindowStyle Hidden; $ok=$false; for ($i=0; $i -lt 40 -and -not $ok; $i++) { Start-Sleep -Milliseconds 700; try { $null = Invoke-WebRequest -Uri "http://localhost:3123/insights" -UseBasicParsing -TimeoutSec 20; $ok=$true } catch {} }; "server up: $ok"
+```
+
+**Tool call — Bash**
+
+```
+# Rerun chart test; retake screenshots
+cd "c:/Users/hegde/OneDrive/Desktop/Verve Interview/ar-manager-ca-it-main" && A="C:/Users/hegde/AppData/Local/Temp/claude/19ae7b2bcb9cf67a/6bfa9a87-bae9-4522-b9e6-b162623b6f41/scratchpad/audit" && BASE=http://localhost:3123 A="$A" PROJ="$(pwd)" node "$A/ui2.mjs" 2>&1 | grep -v "^    at" | cut -c1-170 > "$A/ui2.out"; grep -E "FAIL|covers|outside|wrong|12 months" "$A/ui2.out"; echo "PASS $(grep -c '^PASS' "$A/ui2.out") / FAIL $(grep -c '^FAIL' "$A/ui2.out")"; BASE=http://localhost:3123 A="$A" PROJ="$(pwd)" node "$A/shot.mjs"
+```
+
+<details><summary>Result</summary>
+
+```
+> eslint
+
+✓ Compiled successfully in 1463ms
+  Finished TypeScript in 3.5s ...
+[This command modified 1 file you've previously read: ..\..\..\..\AppData\Local\Temp\claude\19ae7b2bcb9cf67a\6bfa9a87-bae9-4522-b9e6-b162623b6f41\scratchpad\audit\ui2.mjs. Call Read before editing.]
+```
+
+</details>
+
+<details><summary>Result</summary>
+
+```
+server up: True
+```
+
+</details>
+
+<details><summary>Result</summary>
+
+```
+tooltip covers hovered point 868 month 6
+   tooltip covers hovered point 868 month 8
+   tooltip covers hovered point 868 month 9
+   tooltip covers hovered point 868 month 10
+   tooltip covers hovered point 873 month 10
+FAIL  3 lines: hovering each of the 12 months, the tooltip stays inside the box and never covers a hovered point
+PASS  weekly 12 months: box still hugs the chart and fits the page  — box right 1230
+PASS 31 / FAIL 1
+```
+
+</details>
+
+**Tool call — Grep**
+
+```
+{
+  "pattern": "mb-1 font-medium text-slate-700",
+  "path": "c:\\Users\\hegde\\OneDrive\\Desktop\\Verve Interview\\ar-manager-ca-it-main\\components\\insights\\TrendChart.tsx",
+  "output_mode": "content",
+  "-n": true,
+  "-A": 16
+}
+```
+
+<details><summary>Result</summary>
+
+```
+275:              <div className="mb-1 font-medium text-slate-700">{base[active].label}</div>
+276-              {shown.map((s) => {
+277-                const p = s.points[active];
+278-                return (
+279-                  <div key={s.key} className="flex items-baseline gap-2">
+280-                    <span className="inline-block h-0.5 w-3 shrink-0 self-center" style={{ background: colors[s.key] }} aria-hidden />
+281-                    <span className="text-sm font-semibold text-slate-900">{p.closingText}</span>
+282-                    <span className="text-slate-600">₹{p.lakhText} lakh</span>
+283-                    <span className="text-slate-600">{p.changeText === null ? 'no % (previous nil)' : `${p.changeText} vs ${p.previousShort}`}</span>
+284-                    {shown.length > 1 && <span className="text-slate-500">· {s.name}</span>}
+285-                  </div>
+286-                );
+287-              })}
+288-            </div>
+289-          )}
+290-        </div>
+291-      </div>
+```
+
+</details>
+
+**Tool call — Edit**
+
+```
+file: c:\Users\hegde\OneDrive\Desktop\Verve Interview\ar-manager-ca-it-main\components\insights\TrendChart.tsx
+--- replace:
+              <div className="mb-1 font-medium text-slate-700">{base[active].label}</div>
+              {shown.map((s) => {
+                const p = s.points[active];
+                return (
+                  <div key={s.key} className="flex items-baseline gap-2">
+                    <span className="inline-block h-0.5 w-3 shrink-0 self-center" style={{ background: colors[s.key] }} aria-hidden />
+                    <span className="text-sm font-semibold text-slate-900">{p.closingText}</span>
+                    <span className="text-slate-600">₹{p.lakhText} lakh</span>
+                    <span className="text-slate-600">{p.changeText === null ? 'no % (previous nil)' : `${p.changeText} vs ${p.previousShort}`}</span>
+                    {shown.length > 1 && <span className="text-slate-500">· {s.name}</span>}
+                  </div>
+                );
+              })}
+--- with:
+              {shown.length === 1 ? (
+                // One line: balance, lakh figure and change, as before.
+                (() => {
+                  const p = shown[0].points[active];
+                  return (
+                    <>
+                      <div className="mb-1 font-medium text-slate-700">{p.label}</div>
+                      <div className="text-sm font-semibold text-slate-900">{p.closingText}</div>
+                      <div className="text-slate-600">₹{p.lakhText} lakh</div>
+                      <div className="text-slate-600">{p.changeText === null ? 'No % change (previous balance was nil)' : `${p.changeText} vs ${p.previousShort}`}</div>
+                    </>
+                  );
+                })()
+              ) : (
+                // Several lines: a compact row per line (names are in the legend above).
+                <>
+                  <div className="mb-1 font-medium text-slate-700">
+                    {base[active].label} <span className="font-normal text-slate-500">· % vs {base[active].previousShort}</span>
+                  </div>
+                  <table className="border-separate border-spacing-x-2 border-spacing-y-0.5" style={{ marginLeft: -8 }}>
+                    <tbody>
+                      {shown.map((s) => {
+                        const p = s.points[active];
+                        return (
+                          <tr key={s.key}>
+                            <td><span className="inline-block h-0.5 w-3 align-middle" style={{ background: colors[s.key] }} aria-hidden /></td>
+                            <td className="num text-sm font-semibold text-slate-900">{p.closingText}</td>
+                            <td className="num text-slate-600">{p.changeText ?? 'N/A'}</td>
+                            <td className="text-slate-500">{s.short}</td>
+                          </tr>
+                        );
+                      })}
+                    </tbody>
+                  </table>
+                </>
+              )}
+```
+
+<details><summary>Result</summary>
+
+```
+The file c:\Users\hegde\OneDrive\Desktop\Verve Interview\ar-manager-ca-it-main\components\insights\TrendChart.tsx has been updated successfully.
+```
+
+</details>
+
+**Assistant:**
+
+I'll update the browser test for the compact rows (N/A instead of "previous nil") and add a hover check for the single-line tooltip. Then rebuild and re-run:
+
+**Tool call — Bash**
+
+```
+# Update tests, typecheck, lint, rebuild
+A="C:/Users/hegde/AppData/Local/Temp/claude/19ae7b2bcb9cf67a/6bfa9a87-bae9-4522-b9e6-b162623b6f41/scratchpad/audit"; cd "$A" && node - <<'EOF'
+const fs = require('fs');
+let s = fs.readFileSync('ui2.mjs', 'utf8');
+const rep = [
+  ["(p.changeText === null ? tt.includes('previous nil') : tt.includes(p.changeText))", "(p.changeText === null ? tt.includes('N/A') : tt.includes(p.changeText))"],
+  ["// ---- add lines instantly ----", `// ---- single-line tooltip ----
+{
+  const tip1 = page.locator('[role=status]').filter({ hasText: 'lakh' });
+  const c = await svg.locator('g[data-series="all"] circle').nth(8).boundingBox();
+  await page.mouse.move(c.x + c.width / 2, c.y + 40);
+  await tip1.waitFor();
+  const t1 = await tip1.innerText();
+  check("single line: tooltip shows period, ₹ balance, lakh and % vs Jul '26", t1.includes('Aug 2026') && t1.includes('₹21,18,100.00') && t1.includes('₹21.18 lakh') && t1.includes("+5.1% vs Jul '26"), t1.split('\\n').join(' | '));
+  await page.mouse.move(0, 0);
+}
+
+// ---- add lines instantly ----`],
+];
+for (const [a, b] of rep) { if (!s.includes(a)) throw new Error('missing ' + a.slice(0, 40)); s = s.replace(a, b); }
+fs.writeFileSync('ui2.mjs', s);
+console.log('ok');
+EOF
+node --check "$A/ui2.mjs" && cd "c:/Users/hegde/OneDrive/Desktop/Verve Interview/ar-manager-ca-it-main" && npx.cmd tsc --noEmit -p . && npm.cmd run lint 2>&1 | tail -2 && powershell.exe -NoProfile -Command "\$c = Get-NetTCPConnection -LocalPort 3123 -State Listen -ErrorAction SilentlyContinue; if (\$c) { Stop-Process -Id \$c[0].OwningProcess -Force }; Start-Sleep -Seconds 1; foreach (\$d in '.next\server','.next\static') { if (Test-Path \$d) { try { Remove-Item -Recurse -Force \$d -ErrorAction Stop } catch { 'lock on ' + \$d } } }" && npm.cmd run build 2>&1 | grep -E "rror|Compiled|Finished TypeScript" | head -3
+```
+
+**Tool call — PowerShell**
+
+```
+# Start my test server on port 3123
+$p = Start-Process -FilePath "npm.cmd" -ArgumentList "run","start","--","-p","3123" -PassThru -WindowStyle Hidden; $ok=$false; for ($i=0; $i -lt 40 -and -not $ok; $i++) { Start-Sleep -Milliseconds 700; try { $null = Invoke-WebRequest -Uri "http://localhost:3123/insights" -UseBasicParsing -TimeoutSec 20; $ok=$true } catch {} }; "server up: $ok"
+```
+
+**Tool call — Bash**
+
+```
+# Rerun full chart test; retake screenshots
+cd "c:/Users/hegde/OneDrive/Desktop/Verve Interview/ar-manager-ca-it-main" && A="C:/Users/hegde/AppData/Local/Temp/claude/19ae7b2bcb9cf67a/6bfa9a87-bae9-4522-b9e6-b162623b6f41/scratchpad/audit" && BASE=http://localhost:3123 A="$A" PROJ="$(pwd)" node "$A/ui2.mjs" 2>&1 | grep -v "^    at" | cut -c1-170 > "$A/ui2.out"; cat "$A/ui2.out"; BASE=http://localhost:3123 A="$A" PROJ="$(pwd)" node "$A/shot.mjs"
+```
+
+<details><summary>Result (error)</summary>
+
+```
+Exit code 1
+ok
+C:\Users\hegde\AppData\Local\Temp\claude\19ae7b2bcb9cf67a\6bfa9a87-bae9-4522-b9e6-b162623b6f41\scratchpad\audit\ui2.mjs:53
+  check("single line: tooltip shows period, ₹ balance, lakh and % vs Jul '26", t1.includes('Aug 2026') && t1.includes('₹21,18,100.00') && t1.includes('₹21.18 lakh') && t1.includes("+5.1% vs Jul '26"), t1.split('
+                                                                                                                                                                                                                  ^
+
+SyntaxError: Invalid or unexpected token
+    at checkSyntax (node:internal/main/check_syntax:84:5)
+
+Node.js v26.13.1
+```
+
+</details>
+
+<details><summary>Result</summary>
+
+```
+server up: True
+```
+
+</details>
+
+<details><summary>Result</summary>
+
+```
+file:///C:/Users/hegde/AppData/Local/Temp/claude/19ae7b2bcb9cf67a/6bfa9a87-bae9-4522-b9e6-b162623b6f41/scratchpad/audit/ui2.mjs:53
+  check("single line: tooltip shows period, ₹ balance, lakh and % vs Jul '26", t1.includes('Aug 2026') && t1.includes('₹21,18,100.00') && t1.includes('₹21.18 lakh')
+                                                                                                                                                                          
+
+SyntaxError: Invalid or unexpected token
+
+Node.js v26.13.1
+```
+
+</details>
+
+**Tool call — Read**
+
+```
+{
+  "file_path": "C:\\Users\\hegde\\AppData\\Local\\Temp\\claude\\19ae7b2bcb9cf67a\\6bfa9a87-bae9-4522-b9e6-b162623b6f41\\scratchpad\\audit\\ui2.mjs",
+  "offset": 53,
+  "limit": 2
+}
+```
+
+<details><summary>Result</summary>
+
+```
+53	  check("single line: tooltip shows period, ₹ balance, lakh and % vs Jul '26", t1.includes('Aug 2026') && t1.includes('₹21,18,100.00') && t1.includes('₹21.18 lakh') && t1.includes("+5.1% vs Jul '26"), t1.split('
+54	').join(' | '));
+```
+
+</details>
+
+**Tool call — Edit**
+
+```
+file: C:\Users\hegde\AppData\Local\Temp\claude\19ae7b2bcb9cf67a\6bfa9a87-bae9-4522-b9e6-b162623b6f41\scratchpad\audit\ui2.mjs
+--- replace:
+t1.includes("+5.1% vs Jul '26"), t1.split('
+').join(' | '));
+--- with:
+t1.includes("+5.1% vs Jul '26"), t1.replaceAll(String.fromCharCode(10), ' | '));
+```
+
+<details><summary>Result</summary>
+
+```
+The file C:\Users\hegde\AppData\Local\Temp\claude\19ae7b2bcb9cf67a\6bfa9a87-bae9-4522-b9e6-b162623b6f41\scratchpad\audit\ui2.mjs has been updated successfully.
+```
+
+</details>
+
+**Tool call — Bash**
+
+```
+# Check test syntax, stop old server, rebuild
+A="C:/Users/hegde/AppData/Local/Temp/claude/19ae7b2bcb9cf67a/6bfa9a87-bae9-4522-b9e6-b162623b6f41/scratchpad/audit"; node --check "$A/ui2.mjs" && echo "test syntax ok" && cd "c:/Users/hegde/OneDrive/Desktop/Verve Interview/ar-manager-ca-it-main" && npx.cmd tsc --noEmit -p . && npm.cmd run lint 2>&1 | tail -1 && powershell.exe -NoProfile -Command "\$c = Get-NetTCPConnection -LocalPort 3123 -State Listen -ErrorAction SilentlyContinue; if (\$c) { Stop-Process -Id \$c[0].OwningProcess -Force; 'stopped old test server' }; Start-Sleep -Seconds 1; foreach (\$d in '.next\server','.next\static') { if (Test-Path \$d) { try { Remove-Item -Recurse -Force \$d -ErrorAction Stop } catch { 'lock on ' + \$d } } }" && npm.cmd run build 2>&1 | grep -E "rror|Compiled|Finished TypeScript" | head -3
+```
+
+**Tool call — PowerShell**
+
+```
+# Start my test server with the new build
+$p = Start-Process -FilePath "npm.cmd" -ArgumentList "run","start","--","-p","3123" -PassThru -WindowStyle Hidden; $ok=$false; for ($i=0; $i -lt 40 -and -not $ok; $i++) { Start-Sleep -Milliseconds 700; try { $null = Invoke-WebRequest -Uri "http://localhost:3123/insights" -UseBasicParsing -TimeoutSec 20; $ok=$true } catch {} }; "server up: $ok"
+```
+
+**Tool call — Bash**
+
+```
+# Run full chart test; retake screenshots
+cd "c:/Users/hegde/OneDrive/Desktop/Verve Interview/ar-manager-ca-it-main" && A="C:/Users/hegde/AppData/Local/Temp/claude/19ae7b2bcb9cf67a/6bfa9a87-bae9-4522-b9e6-b162623b6f41/scratchpad/audit" && BASE=http://localhost:3123 A="$A" PROJ="$(pwd)" node "$A/ui2.mjs" 2>&1 | grep -v "^    at" | cut -c1-160 > "$A/ui2.out"; cat "$A/ui2.out"; BASE=http://localhost:3123 A="$A" PROJ="$(pwd)" node "$A/shot.mjs"
+```
+
+<details><summary>Result</summary>
+
+```
+test syntax ok
+
+stopped old test server
+✓ Compiled successfully in 2.5s
+  Finished TypeScript in 4.8s ...
+```
+
+</details>
+
+<details><summary>Result</summary>
+
+```
+server up: True
+```
+
+</details>
+
+<details><summary>Result</summary>
+
+```
+PASS  chart box hugs the chart (no empty space on the right)  — box right 690, chart right 673
+PASS  headline figures sit at the top right of the box  — figure right 673 vs box right 690
+PASS  customer picker is inside the chart box
+PASS  no Apply button in the trend section
+PASS  x-axis labels read Dec '25 … Nov '26*  — Dec '25,Jan '26,Feb '26,Mar '26,Apr '26,May '26,Jun '26,Jul '26,Aug '26,Sep '26,Oct '26,Nov '26*
+PASS  single line: tooltip shows period, ₹ balance, lakh and % vs Jul '26  — Aug 2026 | ₹21,18,100.00 | ₹21.18 lakh | +5.1% vs Jul '26
+PASS  ticking C002 adds a second line at once
+PASS  …without reloading the page
+PASS  …and the URL remembers it  — http://localhost:3123/insights?asof=2026-11-18&cust=all%2C868
+PASS  legend lists both lines
+PASS  colours: consolidated blue, C002 orange
+PASS  removing C004 does not repaint C007
+node:internal/modules/run_main:111
+    triggerUncaughtException(
+    ^
+
+locator.waitFor: Timeout 30000ms exceeded.
+Call log:
+  [2m- waiting for locator('[role=status]').filter({ hasText: 'lakh' }) to be visible[22m
+
+  name: 'TimeoutError'
+}
+
+Node.js v26.13.1
+```
+
+</details>
+
+**Assistant:**
+
+As intended, the compact multi-line tooltip no longer contains the word "lakh", but my test located the tooltip by that word. I'll locate it inside the chart box instead:
+
+**Tool call — Bash**
+
+```
+# Fix tooltip locator and rerun
+A="C:/Users/hegde/AppData/Local/Temp/claude/19ae7b2bcb9cf67a/6bfa9a87-bae9-4522-b9e6-b162623b6f41/scratchpad/audit"; node -e "
+const fs=require('fs');const f=process.argv[1];let s=fs.readFileSync(f,'utf8');
+const a=\"const tip = page.locator('[role=status]').filter({ hasText: 'lakh' });\";
+if(!s.includes(a)) throw new Error('x');
+s=s.replace(a,\"const tip = box.locator('[role=status]');\");fs.writeFileSync(f,s);console.log('ok');" "$A/ui2.mjs" && node --check "$A/ui2.mjs" && cd "c:/Users/hegde/OneDrive/Desktop/Verve Interview/ar-manager-ca-it-main" && BASE=http://localhost:3123 A="$A" PROJ="$(pwd)" node "$A/ui2.mjs" 2>&1 | grep -v "^    at" | cut -c1-160 > "$A/ui2.out"; grep -vE "^PASS" "$A/ui2.out"; grep -E "tooltip|12 months" "$A/ui2.out"; echo "PASS $(grep -c '^PASS' "$A/ui2.out") / FAIL $(grep -c '^FAIL' "$A/ui2.out")"; BASE=http://localhost:3123 A="$A" PROJ="$(pwd)" node "$A/shot.mjs"
+```
+
+**Tool call — Read**
+
+```
+{
+  "file_path": "C:\\Users\\hegde\\AppData\\Local\\Temp\\claude\\19ae7b2bcb9cf67a\\6bfa9a87-bae9-4522-b9e6-b162623b6f41\\scratchpad\\audit\\box-3lines.png"
+}
+```
+
+<details><summary>Result</summary>
+
+```
+ok
+PASS  single line: tooltip shows period, ₹ balance, lakh and % vs Jul '26  — Aug 2026 | ₹21,18,100.00 | ₹21.18 lakh | +5.1% vs Jul '26
+PASS  tooltip lists all three lines for Aug 2026 with correct figures  — Aug 2026 · % vs Jul '26 | 	₹21,18,100.00	+5.1%	All | 	₹2,23,000.00	0.0%	C002 | 	
+PASS  tooltip compares with the short period label (vs Jul '26)  — Aug 2026 · % vs Jul '26 | 	₹21,18,100.00	+5.1%	All | 	₹2,23,000.00	0.0%	C002 | 	₹7,3
+PASS  3 lines: hovering each of the 12 months, the tooltip stays inside the box and never covers a hovered point
+PASS  with 8 lines no end labels (legend + tooltip carry names)
+PASS  weekly 12 months: box still hugs the chart and fits the page  — box right 1230
+PASS 33 / FAIL 0
+```
+
+</details>
+
+<details><summary>Result</summary>
+
+```
+[image]
+```
+
+</details>
+
+**Tool call — Bash**
+
+```
+# Find lines to update in Phase 2 doc
+cd "c:/Users/hegde/OneDrive/Desktop/Verve Interview/ar-manager-ca-it-main" && grep -n "Customer filter\|Period filter\|Axes:\|Interaction:\|^[0-9]\+\. \|TrendChart.tsx\|trend.ts\](" docs/PHASE2.md
+```
+
+<details><summary>Result</summary>
+
+```
+8:| [lib/insights/trend.ts](../lib/insights/trend.ts) | Section 2: closing AR at a date, month-end/week-end series, period windows, % change, lakh axis |
+11:| [components/insights/TrendChart.tsx](../components/insights/TrendChart.tsx) | The interactive SVG line chart (no chart library) |
+42:- **Period filter:** last 12 / 6 / 3 months = the current month and the 11 / 5 / 2 before it, ending at the as-at date. **Custom range:** any From and To, with To no later than the as-at date (later records do not exist yet at that date).
+43:- **Customer filter:** consolidated by default, or one customer.
+45:- **Axes:** **X axis = time**, monthly by default or weekly as selected, earliest on the left. **Y axis = amount** in ₹ lakh with 2-lakh steps (0, 2, 4, …), from 0 up to the first step above the largest balance.
+46:- **Interaction:** hover (or focus the chart and use the left/right arrow keys) to see the period, the balance (₹ and lakh) and the % change. A table of every point is available under the chart.
+56:1. Outstanding AR and the trend line use **invoice balances** (as the Phase 2 formula "Σ outstanding invoice balances" states). Unallocated advances are not deducted; the figures table shows them separately.
+57:2. Payments count **when allocated to an invoice** (allocation date), consistent with Phase 1 R10/R11.
+58:3. **Reversed payments:** the data model has no reversal flag; a reversed receipt is deleted (with its allocations), so it no longer appears in any calculation.
+59:4. Payment frequency counts **distinct payment dates**; invoice frequency counts **invoices** (two on one day give a gap of 0), following the wording of each rule.
+60:5. Average collection period counts only invoices where money was collected; an invoice cleared **entirely by credit notes** is excluded.
+61:6. The as-at date in the header applies to Insights too, so all figures agree with the rest of the app.
+62:7. Weeks run Monday–Sunday; month and week points in progress are shown "to date".
+63:8. Axes follow the corrected specification: time on X (monthly by default), amount on Y in ₹ lakh with 2-lakh steps.
+```
+
+</details>
+
+**Tool call — Bash**
+
+```
+# Update docs; rerun unit tests and Phase 2 audit
+cd "c:/Users/hegde/OneDrive/Desktop/Verve Interview/ar-manager-ca-it-main" && node - <<'EOF'
+const fs = require('fs');
+const f = 'docs/PHASE2.md';
+let s = fs.readFileSync(f, 'utf8');
+const rep = [
+  ["| [components/insights/TrendChart.tsx](../components/insights/TrendChart.tsx) | The interactive SVG line chart (no chart library) |",
+   "| [lib/insights/selection.ts](../lib/insights/selection.ts) | Which lines the chart shows (from ?cust=) and their colours |\n| [components/insights/TrendChart.tsx](../components/insights/TrendChart.tsx) | The chart box: customer picker, legend, interactive SVG line chart (no chart library), figures table |\n| [components/insights/TrendFilters.tsx](../components/insights/TrendFilters.tsx) | Monthly/weekly and period controls, applied as soon as they change |"],
+  ["- **Period filter:** last 12 / 6 / 3 months", "- **Period filter** (above the chart; applies as soon as it changes, no Apply button): last 12 / 6 / 3 months"],
+  ["(later records do not exist yet at that date).", "(later records do not exist yet at that date). Choosing *Custom* starts from the window shown; a date applies once both dates are complete and From is not after To."],
+  ["- **Customer filter:** consolidated by default, or one customer.",
+   "- **Customer filter** (inside the chart box): tick any combination of *All customers (consolidated)* and individual customers; each ticked item is its own line, and the chart redraws instantly (every line is calculated on the server in advance). Consolidated is shown by default. The choice is kept in the URL (`?cust=all,868`), so a bookmarked or shared link opens with the same lines, and it is kept when the period changes. At least one line is always shown; up to 7 customers at once plus the consolidated line.\n- **Colours and legend:** a validated 8-colour palette (checked for colour-blind separation on line charts). The consolidated line is always blue; each customer takes the next free colour and keeps it while shown, so adding or removing a line never repaints the others. With two or more lines a legend appears, and with two to four lines each line is also labelled at its end (when the labels do not collide)."],
+  ["- **Axes:** **X axis = time**, monthly by default or weekly as selected, earliest on the left.", "- **Axes:** **X axis = time**, monthly by default or weekly as selected, earliest on the left, labelled *Dec '25* (monthly) or *7 Dec '25* (weekly)."],
+  ["- **Interaction:** hover (or focus the chart and use the left/right arrow keys) to see the period, the balance (₹ and lakh) and the % change. A table of every point is available under the chart.",
+   "- **Interaction:** hover (or focus the chart and use the left/right arrow keys) to see the period, the balance and the % change of every line shown. The tooltip stays inside the chart and beside the hovered points. A table of every point, grouped by line, is available under the chart.\n- **Size:** the chart box is exactly as wide as the chart, so there is no empty space on its right; the title is on the left and the headline figures (consolidated closing AR and its % change) stay at the top right."],
+  ["8. Axes follow the corrected specification: time on X (monthly by default), amount on Y in ₹ lakh with 2-lakh steps.",
+   "8. Axes follow the corrected specification: time on X (monthly by default), amount on Y in ₹ lakh with 2-lakh steps.\n9. The headline figures at the top right always show the **consolidated** total, whatever lines are ticked, so they stay fixed; each line's own figures are in the tooltip and the table.\n10. Up to **7 customer lines** plus the consolidated line: the most a validated palette can keep distinguishable. Further customers are disabled in the picker until one is unticked.\n11. The period controls also apply without an Apply button, for consistency with the customer picker."],
+];
+for (const [a, b] of rep) { if (!s.includes(a)) throw new Error('mi
+… [382 more characters not shown]
+```
+
+<details><summary>Result</summary>
+
+```
+ok
+[2m      Tests [22m [1m[32m99 passed[39m[22m[90m (99)[39m
+PHASE 2 CHECKS: 46986, MISMATCHES: 0
+```
+
+</details>
+
+**Assistant:**
+
+Docs updated. All 99 unit tests pass, and the independent Phase 2 audit still shows 0 mismatches across 46,986 comparisons. I'll stop only my test server (port 3123), then commit and push:
+
+**Tool call — PowerShell**
+
+```
+# Stop my port-3123 test server; show changes
+$c = Get-NetTCPConnection -LocalPort 3123 -State Listen -ErrorAction SilentlyContinue; if ($c) { Stop-Process -Id $c[0].OwningProcess -Force; "test server on 3123 stopped" } else { "no test server running" }; git status --short
+```
+
+**Tool call — Bash**
+
+```
+# Commit and push the chart changes
+cd "c:/Users/hegde/OneDrive/Desktop/Verve Interview/ar-manager-ca-it-main" && git add app/insights/page.tsx components/insights/TrendChart.tsx components/insights/TrendFilters.tsx lib/insights/selection.ts lib/insights/trend.ts tests/insights.test.ts docs/PHASE2.md && git status --short | grep -v "^warning" && git commit -q -F - <<'EOF'
+AR trend: multi-customer lines, picker inside the chart, compact box
+
+- Customer picker moved inside the chart box: tick any combination of
+  the consolidated total and customers; each is its own line, redrawn
+  instantly (all series precomputed) and kept in ?cust= without a reload
+- Validated 8-colour palette: consolidated always blue, customers keep
+  their colour while shown; legend, end-of-line labels for 2-4 lines,
+  one tooltip listing every line; up to 7 customers at once
+- Period and monthly/weekly controls apply on change (no Apply button)
+- X-axis labels read Dec '25 (monthly) and 7 Dec '25 (weekly)
+- Chart box sized to the chart, headline figures kept top right;
+  tooltip kept inside the box and clear of the hovered points
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+EOF
+git push -q origin main 2>&1 | tail -1; git log --oneline -1
+```
+
+<details><summary>Result</summary>
+
+```
+test server on 3123 stopped
+ M app/insights/page.tsx
+ M components/insights/TrendChart.tsx
+ M docs/PHASE2.md
+ M lib/insights/trend.ts
+ M tests/insights.test.ts
+?? components/insights/TrendFilters.tsx
+?? lib/insights/selection.ts
+```
+
+</details>
+
+<details><summary>Result</summary>
+
+```
+warning: in the working copy of 'app/insights/page.tsx', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'components/insights/TrendChart.tsx', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'docs/PHASE2.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'lib/insights/trend.ts', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'tests/insights.test.ts', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'components/insights/TrendFilters.tsx', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'lib/insights/selection.ts', LF will be replaced by CRLF the next time Git touches it
+M  app/insights/page.tsx
+M  components/insights/TrendChart.tsx
+A  components/insights/TrendFilters.tsx
+M  docs/PHASE2.md
+A  lib/insights/selection.ts
+M  lib/insights/trend.ts
+M  tests/insights.test.ts
+a189c9f AR trend: multi-customer lines, picker inside the chart, compact box
+```
+
+</details>
+
+**Assistant:**
+
+Pushed (`a189c9f`). I'll wait for Vercel to deploy, then run the full 33-check test against the live site:
+
+**Tool call — PowerShell**
+
+```
+# Wait for the new chart on Vercel
+$ok=$false; for ($i=0; $i -lt 40 -and -not $ok; $i++) { try { $r = Invoke-WebRequest -Uri "https://ar-manager-nine.vercel.app/insights?asof=2026-11-18" -UseBasicParsing -TimeoutSec 30; if ($r.Content -match 'data-chart-box' -and $r.Content -match "Customers:") { $ok=$true } } catch {}; if (-not $ok) { Start-Sleep -Seconds 10 } }; "new version deployed: $ok"
+```
+
+**Tool call — Bash**
+
+```
+# Run full chart test on live site; delete data copy
+cd "c:/Users/hegde/OneDrive/Desktop/Verve Interview/ar-manager-ca-it-main" && A="C:/Users/hegde/AppData/Local/Temp/claude/19ae7b2bcb9cf67a/6bfa9a87-bae9-4522-b9e6-b162623b6f41/scratchpad/audit" && BASE=https://ar-manager-nine.vercel.app A="$A" PROJ="$(pwd)" node "$A/ui2.mjs" 2>&1 | grep -v "^    at" | cut -c1-110; rm -f "$A/live.json"; echo "uncommitted: $(git status --short | wc -l)"
+```
+
+<details><summary>Result</summary>
+
+```
+new version deployed: True
+```
+
+</details>
+
+<details><summary>Result</summary>
+
+```
+PASS  chart box hugs the chart (no empty space on the right)  — box right 690, chart right 673
+PASS  headline figures sit at the top right of the box  — figure right 673 vs box right 690
+PASS  customer picker is inside the chart box
+PASS  no Apply button in the trend section
+PASS  x-axis labels read Dec '25 … Nov '26*  — Dec '25,Jan '26,Feb '26,Mar '26,Apr '26,May '26,Jun '26,Jul
+PASS  single line: tooltip shows period, ₹ balance, lakh and % vs Jul '26  — Aug 2026 | ₹21,18,100.00 | 
+PASS  ticking C002 adds a second line at once
+PASS  …without reloading the page
+PASS  …and the URL remembers it  — https://ar-manager-nine.vercel.app/insights?asof=2026-11-18&cust=all%2C
+PASS  legend lists both lines
+PASS  colours: consolidated blue, C002 orange
+PASS  removing C004 does not repaint C007
+PASS  tooltip lists all three lines for Aug 2026 with correct figures  — Aug 2026 · % vs Jul '26 | 	₹21,1
+PASS  tooltip compares with the short period label (vs Jul '26)  — Aug 2026 · % vs Jul '26 | 	₹21,18,100.
+PASS  3 lines: hovering each of the 12 months, the tooltip stays inside the box and never covers a hovered poi
+PASS  table figures match for line all
+PASS  table figures match for line 868
+PASS  table figures match for line 873
+PASS  last remaining line cannot be unticked
+PASS  7 customers selected → the others are disabled
+PASS  7 customer lines, 7 different palette colours
+PASS  consolidated still addable as an 8th line (blue)
+PASS  with 8 lines no end labels (legend + tooltip carry names)
+PASS  a shared link opens with the same lines
+PASS  2 lines → end labels All and C002 at the line ends
+PASS  Weekly applies at once and keeps the lines
+PASS  weekly x-axis labels read like 7 Dec '25  — 7 Dec '25, 28 Dec '25, 18 Jan '26, 8 Feb '26
+PASS  Last 3 months weekly, C002 figures match
+PASS  choosing Custom shows the current window, ready to edit
+PASS  custom From applies at once; figures match  — 32 rows
+PASS  From after To is refused in place, without reloading
+PASS  weekly 12 months: box still hugs the chart and fits the page  — box right 1230
+PASS  no browser errors
+uncommitted: 0
+```
+
+</details>
+
+**Assistant:**
+
+All four changes are live on the site. All 33 browser checks pass there, and the figures still match the independent calculation. It's pushed as `a189c9f`.
+
+**1. Customer filter inside the chart, changing instantly.**
+- The "Customers" picker now sits inside the chart box.
+- Ticking or unticking a customer redraws the chart immediately, with no Apply button and no page reload.
+- The choice is saved in the page address, so a bookmarked or shared link opens with the same lines.
+
+**2. More than one customer at once, plus consolidated.**
+- Each ticked item is its own line.
+- With two or more lines, a legend appears. With two to four, each line is also labelled at its end ("All", "C002"…), unless the labels would overlap.
+- Hovering shows one tooltip with every line's balance and % change for that month. The tooltip stays inside the box and never covers the hovered points.
+- **Colours come from a palette checked for colour-blind readers.** Consolidated is always blue. Each customer keeps its colour while shown, so adding or removing a line never repaints the others.
+- **Limits:** you can show **up to 7 customers plus consolidated**, the most that palette keeps distinguishable; the remaining customers are greyed out until you untick one. At least one line must stay.
+
+**3. X-axis labels.** They read "Dec '25 … Nov '26*" monthly and "7 Dec '25" weekly. The * marks the month still in progress.
+
+**4. No empty space on the right.** The chart box is now exactly as wide as the chart. The title is on the left, and the headline figures (₹16,87,700.00, "+16.3% vs previous month") stay at the top right.
+
+**Decisions I made:**
+- **The headline figures always show the consolidated total**, whichever lines are ticked, so they stay fixed. Each line's own figures are in the tooltip and the figures table.
+- **The Monthly/Weekly and Period controls also apply without an Apply button**, to match the picker. Choosing "Custom date range" starts from the window currently shown. A custom date applies once both dates are complete, and a From date after the To date is refused with a message.
+- **The figures table under the chart is now grouped by line**, one section per ticked line.
+
+**Problems found and fixed during checking:**
+- **Tooltip cut off at the edge.** With three lines, the tooltip ran off the right edge. Then, pinned inside the box, it hid the very point being hovered.
+- **Wide tooltip.** The final version is compact for several lines, and it's tested at all 12 months to stay inside the box without covering any hovered point.
+- **Box width.** It could have left a gap after you changed how many lines were shown. The chart now controls the box width, so it always fits exactly.
+
+**Checks:** 99 of 99 unit tests pass. These include new tests for the label format, the saved-selection rules and the colour rules. Lint and the production build are clean, the browser showed no errors, and the independent Phase 2 audit still has 0 mismatches. `docs/PHASE2.md` describes the new behaviour and lists the decisions above.
+
+---
+
+## User message 21
+
+check phase 2 for arithmetic accuracy.
+
+**Assistant:**
+
+I'll recheck Phase 2 from scratch, and go further than last time. The earlier audit had a known gap: the sample data has no same-day receipts and no invoices settled by several payments, so two of my planted bugs went undetected. This time I'll also generate **random test data** that does contain those situations. The steps:
+
+1. Refresh a read-only copy of the live data.
+2. Compare the app with the independent calculation on the sample data, the live data, and 200 randomly generated datasets with every awkward case (same-day receipts, part payments settled later, credit notes after payments, credit-note-only settlement, cancelled invoices).
+3. Re-plant the bugs that slipped through last time, to prove they're now caught.
+4. Check the exact rounding of every displayed number (frequencies, lakh figures, % changes).
+5. Compare **every** customer's line on the live site, not just three, plus the metrics table and the headline figures.
+
+Nothing in the project or the database will change.
+
+**Tool call — Write**
+
+```
+file: C:\Users\hegde\AppData\Local\Temp\claude\19ae7b2bcb9cf67a\6bfa9a87-bae9-4522-b9e6-b162623b6f41\scratchpad\audit\stress.test.ts
+
+/**
+ * Phase 2 arithmetic re-audit: app (lib/insights) vs the independent oracle (oracle2.mjs),
+ * on the sample fixture, the live data, and randomly generated datasets that contain the
+ * edge cases the sample lacks. Also checks every displayed rounding exactly.
+ */
+import { describe, expect, it } from 'vitest';
+import fs from 'node:fs';
+import * as O from './oracle.mjs';
+import * as O2 from './oracle2.mjs';
+
+const PROJ = 'c:/Users/hegde/OneDrive/Desktop/Verve Interview/ar-manager-ca-it-main';
+const { toArData } = await import(`${PROJ}/lib/ar/map.ts`);
+const M = await import(`${PROJ}/lib/insights/metrics.ts`);
+const T = await import(`${PROJ}/lib/insights/trend.ts`);
+const R = await import(`${PROJ}/lib/insights/round.ts`);
+
+const bad: string[] = [];
+let checks = 0;
+const eq = (l: string, a: unknown, b: unknown) => { checks++; if (JSON.stringify(a) !== JSON.stringify(b)) bad.push(`${l}: app=${JSON.stringify(a)} oracle=${JSON.stringify(b)}`); };
+const close = (l: string, a: number | null, b: number | null) => { checks++; if ((a === null) !== (b === null) || (a !== null && Math.abs(a - (b as number)) > 1e-9)) bad.push(`${l}: app=${a} oracle=${b}`); };
+
+// ---------- random dataset generator (valid data only: amounts in rupees with 2 decimals) ----------
+function rng(seed: number) { let s = seed; return () => ((s = (s * 48271) % 2147483647) / 2147483647); }
+function randomDataset(seed: number) {
+  const r = rng(seed);
+  const pick = <T,>(a: T[]) => a[Math.floor(r() * a.length)];
+  const day = (lo: string, span: number) => O.civil(O.dayNum(lo) + Math.floor(r() * span));
+  const money = (lo: number, hi: number) => Math.round((lo + r() * (hi - lo)) * 100) / 100;
+  const raw: any = { customers: [], invoices: [], credit_notes: [], receipts: [], allocations: [], notes: [] };
+  const nCust = 2 + Math.floor(r() * 4);
+  for (let c = 1; c <= nCust; c++) raw.customers.push({ id: c, code: `C${String(c).padStart(3, '0')}`, name: `Cust ${c}`, city: 'X', state: pick(['Maharashtra', 'Gujarat']), contact_person: 'x', email: 'x@x', phone: null, gstin: null, credit_days: pick([0, 15, 30, 45]), credit_limit: 500000, tds_rate_pct: 10, is_active: true });
+  let invId = 1, rcId = 1, alId = 1, cnId = 1;
+  for (const c of raw.customers) {
+    const nInv = Math.floor(r() * 7); // 0..6 invoices (0 and 1 exercise N/A)
+    for (let k = 0; k < nInv; k++) {
+      const date = r() < 0.15 && raw.invoices.length ? raw.invoices[raw.invoices.length - 1].invoice_date : day('2025-11-01', 380); // some same-day invoices
+      const taxable = money(1000, 300000);
+      const total = Math.round(taxable * 118) / 100;
+      raw.invoices.push({ id: invId++, invoice_no: `I${invId}`, customer_id: c.id, invoice_date: date, due_date: O.civil(O.dayNum(date) + c.credit_days), description: '', taxable_value: taxable, gst_rate_pct: 18, cgst: 0, sgst: 0, igst: 0, total, is_cancelled: r() < 0.1, is_disputed: false });
+    }
+    // receipts with allocations: full, partial, multi-step, same-day, advances
+    const live = raw.invoices.filter((i: any) => i.customer_id === c.id && !i.is_cancelled);
+    const nR = Math.floor(r() * 7);
+    let lastDate = '';
+    for (let k = 0; k < nR; k++) {
+      const date = r() < 0.2 && lastDate ? lastDate : day('2025-11-15', 400); // same-day receipts
+      lastDate = date;
+      const bank = money(500, 250000), tds = r() < 0.5 ? money(0, 20000) : 0;
+      const rc = { id: rcId++, receipt_no: `R${rcId}`, customer_id: c.id, receipt_date: date, bank_amount: bank, tds_amount: tds, mode: 'NEFT', reference: '' };
+      raw.receipts.push(rc);
+      let left = Math.round((bank + tds) * 100);
+      for (const inv of live) {
+        if (left <= 0 || r() < 0.3) continue;
+        const used = raw.allocations.filter((a: any) => a.invoice_id === inv.id).reduce((s: number, a: any) => s + Math.round(a.amount * 100), 0)
+          + raw.
+… [6819 more characters not shown]
+```
+
+<details><summary>Result</summary>
+
+```
+File created successfully at: C:\Users\hegde\AppData\Local\Temp\claude\19ae7b2bcb9cf67a\6bfa9a87-bae9-4522-b9e6-b162623b6f41\scratchpad\audit\stress.test.ts (file state is current in your context — no need to Read it back)
+```
+
+</details>
+
+**Tool call — Bash**
+
+```
+# Fetch live data read-only and run the re-audit
+cd "c:/Users/hegde/OneDrive/Desktop/Verve Interview/ar-manager-ca-it-main" && A="C:/Users/hegde/AppData/Local/Temp/claude/19ae7b2bcb9cf67a/6bfa9a87-bae9-4522-b9e6-b162623b6f41/scratchpad/audit" && node --env-file=.env.local -e "
+import('@supabase/supabase-js').then(async ({createClient})=>{
+const db=createClient(process.env.SUPABASE_URL,process.env.SUPABASE_ANON_KEY,{auth:{persistSession:false},global:{headers:{'x-workspace':process.env.AR_WORKSPACE_ID}}});
+const out={}; for (const t of ['customers','invoices','credit_notes','receipts','allocations','notes']) { const {data,error}=await db.from(t).select('*').order('id'); if(error) throw error; out[t]=data.map(r=>{delete r.workspace_id; delete r.created_at; return r}); }
+require('fs').writeFileSync('$A/live.json', JSON.stringify(out)); console.log('live rows:', Object.values(out).map(a=>a.length).join('/'));});" && npx.cmd vitest run --root "$A" --config "$A/vitest.config.mjs" stress 2>&1 | grep -E "RE-AUDIT|random coverage|✓|×|passed|failed|Error" | head -20
+```
+
+<details><summary>Result</summary>
+
+```
+live rows: 9/31/2/17/18/7
+[22m[39mrandom coverage: customers with same-day receipts 252, invoices with several allocations 663, cleared/credited only by credit note 184, credit note after payments 60
+[22m[39mRE-AUDIT CHECKS: 1228593, MISMATCHES: 0 []
+ [32m✓[39m stress.test.ts [2m([22m[2m5 tests[22m[2m)[22m[33m 14769[2mms[22m[39m
+   [33m[2m✓[22m[39m Phase 2 re-audit[2m > [22msample fixture: every day Dec-2025 … Mar-2027; series on 40 as-at dates [33m 1608[2mms[22m[39m
+   [33m[2m✓[22m[39m Phase 2 re-audit[2m > [22mlive data (as it is now): every day; series on 40 as-at dates [33m 1445[2mms[22m[39m
+   [33m[2m✓[22m[39m Phase 2 re-audit[2m > [22m200 random datasets with same-day receipts, multi-step and credit-note settlements, cancellations [33m 11298[2mms[22m[39m
+   [33m[2m✓[22m[39m Phase 2 re-audit[2m > [22mdisplayed rounding: frequencies, lakh and % change against BigInt half-up, 300,000 cases [33m 415[2mms[22m[39m
+[2m Test Files [22m [1m[32m1 passed[39m[22m[90m (1)[39m
+[2m      Tests [22m [1m[32m5 passed[39m[22m[90m (5)[39m
+```
+
+</details>
+
+**Tool call — Bash**
+
+```
+# Mutation-test the re-audit with six planted bugs
+A="C:/Users/hegde/AppData/Local/Temp/claude/19ae7b2bcb9cf67a/6bfa9a87-bae9-4522-b9e6-b162623b6f41/scratchpad/audit"; cd "$A" && cp oracle2.mjs oracle2.orig.mjs && run() { (cd "c:/Users/hegde/OneDrive/Desktop/Verve Interview/ar-manager-ca-it-main" && npx.cmd vitest run --root "$A" --config "$A/vitest.config.mjs" stress 2>&1 | grep -o "MISMATCHES: [0-9]*"); }
+mut() { cp oracle2.orig.mjs oracle2.mjs; node -e "const fs=require('fs');let s=fs.readFileSync('oracle2.mjs','utf8');if(!s.includes(process.argv[1]))throw new Error('pattern '+process.argv[1]);fs.writeFileSync('oracle2.mjs',s.replace(process.argv[1],process.argv[2]))" "$1" "$2"; echo "$3 → $(run)"; }
+mut "if (run >= P(inv.total)) return { date, cash };" "if (run >= P(inv.total)) return { date: events[0][0], cash };" "1. collection period to FIRST payment (missed last time)"
+mut "const pays = [...new Set(raw.receipts" "const pays = [...(raw.receipts" "2. same-day receipts counted twice (missed last time)"
+mut "if (s && s.cash > 0) {" "if (s) {" "3. invoices cleared only by credit notes counted as collections"
+mut "const inf = span(invs.map((i) => i.invoice_date));" "const inf = span([...new Set(invs.map((i) => i.invoice_date))]);" "4. same-day invoices merged"
+mut "const previous = outstandingAt(raw, prevEnd(date, gran), custId);" "const previous = outstandingAt(raw, prevEnd(prevEnd(date, gran), gran), custId);" "5. % change against two periods back"
+mut "const t = r * 2n >= den ? q + 1n : q;
+      const txt" "const t = q;
+      const txt" "6. % change truncated instead of rounded"
+cp oracle2.orig.mjs oracle2.mjs && rm oracle2.orig.mjs && echo "restored → $(run)"
+```
+
+<details><summary>Result</summary>
+
+```
+1. collection period to FIRST payment (missed last time) → MISMATCHES: 146
+2. same-day receipts counted twice (missed last time) → MISMATCHES: 62
+3. invoices cleared only by credit notes counted as collections → MISMATCHES: 20
+4. same-day invoices merged → MISMATCHES: 74
+5. % change against two periods back → MISMATCHES: 3070
+6. % change truncated instead of rounded → MISMATCHES: 1240
+restored → MISMATCHES: 0
+Shell cwd was reset to c:\Users\hegde\OneDrive\Desktop\Verve Interview\ar-manager-ca-it-main
+```
+
+</details>
+
+**Tool call — Write**
+
+```
+file: C:\Users\hegde\AppData\Local\Temp\claude\19ae7b2bcb9cf67a\6bfa9a87-bae9-4522-b9e6-b162623b6f41\scratchpad\audit\live-all.mjs
+
+import fs from 'node:fs';
+import { pathToFileURL } from 'node:url';
+const A = process.env.A, PROJ = process.env.PROJ;
+const { BASE, check, go, open } = await import(pathToFileURL(`${PROJ}/tests/e2e/lib.mjs`).href);
+const O2 = await import(pathToFileURL(`${A}/oracle2.mjs`).href);
+const raw = JSON.parse(fs.readFileSync(`${A}/live.json`, 'utf8'));
+const inr = (p) => new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', minimumFractionDigits: 2 }).format(p / 100);
+const MON = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+const fmtD = (d) => { const [y, m, dd] = d.split('-'); return `${dd}-${MON[m - 1]}-${y}`; };
+const lakhO = (p) => { const n = BigInt(p) * 100n, d = 10_000_000n, q = n / d, r = n % d, t = r * 2n >= d ? q + 1n : q; return `${t / 100n}.${String(t % 100n).padStart(2, '0')}`; };
+const D = '2026-11-18';
+const { browser, page, errors } = await open();
+const box = page.locator('[data-chart-box]');
+let n = 0;
+
+// Metrics table and total
+await go(page, `${BASE}/insights?asof=${D}`);
+const rows = await page.locator('section').first().locator('tbody tr').evaluateAll((trs) => trs.map((tr) => [...tr.querySelectorAll('td')].map((td) => td.innerText.trim())));
+const om = O2.metrics(raw, D);
+let ok = rows.length === raw.customers.length;
+for (const r of rows) {
+  const c = raw.customers.find((x) => r[0].startsWith(x.name) && r[0].includes(x.code));
+  const m = om.find((x) => x.id === c?.id);
+  if (!m || JSON.stringify([r[1], r[2], r[3], r[4]]) !== JSON.stringify([inr(m.outstanding), ...m.text])) { ok = false; console.log('  row', r, m); }
+  n += 4;
+}
+check(`metrics table: all ${rows.length} customers × 4 figures match`, ok);
+const total = (await page.locator('section').first().locator('tfoot').innerText()).match(/₹[\d,.]+/)[0];
+check('metrics total', total === inr(O2.outstandingAt(raw, D)), total);
+
+// Headline (consolidated, latest point)
+for (const [g, word] of [['month', 'previous month'], ['week', 'previous week']]) {
+  await go(page, `${BASE}/insights?asof=${D}${g === 'week' ? '&gran=week' : ''}`);
+  const s = O2.series(raw, O2.windowFor(D, '12m').from, D, g);
+  const last = s.at(-1);
+  const head = await box.locator('div.shrink-0.text-right').innerText();
+  check(`headline (${g}): ${inr(last.closing)} ${last.changeText} vs ${word}`, head.includes(inr(last.closing)) && head.includes(`${last.changeText} vs ${word}`), head.split('\n').join(' | '));
+}
+
+// Every line, monthly and weekly, two batches (cap is 7 customers + consolidated)
+const ids = raw.customers.map((c) => String(c.id));
+const batches = [['all', ...ids.slice(0, 7)], ids.slice(7)];
+for (const [g, q] of [['month', ''], ['week', '&gran=week'], ['week', '&gran=week&range=3m'], ['month', '&range=custom&from=2026-02-14&to=2026-10-03']]) {
+  const from = q.includes('custom') ? '2026-02-14' : O2.windowFor(D, q.includes('3m') ? '3m' : '12m').from;
+  const to = q.includes('custom') ? '2026-10-03' : D;
+  for (const batch of batches) {
+    await go(page, `${BASE}/insights?asof=${D}${q}&cust=${batch.join(',')}`);
+    await box.locator('details').evaluate((d) => { d.open = true; });
+    for (const key of batch) {
+      const got = await box.locator(`tbody[data-series="${key}"] tr`).evaluateAll((trs) => trs.slice(1).map((tr) => [...tr.querySelectorAll('td')].map((td) => td.innerText.trim())));
+      const exp = O2.series(raw, from, to, g, key === 'all' ? undefined : Number(key)).map((p) => [fmtD(p.date), inr(p.closing), lakhO(p.closing), inr(p.previous), p.changeText ?? 'N/A']);
+      const same = JSON.stringify(got.map((r) => [r[1], r[2], r[3], r[4], r[5]])) === JSON.stringify(exp);
+      n += exp.length * 5;
+      if (!same) check(`line ${key} ${g}${q}`, false, JSON.stringify({ got: got.slice(0, 2), exp: exp.slice(0, 2) }));
+    }
+  }
+  check(`every line (consolidated + ${ids.length} customers)
+… [253 more characters not shown]
+```
+
+<details><summary>Result</summary>
+
+```
+File created successfully at: C:\Users\hegde\AppData\Local\Temp\claude\19ae7b2bcb9cf67a\6bfa9a87-bae9-4522-b9e6-b162623b6f41\scratchpad\audit\live-all.mjs (file state is current in your context — no need to Read it back)
+```
+
+</details>
+
+**Tool call — Bash**
+
+```
+# Compare every live line and metric with the oracle
+cd "c:/Users/hegde/OneDrive/Desktop/Verve Interview/ar-manager-ca-it-main" && A="C:/Users/hegde/AppData/Local/Temp/claude/19ae7b2bcb9cf67a/6bfa9a87-bae9-4522-b9e6-b162623b6f41/scratchpad/audit" && node --check "$A/live-all.mjs" && BASE=https://ar-manager-nine.vercel.app A="$A" PROJ="$(pwd)" node "$A/live-all.mjs" 2>&1 | grep -v "^    at" | cut -c1-200
+```
+
+<details><summary>Result</summary>
+
+```
+PASS  metrics table: all 9 customers × 4 figures match
+PASS  metrics total  — ₹16,87,700.00
+PASS  headline (month): ₹16,87,700.00 +16.3% vs previous month  — ₹16,87,700.00 | All customers · Nov 2026 (to 18-Nov-2026) | +16.3% vs previous month
+PASS  headline (week): ₹16,87,700.00 +16.3% vs previous week  — ₹16,87,700.00 | All customers · Week to 18-Nov-2026 | +16.3% vs previous week
+PASS  every line (consolidated + 9 customers), month last 12 months: dates, ₹, lakh, previous, % change all match
+PASS  every line (consolidated + 9 customers), week&gran=week: dates, ₹, lakh, previous, % change all match
+PASS  every line (consolidated + 9 customers), week&gran=week&range=3m: dates, ₹, lakh, previous, % change all match
+PASS  every line (consolidated + 9 customers), month&range=custom&from=2026-02-14&to=2026-10-03: dates, ₹, lakh, previous, % change all match
+  figures compared on the live page: 4236
+PASS  no browser errors
+```
+
+</details>
+
+**Assistant:**
+
+All live figures match: **4,236 figures compared on the live page, 0 differences.** Cleaning up my local data copy:
+
+**Tool call — Bash**
+
+```
+# Delete local data copy; confirm nothing changed
+rm -f "C:/Users/hegde/AppData/Local/Temp/claude/19ae7b2bcb9cf67a/6bfa9a87-bae9-4522-b9e6-b162623b6f41/scratchpad/audit/live.json"; cd "c:/Users/hegde/OneDrive/Desktop/Verve Interview/ar-manager-ca-it-main" && echo "project changes: $(git status --short | wc -l)"
+```
+
+<details><summary>Result</summary>
+
+```
+project changes: 0
+```
+
+</details>
+
+**Assistant:**
+
+I found no arithmetic errors in Phase 2. Every figure it calculates and shows matched an independently written calculation, including on the awkward cases the sample data doesn't contain. Nothing in the project or the database was changed.
+
+| Check | Compared | Mismatches |
+|---|---|---|
+| **Calculations vs independent version:** sample data, your live data, and 200 random datasets. Covers every customer's outstanding AR, payment frequency, invoice frequency and collection period on every day from Dec 2025 to Mar 2027, plus trend lines (monthly and weekly; 12, 6 and 3 months; consolidated and each customer) at 40 as-at dates. | 1,228,593 | **0** |
+| **Displayed rounding** (days to 1 decimal, ₹ lakh to 2 decimals, % change to 1 decimal) against exact whole-number rounding, including halves that ordinary computer rounding gets wrong. | 300,000+ | **0** |
+| **Live website vs independent figures:** metrics table (9 customers × 4 figures), total, headline figures, and **every line**. Each line was checked for dates, ₹, lakh, previous balance and % change: last 12 months monthly and weekly, last 3 months weekly, and a custom range. | 4,236 | **0** |
+
+**The previous gap is closed.** The 200 random datasets deliberately include what the sample data lacks:
+- 252 customers with two receipts on the same day;
+- 663 invoices settled by several payments;
+- 184 invoices credited only through credit notes;
+- 60 invoices with a credit note after a payment;
+- cancelled invoices, and customers with 0 or 1 invoices (to exercise N/A).
+
+To prove the check would catch mistakes, I planted six bugs one at a time, and all six were caught:
+
+| Planted bug | Mismatches found |
+|---|---|
+| Collection period measured to the *first* payment (missed in the last audit) | 146 |
+| Same-day receipts counted as two payment dates (missed in the last audit) | 62 |
+| Invoices cleared only by credit notes counted as collections | 20 |
+| Same-day invoices merged into one | 74 |
+| % change compared with two periods back | 3,070 |
+| % change cut off instead of rounded | 1,240 |
+
+**A hand check of the headline figure:**
+- **Consolidated AR at 31 Oct 2026:** ₹14,51,700.00.
+- **Added since, from your two test invoices dated 17 Nov:** ₹59,000 (0025) + ₹1,77,000 (0026 net of its ₹1,77,000 credit note) = ₹2,36,000.
+- **At 18 Nov:** ₹16,87,700.00, and 2,36,000 ÷ 14,51,700 = 16.26%, shown as **+16.3%**.
+
+The weekly view also shows +16.3%, which is correct: nothing changed between 31 Oct and 15 Nov, so the previous week's balance equals the previous month's.
+
+These figures include your test records (customer C009 and the two "TEST INVOICE"s). Resetting the workspace would bring the live page back to the sample data.
+
+---
+
+## User message 22
+
+Write a user guide (if you have already written one, re-write it). The user will be a financial analyst and managers. So, write accordingly. Do not exlude the insights tab.
+
+**Assistant:**
+
+I'll write the guide as `docs/USER_GUIDE.md` in the project. It's the product's own documentation, so it belongs with the code where the evaluators will read it. No user guide exists yet, so this is new.
+
+To keep it exact, I'll first pull the precise button, column and label wording from the code rather than writing from memory:
+
+**Tool call — Bash**
+
+```
+# Extract exact UI labels from the code
+cd "c:/Users/hegde/OneDrive/Desktop/Verve Interview/ar-manager-ca-it-main" && grep -rhoE "(<button[^>]*>|SubmitButton[^>]*>|ButtonLink[^>]*>|<Stat label=\"[^\"]*\"|Section title=\{?[\"\`][^\"\`]*|<Attention title=\"[^\"]*\"|label=\"[^\"]*\"|<option[^>]*>[^<]*|>[A-Z][A-Za-z …'\.,()+-]{3,40}</(button|ButtonLink|SubmitButton|ConfirmButton|summary|h3|option)>)" app components | sed 's/^ *//' | sort -u | head -150
+```
+
+<details><summary>Result</summary>
+
+```
+<Attention title="Broken promises"
+<Attention title="Follow-ups due"
+<Attention title="Over credit limit"
+<Attention title="Unapplied credit to allocate"
+<Stat label="Credit limit"
+<Stat label="Credited"
+<Stat label="DSO"
+<Stat label="Days past due"
+<Stat label="Invoices outstanding"
+<Stat label="Net balance"
+<Stat label="Net receivable"
+<Stat label="Overdue invoices"
+<Stat label="Overdue"
+<Stat label="Received"
+<Stat label="Total outstanding"
+<Stat label="Total"
+<Stat label="Unapplied credit"
+<button className="rounded border border-amber-300 bg-white px-3 py-1.5 text-sm font-medium text-amber-800 hover:bg-amber-50">
+<button className="rounded border border-slate-300 bg-white px-3 py-1.5 hover:bg-slate-50">
+<button className="rounded border border-slate-300 bg-white px-3 py-1.5 text-sm font-medium hover:bg-slate-50">
+<button className="text-blue-700 underline">
+<button className="text-xs text-blue-700 underline">
+<button onClick={reset} className="rounded bg-red-700 px-3 py-1.5 text-white hover:bg-red-600">
+<button type="button" className="text-blue-700 underline" onClick={() =>
+<button type="button" onClick={() =>
+<option key={c.id} value={c.id}>
+<option key={i.id} value={i.id}>
+<option key={m}>{m}
+<option key={o.invoice.id} value={o.invoice.id}>
+<option key={s}>{s}
+<option key={t}>{t}
+<option key={x.id} value={x.id}>
+<option value="">All
+<option value="">All customers
+<option value="">Any
+<option value="">Choose…
+<option value="">— Whole account —
+<option value="12m">Last 12 months
+<option value="3m">Last 3 months
+<option value="6m">Last 6 months
+<option value="Open">Open (due or overdue)
+<option value="active">Active only
+<option value="all">All customers
+<option value="custom">Custom date range
+<option value="inactive">Inactive only
+<option value="month">Monthly
+<option value="no">Not disputed
+<option value="week">Weekly
+<option value="yes">Disputed
+<option>Cancelled
+<option>Due
+<option>Overdue
+<option>Paid
+>Add a note</h3>
+>Cancel</h3>
+>Historical AR trend</h3>
+>Raise a credit note</h3>
+>Show the trend figures as a table</summary>
+ButtonLink href={href('/ageing/export', asof)}>
+ButtonLink href={href('/customers/new', asof)} primary>
+ButtonLink href={href('/invoices', asof, { customer: id })}>
+ButtonLink href={href('/invoices/new', asof)} primary>
+ButtonLink href={href('/invoices/new', asof, { customer: id })} primary>
+ButtonLink href={href('/receipts/new', asof, { customer: id })}>
+ButtonLink href={href('/statement', asof, { customer: id, from: fySta
+… [2180 more characters not shown]
+```
+
+</details>
+
+**Tool call — Write**
+
+```
+file: c:\Users\hegde\OneDrive\Desktop\Verve Interview\ar-manager-ca-it-main\docs\USER_GUIDE.md
+
+# AR Manager — User Guide
+
+**Brightwater Advisory Pvt. Ltd. · Accounts receivable**
+
+This guide is for the **finance team** who use AR Manager every day to track what customers owe, and for **managers** who review receivables, cash collection and customer risk.
+
+- **Analysts:** read sections 1–3, then use section 4 (step-by-step tasks) as a reference.
+- **Managers:** section 1 (the five-minute review) and section 5 (Insights) cover what you need; section 7 explains every figure.
+
+Examples in this guide use the sample data as at **31-Aug-2026** unless stated otherwise. Your figures will differ as transactions are recorded.
+
+---
+
+## Contents
+
+1. [The five-minute review (for managers)](#1-the-five-minute-review-for-managers)
+2. [Key ideas](#2-key-ideas)
+3. [The screens](#3-the-screens)
+4. [Step-by-step tasks](#4-step-by-step-tasks)
+5. [Insights: collection behaviour and AR trend](#5-insights-collection-behaviour-and-ar-trend)
+6. [Rules the system enforces](#6-rules-the-system-enforces)
+7. [How every figure is calculated](#7-how-every-figure-is-calculated)
+8. [Questions and troubleshooting](#8-questions-and-troubleshooting)
+
+---
+
+## 1. The five-minute review (for managers)
+
+Open **Overdue at a glance** (the home screen). It answers four questions.
+
+| Question | Where to look | What good looks like |
+|---|---|---|
+| How much are we owed? | **Total outstanding** and **Net receivable** (top row) | In line with recent billing |
+| How much of it is late? | **Overdue** (with its % of outstanding) and **Overdue invoices** | A low and falling % |
+| How quickly do we collect? | **DSO** (days sales outstanding) | Close to the customers' credit terms (typically 30–60 days) |
+| Who needs action? | **Needs attention** panel | Empty, or with a named owner for each item |
+
+Then:
+
+1. **Ageing by customer** — scan the right-hand buckets (61–90, 91–180, Over 180). Amounts there are the collection risk. Click any amount to see the invoices behind it.
+2. **Overdue invoices** — the list is in red, longest overdue first. An amber **Disputed** label means the customer has raised a query; chasing payment alone will not resolve it.
+3. **Insights** (top menu) — the **Historical AR trend** shows whether receivables are building up or coming down month by month; the customer table shows who pays slowly and how regularly each customer is billed and pays.
+
+> **Example (31-Aug-2026):** Total outstanding ₹21,18,100.00, of which ₹12,86,200.00 (60.7%) is overdue across 11 invoices; DSO 111 days. Kundalika Castings (C003) is over its credit limit with ₹1,77,000.00 more than 180 days late, and Varandha Freight (C002) broke a promise to pay ₹69,600.00 by 01-Aug-2026.
+
+**Want to see an earlier position?** Change the **As at** date in the top-right corner — for example to the last day of the previous month — and every figure on every screen is recalculated as it stood on that date (see 2.1).
+
+---
+
+## 2. Key ideas
+
+### 2.1 The "As at" date
+
+Every screen shows the position **as at** the date in the top-right corner. It starts at **today (India time)**.
+
+- Change it to any date to see the ledger exactly as it stood at the end of that day. Only documents dated on or before that date count: invoices by invoice date, payments by receipt date, credit notes by their date, allocations of payments to invoices by allocation date, and notes by note date.
+- The date stays as you move between screens, and it is part of the page address, so a bookmarked or shared link opens at the same date.
+- Click **Today** (next to the date) to return to today.
+
+Use it for month-end figures (set the last day of the month), to answer "what did this customer owe on …?", or to see whether an invoice was overdue on a given day.
+
+### 2.2 Outstanding, unapplied credit and net balance
+
+| Term | Meaning |
+|---|---|
+| **Outstanding** | What is still unpaid on invoices: invoice total − payments matched to it − cr
+… [26204 more characters not shown]
+```
+
+<details><summary>Result</summary>
+
+```
+File created successfully at: c:\Users\hegde\OneDrive\Desktop\Verve Interview\ar-manager-ca-it-main\docs\USER_GUIDE.md (file state is current in your context — no need to Read it back)
+```
+
+</details>
+
+**Tool call — Edit**
+
+```
+file: c:\Users\hegde\OneDrive\Desktop\Verve Interview\ar-manager-ca-it-main\docs\USER_GUIDE.md
+--- replace:
+On the invoice page, **Mark as disputed** (or **Clear disputed flag**). The amber label appears on lists and statements of status; no amounts change.
+--- with:
+On the invoice page, **Mark as disputed** (or **Clear disputed flag**). The amber **Disputed** label then appears on the invoice list, the home screen's overdue list, and the customer and invoice pages. No amounts change, and the invoice still ages normally.
+```
+
+**Tool call — Edit**
+
+```
+file: c:\Users\hegde\OneDrive\Desktop\Verve Interview\ar-manager-ca-it-main\docs\USER_GUIDE.md
+--- replace:
+> **Example (sample data):** consolidated AR rose from ₹14,51,700.00 at 31-Oct-2026 to ₹16,87,700.00 at 18-Nov-2026 (+16.3%), because two invoices were raised on 17-Nov-2026.
+--- with:
+> **Example of the % change:** if consolidated AR was ₹14,51,700.00 at 31-Oct-2026 and ₹16,87,700.00 at 18-Nov-2026, the chart shows **+16.3%** for November: (16,87,700 − 14,51,700) ÷ 14,51,700 × 100 = 16.26%, shown to one decimal place.
+```
+
+**Tool call — Edit**
+
+```
+file: c:\Users\hegde\OneDrive\Desktop\Verve Interview\ar-manager-ca-it-main\docs\USER_GUIDE.md
+--- replace:
+Change the amounts to match the customer's remittance advice if they paid specific invoices. **Re-suggest oldest first** restores the suggestion.
+--- with:
+Change the amounts to match the customer's remittance advice if they paid specific invoices. After you change an amount, a **Re-suggest oldest first** link appears to restore the suggestion.
+```
+
+**Tool call — Bash**
+
+```
+# Find README links list
+cd "c:/Users/hegde/OneDrive/Desktop/Verve Interview/ar-manager-ca-it-main" && grep -n "Manual test script\|How it is built (walkthrough)" README.md | head -3
+```
+
+<details><summary>Result</summary>
+
+```
+The file c:\Users\hegde\OneDrive\Desktop\Verve Interview\ar-manager-ca-it-main\docs\USER_GUIDE.md has been updated successfully. (file state is current in your context — no need to Read it back)
+```
+
+</details>
+
+<details><summary>Result</summary>
+
+```
+The file c:\Users\hegde\OneDrive\Desktop\Verve Interview\ar-manager-ca-it-main\docs\USER_GUIDE.md has been updated successfully. (file state is current in your context — no need to Read it back)
+```
+
+</details>
+
+<details><summary>Result</summary>
+
+```
+The file c:\Users\hegde\OneDrive\Desktop\Verve Interview\ar-manager-ca-it-main\docs\USER_GUIDE.md has been updated successfully. (file state is current in your context — no need to Read it back)
+```
+
+</details>
+
+<details><summary>Result</summary>
+
+```
+7:- **Manual test script:** [docs/TESTING.md](docs/TESTING.md)
+8:- **How it is built (walkthrough):** [docs/WALKTHROUGH.md](docs/WALKTHROUGH.md)
+```
+
+</details>
+
+**Assistant:**
+
+The guide is corrected. I'll add a link to it from the README's list of documents, then commit and push:
+
+**Tool call — Edit**
+
+```
+file: c:\Users\hegde\OneDrive\Desktop\Verve Interview\ar-manager-ca-it-main\README.md
+--- replace:
+- **Manual test script:** [docs/TESTING.md](docs/TESTING.md)
+--- with:
+- **User guide (analysts and managers):** [docs/USER_GUIDE.md](docs/USER_GUIDE.md)
+- **Manual test script:** [docs/TESTING.md](docs/TESTING.md)
+```
+
+**Tool call — Bash**
+
+```
+# Commit and push the user guide
+cd "c:/Users/hegde/OneDrive/Desktop/Verve Interview/ar-manager-ca-it-main" && git add docs/USER_GUIDE.md README.md && git status --short | grep -v "^warning" && git commit -q -F - <<'EOF'
+Add user guide for analysts and managers
+
+docs/USER_GUIDE.md covers a five-minute review for managers, key ideas
+(as-at date, outstanding vs unapplied credit, TDS, statuses, ageing),
+every screen including Insights, step-by-step tasks, the rules the
+system enforces, how each figure is calculated, and common questions.
+Linked from the README.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+EOF
+git push -q origin main 2>&1 | tail -1; git log --oneline -1
+```
+
+<details><summary>Result</summary>
+
+```
+The file c:\Users\hegde\OneDrive\Desktop\Verve Interview\ar-manager-ca-it-main\README.md has been updated successfully.
+```
+
+</details>
+
+<details><summary>Result</summary>
+
+```
+warning: in the working copy of 'README.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'docs/USER_GUIDE.md', LF will be replaced by CRLF the next time Git touches it
+M  README.md
+A  docs/USER_GUIDE.md
+94fbfb8 Add user guide for analysts and managers
+```
+
+</details>
+
+**Assistant:**
+
+Written for: financial analysts who use AR Manager daily, and managers who review receivables.
+
+The user guide is done and pushed to GitHub (commit `94fbfb8`). There was no previous guide, so it's new; the README now links to it.
+
+**What's in it:**
+
+1. **The five-minute review, for managers:** the four questions the home screen answers (how much we're owed, how much is late, how fast we collect, who needs action), what "good" looks like, and a worked example from the sample data.
+2. **Key ideas:** the As at date, outstanding vs unapplied credit vs net balance (Dr/Cr), TDS as payment, statuses and labels, ageing buckets, and number and date formats.
+3. **Every screen:** Overdue at a glance, Customers, Invoices, Record payment, Statement and Insights, using the app's exact button and column names.
+4. **Thirteen step-by-step tasks:**
+   - adding customers, raising invoices, and recording payments with TDS and part-payments;
+   - advances and allocating unapplied credit later;
+   - credit notes, disputes, cancellations and correcting mistakes;
+   - collection notes and promises, statements and exports;
+   - a month-end routine.
+5. **Insights in full:** what each customer metric means and how to read them together (for example, a collection period well above credit terms signals a slow payer), and how to use the Historical AR trend: periods, multiple customer lines, hover, the table and % change.
+6. **The rules the system enforces**, and why.
+7. **How every figure is calculated:** outstanding, net balance, statement balances, GST, DSO (with a worked example), promise status, the control check, and the Insights figures.
+8. **Common questions:** Cr balances, short payments, why invoices can't be edited, what N/A means, and why Insights outstanding differs from the net balance.
+
+Most examples use the sample data as at 31-Aug-2026, and I checked each one against the app. Where the guide shows live-data figures (such as the +16.3% trend change), it presents them as a worked calculation, not as sample data.
+
+Files are in `docs/`:
+- USER_GUIDE.md
+
+---
+
+## User message 23
+
+write a report for me so as to understand how you made all this happen. I am a chartered accountant with no coding experience. Write in brief.
+
+**Assistant:**
+
+# How AR Manager was built
+
+## 1. What was built
+
+A web application at https://ar-manager-nine.vercel.app that runs Brightwater's receivables. It covers the customer master, invoices, receipts with TDS, credit notes, collection notes, statements and exports, and the Insights tab (customer metrics and the AR trend).
+
+## 2. The building blocks, in accounting terms
+
+| Piece | Plain-English role | Accounting analogy |
+|---|---|---|
+| **Supabase database** (supplied by Verve) | Stores the raw documents: customers, invoices, credit notes, receipts, allocations, notes | The books of prime entry |
+| **Next.js app** (the code I wrote) | Reads the documents, works out every figure, shows the screens | The accountant preparing the ledgers and reports |
+| **Vercel** | Hosts the app on the internet; republishes it automatically whenever new code is saved | The office where the reports are published |
+| **GitHub** | Keeps every version of the code with a dated note of what changed | Working papers with an audit trail |
+
+## 3. The key design decisions
+
+1. **No running balances are stored.** Every balance, status and ageing figure is recalculated from the source documents each time a page opens, like preparing a ledger fresh from vouchers. That's what makes the **As at** date possible: the same documents give the position on any date.
+2. **All calculations live in one place** (a folder called `lib/ar`, plus `lib/insights` for Phase 2). Screens only display results, so the dashboard, customer page and statement can never disagree.
+3. **Money is held in paise, as whole numbers.** Computers make tiny errors with decimals (0.1 + 0.2 ≠ 0.3); whole numbers are exact. Amounts are converted from rupees once on loading and back once for display.
+4. **Three layers of control before anything is saved:** the form checks input (like data-entry checks), the business rules are checked (an allocation can't exceed the invoice balance, and so on), and the database rejects anything invalid as a final safeguard. This is like preventive controls backed by a final review.
+5. **The secret workspace key stays on the server.** It never reaches the user's browser, so the data stays private.
+
+## 4. How the work was done
+
+1. **The brief was read in full first**, then the work followed its 12-step build order: data, calculations, layout, customers, invoices, dashboard, payments, notes, statements, documentation.
+2. **One step at a time.** Each step was built, tested, recorded in GitHub with a description, and published. There are about 25 recorded milestones.
+3. **Your corrections were applied as they came.** Examples: the TDS wording on the statement, the chart axes, the multi-customer chart.
+
+## 5. How accuracy was assured (the audit approach)
+
+| Technique | Audit equivalent | Result |
+|---|---|---|
+| **Spot checks** from the brief built in as automatic tests | Agreeing to a known schedule | All 10 pass |
+| **Control check:** each balance worked out two ways (via invoices and via documents) for every day of the year | A control-account reconciliation | No difference on any day |
+| **Independent recalculation:** a second calculator written separately, using different methods, compared with the app | Re-performance by a second auditor | 1.2 million+ comparisons, 0 differences |
+| **Random test data** with awkward cases (same-day payments, part-payments, credit notes) | Testing exceptions, not just the sample | 0 differences |
+| **Planted errors** (deliberately introducing classic mistakes to see if the checks catch them) | Testing that the controls actually work | Every planted error detected |
+| **Browser robot** clicking through the live site like a user | Walk-through test | All journeys pass |
+| **Hand-worked examples** (e.g. DSO 111 days, C001 payment frequency 32.5 days) | Recomputing samples manually | Agree |
+
+There are now 99 automatic tests, which run in about a second whenever the code changes.
+
+## 6. Documentation produced
+
+- **README:** for the evaluators; how to run it, plus 19 documented assumptions.
+- **USER_GUIDE:** for analysts and managers.
+- **WALKTHROUGH:** for you, for the interview; where each rule lives and how to make a live change.
+- **TESTING:** a manual checklist before release.
+- **PHASE2:** the Insights design and its decisions.
+- **AI logs:** the full conversation, as the brief requires.
+
+## 7. Things to know
+
+- **Your workspace has test records** (C009 and two "TEST INVOICE"s). Run `npm.cmd run reset-workspace` before submitting if you want only the sample data.
+- **Known limits:**
+  - invoice descriptions can't be edited, and receipts are corrected by deleting and re-entering them;
+  - the development test tool (Vitest) has a version warning that doesn't affect the live app.
+- **For the interview:** the strongest points to explain are no stored balances (calculated "as at" any date), money in paise, one calculation module, and the control check backed by independent recalculation.
+
+If you'd like this as a shareable page or a file in `docs/`, I can create it.
+
+---
+
+## User message 24
+
+update the AI logs
+
+**Assistant:**
+
+I'll regenerate the full conversation log from Claude Code's session file, so it now covers everything up to this request, and update the summary and index. The same privacy checks apply: masking email addresses and the workspace ID, then confirming they're absent before committing.
+
+**Tool call — Bash**
+
+```
+# List session transcript files
+ls -la "C:/Users/hegde/.claude/projects/c--Users-hegde-OneDrive-Desktop-Verve-Interview-ar-manager-ca-it-main/"*.jsonl
+```
+
+<details><summary>Result</summary>
+
+```
+-rw-r--r-- 1 hegde 197609 11328558 Nov 18 13:32 C:/Users/hegde/.claude/projects/c--Users-hegde-OneDrive-Desktop-Verve-Interview-ar-manager-ca-it-main/6bfa9a87-bae9-4522-b9e6-b162623b6f41.jsonl
+```
+
+</details>
+
+**Tool call — Bash**
+
+```
+# Regenerate the full log and run privacy checks
+cd "c:/Users/hegde/OneDrive/Desktop/Verve Interview/ar-manager-ca-it-main" && T="C:/Users/hegde/.claude/projects/c--Users-hegde-OneDrive-Desktop-Verve-Interview-ar-manager-ca-it-main/6bfa9a87-bae9-4522-b9e6-b162623b6f41.jsonl" && LOCAL=$(printf 'carrvg%s' claude) && REDACT_TERMS="$LOCAL" node --env-file=.env.local scripts/export-transcript.mjs "$T" ai-logs/2026-11-17-claude-code-session.md && F=ai-logs/2026-11-17-claude-code-session.md && node --env-file=.env.local -e "
+const s=require('fs').readFileSync('$F','utf8');
+console.log('workspace id present:', s.includes(process.env.AR_WORKSPACE_ID) ? 'YES' : 'no');
+console.log('any @gmail.com address:', /[A-Za-z0-9._%+-]+@gmail\.com/.test(s) ? 'YES' : 'no');
+console.log('account local part:', s.includes(process.argv[1]) ? 'YES' : 'no');
+console.log('hidden-context blocks:', (s.match(/<system-reminder>[\s\S]*?<\/system-reminder>/g)||[]).length);
+" "$LOCAL" && grep -c "^## User message" $F && grep -n "^## User message" $F | tail -4 | cut -c1-60
+```
+

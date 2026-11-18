@@ -31,3 +31,30 @@ Steps 1–2 (skeleton, connection) were done in an earlier session. This session
 - **Dropdowns were cleared after a validation error** (React resets forms after an action). Forms now submit through `useActionForm`, which keeps what the user typed.
 - **Test expectations corrected, not the code,** where the assistant's own test was wrong: BWA/26-27/0017 is part-paid (₹18,000 left) on 05-Sep, not Paid; BWA/26-27/0010 is outside the 31-Aug DSO window.
 - **OneDrive file locks** occasionally blocked `next build` (EPERM on `.next`); deleting the stale build output and rebuilding resolved it.
+
+## After the build (17–18 Nov 2026)
+
+The session continued with reviews, corrections and Phase 2.
+
+| Request | Outcome |
+|---|---|
+| Investigate why RCT/26-27/0002 was allocated to BWA/25-26/0156 rather than the older 0141 | Not a breach of R6: oldest-first is only the suggested default, which the user can change. The ₹9,000 TDS is exactly 10% of 0156's taxable value, so the customer paid 0156. The app's suggestion and override were confirmed by simulation. No change made. |
+| Does the app calculate TDS? | The actual TDS is stored on each receipt; the app only pre-fills an estimate on the payment form (`expectedTds`). |
+| Statement TDS wording | Changed from the brief's "TDS deducted by you" to **"TDS deducted by customer"** at the user's request; recorded under README Assumptions. |
+| Ageing at exactly 90 days; when counting starts | Explained: 90 days is in 61–90; days are counted from the day after the due date (an invoice is still Due on its due date). |
+| Basis of the TDS pre-fill (₹9,259.26 on ₹1,00,000) | Explained the gross-up: TDS = bank × 10 ÷ 108 for 18% GST and 10% TDS. |
+| Customer form hint "these days" | Changed to "Due date = invoice date + credit days". |
+| Editable GST rate | Explained the tension between R3 (18%) and Part 2 (enter the rate); left unchanged at the user's request. |
+| Full arithmetic recheck of Phase 1 | An independent re-implementation (own calendar and rounding) agreed with the app on every figure for every day, Oct-2025 to Jun-2027, and with the live site's CSV exports (930 checks); planted bugs were all caught. |
+| **Phase 2: Insights tab** | New `/insights` page with its own module (`lib/insights`): customer metrics (outstanding AR, payment frequency, invoice frequency, average collection period, N/A rules, sortable) and the Historical AR trend chart (month/week-end balances, period filters, % change). Phase 1 untouched except one navigation entry. Documented in `docs/PHASE2.md` with the decisions taken. |
+| Chart axis correction | Time on the X axis, amount in ₹ lakh (2-lakh steps) on the Y axis. |
+| Chart improvements | Customer picker inside the chart box with instant redraw (no Apply), several customers plus consolidated as separate lines (validated colour palette, legend, up to 7 customers), labels like "Dec '25", chart box sized to the chart with headline figures kept top right. |
+| Phase 2 arithmetic recheck | 1,228,593 comparisons against an independent calculation (sample data, live data and 200 random datasets with edge cases), plus 4,236 figures on the live page: 0 differences; six planted bugs all caught. |
+| User guide | `docs/USER_GUIDE.md` for analysts and managers, covering every screen including Insights. |
+| Report for the user | A short plain-English explanation of how the tool was built and verified (given in the conversation). |
+
+### Problems found and fixed in this part
+
+- Tooltip positioning on the chart (too far from its point, then covering it, then clipped at the edge); finally kept inside the chart and beside the hovered points, tested at every month.
+- A chart box width that could leave empty space after changing the number of lines; the chart now sizes its own box.
+- Test-script slips (escaping, selectors, timing) were fixed in the tests, not by changing correct app behaviour; each was confirmed against the independent figures first.

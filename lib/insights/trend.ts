@@ -162,12 +162,16 @@ export function trendSeries(data: ArData, window: { from: string; to: string }, 
   });
 }
 
-/** The amount axis in lakhs (₹1,00,000 = 1 lakh), in 2-lakh steps from 0, covering the largest value. */
-export function lakhAxis(maxPaise: Paise): number[] {
-  const maxLakh = maxPaise / 100 / 100_000;
-  const top = Math.max(2, Math.ceil(maxLakh / 2) * 2);
+/**
+ * The amount axis in lakhs (₹1,00,000 = 1 lakh): ticks from 0 in steps of `step` lakh
+ * (2 by default; 1 for customer-only views), up to the first step at or above the
+ * largest balance. Worked in whole paise so the top tick is exact.
+ */
+export function lakhAxis(maxPaise: Paise, step: 1 | 2 = 2): number[] {
+  const unit = step * 10_000_000; // one step, in paise
+  const steps = Math.max(1, Math.floor((Math.max(0, maxPaise) + unit - 1) / unit)); // ceiling, at least one step
   const ticks: number[] = [];
-  for (let t = 0; t <= top; t += 2) ticks.push(t);
+  for (let k = 0; k <= steps; k++) ticks.push(k * step);
   return ticks;
 }
 

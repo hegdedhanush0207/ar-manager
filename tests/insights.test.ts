@@ -359,3 +359,24 @@ describe('chart labels and line selection', () => {
     expect(e).toEqual({ ...d, all: PALETTE[0] });
   });
 });
+
+describe('amount axis step', () => {
+  it('1-lakh steps for customer-only views, exact at the boundaries', async () => {
+    const { lakhAxis } = await import('../lib/insights/trend');
+    expect(lakhAxis(rupees(446600), 1)).toEqual([0, 1, 2, 3, 4, 5]); // C003 4.47 lakh
+    expect(lakhAxis(rupees(400000), 1)).toEqual([0, 1, 2, 3, 4]); // exactly 4 lakh: top tick 4
+    expect(lakhAxis(rupees(400000) + 1, 1)).toEqual([0, 1, 2, 3, 4, 5]); // one paisa more: 5
+    expect(lakhAxis(rupees(35400), 1)).toEqual([0, 1]);
+    expect(lakhAxis(0, 1)).toEqual([0, 1]);
+    expect(lakhAxis(rupees(731600), 1)).toEqual([0, 1, 2, 3, 4, 5, 6, 7, 8]);
+  });
+
+  it('2-lakh steps unchanged (default)', async () => {
+    const { lakhAxis } = await import('../lib/insights/trend');
+    expect(lakhAxis(rupees(2118100))).toEqual([0, 2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22]);
+    expect(lakhAxis(rupees(2118100), 2)).toEqual(lakhAxis(rupees(2118100)));
+    expect(lakhAxis(rupees(400000))).toEqual([0, 2, 4]);
+    expect(lakhAxis(rupees(400000) + 1)).toEqual([0, 2, 4, 6]);
+    expect(lakhAxis(0)).toEqual([0, 2]);
+  });
+});

@@ -4,7 +4,8 @@
  * Historical AR trend: an interactive line chart (hand-built SVG, no chart library).
  *
  * X axis = time (months by default, or weeks), earliest on the left; Y axis = amount
- * in ₹ lakh with 2-lakh steps from 0. One line per selected series: the consolidated
+ * in ₹ lakh from 0, in 2-lakh steps (1-lakh steps when only customer lines are shown).
+ * One line per selected series: the consolidated
  * total and/or individual customers, chosen in the picker inside the chart box. Picking
  * redraws instantly (every series is already calculated on the server) and the choice
  * is kept in the URL (?cust=) without reloading. Hovering, or the arrow keys, shows
@@ -60,6 +61,15 @@ export function TrendChart({ series, initialSelected, unit, header }: { series: 
   function toggle(key: string) {
     const next = selected.includes(key) ? selected.filter((k) => k !== key) : [...selected, key];
     if (next.length === 0) return; // at least one line is always shown
+    applySelection(next);
+  }
+
+  /** "De-select all": clear every customer and show the consolidated trend only. */
+  function deselectAll() {
+    applySelection([CONSOLIDATED]);
+  }
+
+  function applySelection(next: string[]) {
     setSelected(next);
     setColors((prev) => assignColors(next, prev));
     const sp = new URLSearchParams(window.location.search);
@@ -89,7 +99,11 @@ export function TrendChart({ series, initialSelected, unit, header }: { series: 
 
   const base = series[0]?.points ?? [];
   const n = base.length;
-  const ticks = lakhAxis(Math.max(0, ...shown.flatMap((s) => s.points.map((p) => p.closing))));
+  // Amount axis: 1-lakh steps when only customer lines are shown, otherwise 2-lakh steps.
+  const customerOnly = !selected.includes(CONSOLIDATED);
+  const step: 1 | 2 = customerOnly ? 1 : 2;
+  const ticks = lakhAxis(Math.max(0, ...shown.flatMap((s) => s.points.map((p) => p.closing))), step);
+  const tickLabelEvery = ticks.length > 16 ? 2 : 1; // gridline every step; thin the labels only if they would crowd
   const top = ticks[ticks.length - 1];
 
   // Geometry in SVG user units. The plot narrows to fit; a small gutter on the right holds end-of-line names.
@@ -166,6 +180,14 @@ export function TrendChart({ series, initialSelected, unit, header }: { series: 
           </button>
           {pickerOpen && (
             <div className="absolute left-0 z-20 mt-1 max-h-80 w-80 overflow-y-auto rounded border border-slate-200 bg-white p-2 text-sm shadow-lg" role="group" aria-label="Lines to show">
+              <button
+                type="button"
+                onClick={deselectAll}
+                disabled={selected.length === 1 && selected[0] === CONSOLIDATED}
+                className="mb-1 w-full rounded px-2 py-1 text-left text-blue-700 underline hover:bg-slate-50 disabled:text-slate-400 disabled:no-underline"
+              >
+                De-select all (show the consolidated trend only)
+              </button>
               {series.map((s) => {
                 const on = selected.includes(s.key);
                 const atCap = !on && s.key !== CONSOLIDATED && customerCount >= MAX_CUSTOMER_LINES;
@@ -196,7 +218,7 @@ export function TrendChart({ series, initialSelected, unit, header }: { series: 
         )}
       </div>
 
-      <div className="mb-1 text-xs text-slate-600">X axis: {unit} · Y axis: outstanding AR in ₹ lakh (1 lakh = ₹1,00,000), 2-lakh steps</div>
+      <div className="mb-1 text-xs text-slate-600">X axis: {unit} · Y axis: outstanding AR in ₹ lakh (1 lakh = ₹1,00,000), {step}-lakh steps</div>
       <div className="w-full overflow-x-auto">
         {/* The tooltip is positioned in this box, which is exactly the size of the chart. */}
         <div className="relative" style={{ width: '100%', maxWidth: W, minWidth: Math.min(W, 600) }}>
@@ -218,11 +240,11 @@ export function TrendChart({ series, initialSelected, unit, header }: { series: 
               if (e.key === 'ArrowRight') { e.preventDefault(); setActive((v) => Math.min(n - 1, (v ?? -1) + 1)); }
             }}
           >
-            {/* Y axis: amount gridlines and labels (₹ lakh, 2-lakh steps) */}
-            {ticks.map((t) => (
+            {/* Y axis: amount gridlines and labels (₹ lakh; 2-lakh steps, or 1-lakh for customer-only views) */}
+            {ticks.map((t, i) => (
               <g key={t}>
                 <line x1={pad.l} x2={pad.l + plotW} y1={y(t)} y2={y(t)} stroke={GRID} strokeWidth={1} />
-                <text x={pad.l - 8} y={y(t) + 4} textAnchor="end" fontSize={12} fill={AXIS_TEXT}>{t}</text>
+                {i % tickLabelEvery === 0 && <text x={pad.l - 8} y={y(t) + 4} textAnchor="end" fontSize={12} fill={AXIS_TEXT}>{t}</text>}
               </g>
             ))}
             <text x={14} y={pad.t + plotH / 2} fontSize={12} fill={AXIS_TEXT} transform={`rotate(-90 14 ${pad.t + plotH / 2})`} textAnchor="middle">₹ lakh</text>

@@ -316,13 +316,13 @@ A line chart of **month-end** (or week-end) outstanding AR, showing whether rece
 
 **What each point means:** the total of unpaid invoice balances at the end of that month (the last calendar day) or week (Sunday) — invoices raised, less payments (including TDS) and credit notes, each up to that date. It is the actual receivable, not the value invoiced. The last point is the current month or week **to date** (marked * and drawn hollow).
 
-**Axes:** months (or weeks) run left to right, labelled like **Dec '25** (weekly: **7 Dec '25**); amounts run up the side in **₹ lakh**, in steps of 2 lakh.
+**Axes:** months (or weeks) run left to right, labelled like **Dec '25** (weekly: **7 Dec '25**); amounts run up the side in **₹ lakh**, in steps of **2 lakh** — or **1 lakh** when only customer lines are shown (consolidated unticked), so smaller customer balances are easier to read. The line above the chart states the step in use.
 
 **Controls** (all take effect immediately — there is no Apply button):
 
 - **Show:** Monthly (default) or Weekly.
 - **Period:** Last 12 months (default), Last 6 months, Last 3 months, or **Custom date range**. "Last 12 months" means the current month and the 11 before it. For a custom range, change the **From** and **To** dates; the chart updates once both dates are complete. The range cannot go past the As at date.
-- **Customers** (inside the chart box): tick **All customers (consolidated)** and/or any individual customers. Each ticked item is drawn as its own line, so you can compare customers against each other or against the total. Up to **7 customers** at once, plus the consolidated line; at least one line is always shown. The chart redraws instantly and keeps your choice when you change the period. The choice is also part of the page address, so a bookmarked or shared link shows the same lines.
+- **Customers** (inside the chart box): tick **All customers (consolidated)** and/or any individual customers. Each ticked item is drawn as its own line, so you can compare customers against each other or against the total. Up to **7 customers** at once, plus the consolidated line; at least one line is always shown. The chart redraws instantly and keeps your choice when you change the period. The choice is also part of the page address, so a bookmarked or shared link shows the same lines. **De-select all**, at the top of the list, clears all customers and returns to the consolidated trend.
 
 **Reading the chart**
 

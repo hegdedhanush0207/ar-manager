@@ -9,6 +9,7 @@ const AREAS = [
   { path: '/invoices', label: 'Invoices' },
   { path: '/receipts/new', label: 'Record payment' },
   { path: '/statement', label: 'Statement' },
+  { path: '/insights', label: 'Insights' },
 ];
 
 /** Navigation between the areas. Every link keeps the ?asof= date. */
